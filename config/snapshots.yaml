@@ -1,0 +1,44 @@
+# Snapshots de Inside Airbnb (CC BY 4.0) a descargar a bronze.
+# Fechas verificadas con HEAD sobre data/listings.csv.gz (2026-10-05).
+# Patron: https://data.insideairbnb.com/<ruta>/<fecha>/data/<fichero>
+# Para anadir un snapshot nuevo basta con anadir su fecha aqui.
+
+base_url: https://data.insideairbnb.com
+
+ciudades:
+  barcelona:
+    ruta: spain/catalonia/barcelona
+    fechas:
+      - "2025-08-10"
+      - "2025-09-14"
+      - "2025-10-17"
+      - "2025-11-17"
+      - "2025-12-14"
+      - "2026-01-18"
+      - "2026-02-18"
+      - "2026-03-21"
+      - "2026-04-20"
+      - "2026-05-24"
+      - "2026-06-24"
+  euskadi:
+    ruta: spain/pv/euskadi
+    fechas:
+      - "2025-07-30"
+      - "2025-08-31"
+      - "2025-09-29"
+      - "2025-10-31"
+      - "2025-11-30"
+      - "2025-12-31"
+      - "2026-01-28"
+      - "2026-02-27"
+      - "2026-03-31"
+      - "2026-04-30"
+      - "2026-05-31"
+      - "2026-06-30"
+
+# Ficheros por snapshot. Ojo: el geojson cuelga de visualisations/, no de data/.
+ficheros:
+  - data/listings.csv.gz
+  - data/calendar.csv.gz
+  - data/reviews.csv.gz
+  - visualisations/neighbourhoods.geojson
