@@ -19,7 +19,7 @@ Fabric  -> mismo flujo con Lakehouse+Pipeline (Paso 5)
 |---|---|---|
 | 0 | Hecho | Repo, entorno Python y configuración de snapshots |
 | 1 | Hecho | Descarga a bronze: 92 ficheros, 2,1 GB |
-| 2 | En curso | Exploración de `listings` (Euskadi 2026-06-30) |
+| 2 | Hecho | Exploración de `listings` y `calendar`; reglas de silver definidas |
 | 3 | Pendiente | Capa silver |
 | 4 | Pendiente | Modelo gold |
 | 5 | Pendiente | Migración a Fabric |
@@ -61,14 +61,85 @@ Fabric  -> mismo flujo con Lakehouse+Pipeline (Paso 5)
 - **Barrio:** se usa `neighbourhood_cleansed`, no `neighbourhood`.
 - **`price` es texto** con formato `"$483.00"`; 87 valores llevan coma de miles. Hay que quitar `$` y `,` antes de convertir.
 - **572 precios nulos (9,2 %)**, y **no** son anuncios inactivos: 544 de los 546 nulos analizables tienen `has_availability = t`. Además, 26 filas tienen `has_availability` nulo.
-- **Precio máximo 9999**, mediana 196 y media 264: sospecha de valor centinela y distribución muy asimétrica.
+- **Extremos de precio.** Mediana 196 y media 264 (cola derecha). Solo **1 anuncio a 9999**: centinela probable, con impacto de ~1,8 en la media. Lo que pesa son los **87 anuncios con precio >= 1000** (casas enteras de 6 a 15 plazas, con reseñas recientes): parecen reales y coinciden con los 87 precios con coma de miles.
+- **Precios bajos (15 con precio < 20).** Todos son habitaciones privadas con `minimum_nights` >= 31. Son **larga estancia**, no alquiler turístico.
+- **Nulos de precio según disponibilidad.** 281 (49 %) con `availability_365 = 0` (cerrados: no hay precio que mostrar), 230 (40 %) con >= 30 días libres y sin precio (posible problema de captura, es una hipótesis) y 61 en zona gris. `has_availability` es un indicador débil; el útil es `availability_365`. Las 26 filas con `has_availability` nulo tienen todas el precio nulo.
+- **`price_quote_price_per_night`** es una copia numérica de `price`: coincide en el 100 % de las filas con precio. Sirve para validar el parseo, no es una fuente independiente ni rellena nulos.
+- **Larga estancia.** `minimum_nights` >= 28 en 264 anuncios (4,2 %), 219 de ellos con precio. Mediana de precio 95,52 frente a 199,80 del resto. El 47 % de los anuncios exige 2 o más noches. 2 anuncios no tienen `minimum_nights`.
 
-**Pendiente de decidir (Paso 2c).** Qué hacer con los nulos de precio y con los extremos (9999 y los menores de 20), y en qué moneda va `price` (consultar el diccionario de datos de Inside Airbnb).
+**Reglas propuestas para silver (pendientes de validar).**
+1. `price_num` numérico, conservando el texto original y validado contra `price_quote_price_per_night`.
+2. Flags en lugar de borrar: `price_missing`, `price_outlier` (el 9999 y lo que decidamos) e `is_long_stay` (`minimum_nights` >= 28, umbral configurable).
+3. Silver **limpia y marca**, no elimina ni imputa. Las exclusiones de negocio (por ejemplo, larga estancia fuera del comp set) van en gold o en las medidas.
+4. ADR de referencia con **mediana** por barrio.
+
+**Moneda.** El diccionario de datos de Inside Airbnb indica "local currency": `price` va en la moneda local (euros en España) y el `$` es solo formato.
+
+**Pendiente (fuera del Paso 2).** Medir la larga estancia por zona y explorar `reviews`.
 
 **Errores y lecciones.**
 - Una hipótesis plausible ("los nulos son inactivos") era falsa. Se comprueba, no se supone.
 - `sort_values()` deja los `NaN` al final: `.tail()` devolvía solo `NaN`. Hacer `dropna()` antes.
 - `pd.crosstab` descarta las filas con `NaN`; el total no coincidía con el número de filas.
+- Un indicador débil (`has_availability`, casi siempre `t`) llevó a una conclusión incompleta sobre los nulos de precio; `availability_365` la corrigió. Antes de fiarte de una columna, mira cómo se reparte.
+- Un `.ipynb` guarda las salidas junto al código: no se commitea tal cual en un repo público.
+
+---
+
+## Paso 2 (continuación): `calendar` y deriva de esquema
+
+**Grano.** El grano responde a "¿qué representa una fila?". En `calendar` de un snapshot es **un anuncio en una noche**. Al apilar snapshots hay que añadir `snapshot_date`: la misma noche aparece una vez por cada snapshot que la ve. Contar filas sin filtrar esa columna cuenta la misma noche varias veces; y comparar esa misma noche entre snapshots es, justamente, el pickup.
+
+**Tamaño.** Euskadi 2026-06-30: 2.281.585 filas y 116 MB en memoria. Estimación de los 23 snapshots apilados: del orden de **100 millones de filas**, demasiado para pandas y adecuado para Spark y Delta.
+
+**Hallazgos (Euskadi 2026-06-30).**
+- 5 columnas: `listing_id`, `date`, `available`, `minimum_nights`, `maximum_nights`. **Sin precio.**
+- `available`: 50,4 % `t` y 49,6 % `f`. `f` mezcla reservado, bloqueado por el propietario y anuncio cerrado, así que no es ocupación.
+- 6.251 anuncios en `calendar` frente a 6.248 en `listings`: 3 huérfanos con IDs muy altos (anuncios nuevos entre ambos scrapes). Ningún anuncio de `listings` falta en `calendar`.
+- No hay una fecha de captura única: la ventana empieza entre 06-30 y 07-03 según el anuncio, y se captura anuncio a anuncio. Para el pickup hay que usar la fecha real (`calendar_last_scraped`), no la nominal.
+- Un anuncio tiene una ventana de 335 días; el resto, 365.
+
+**Deriva de esquema (los 23 snapshots).**
+- `calendar` tiene **7 columnas** (incluidas `price` y `adjusted_price`) hasta Barcelona 2026-01-18 y Euskadi 2025-09-29, y **5** a partir de ahí. Pero en los 9 snapshots que tienen esas columnas **`price` y `adjusted_price` están 100 % vacías** (comprobado en los 9: 0 % informado). El precio por noche **no existe en ningún snapshot**; el único precio disponible es el de `listings`.
+- `listings` tiene 79, 85 o 90 columnas según el snapshot (aparecen `price_quote_*` y `hosts_time_as_host_*`).
+- Consecuencia: silver no puede asumir un esquema fijo. Debe **declarar el schema a mano**, tolerar columnas ausentes y registrar qué snapshot trae qué.
+
+**Errores y lecciones.**
+- Generalicé "el calendar no tiene precio" desde un solo snapshot. Antes de afirmar algo del conjunto, se comprueba en el conjunto.
+- Luego corregí al revés: vi columnas `price` en los `calendar` antiguos y supuse que traían datos. Estaban vacías. **Que una columna exista no significa que tenga datos**: se mide el % de valores informados.
+
+---
+
+## Cierre del Paso 2: columnas útiles y reglas para silver
+
+**Columnas útiles para revenue.**
+
+| Grupo | Columnas |
+|---|---|
+| Precio | `price` (de `listings`, texto con `$` y comas; la moneda es local) |
+| Disponibilidad | `available` (de `calendar`), `availability_30/60/90/365` |
+| Demanda | `number_of_reviews_ltm`, `reviews_per_month` |
+| Segmentación (comp set) | `room_type`, `property_type`, `accommodates`, `bedrooms`, `neighbourhood_cleansed`, `minimum_nights` |
+| Host | `host_id`, `calculated_host_listings_count` y sus variantes |
+| Solo contraste | `estimated_occupancy_l365d`, `estimated_revenue_l365d` (modelo de Inside Airbnb, no se usan como métrica propia) |
+
+**RevPAR aproximado.** `price` de `listings` x proporción de noches `f` de `calendar`, con `calendar` agregado primero al grano de `listings`. La ocupación es un **límite superior** (`f` mezcla reservas, bloqueos y anuncios cerrados) y el precio es el publicado. Sirve para comparar, no como ingreso real.
+
+**Prototipo (Euskadi 2026-06-30).** De 6.248 anuncios quedan 5.454 en la base: se pierden 572 sin precio, 266 de larga estancia o sin dato y 1 con precio 9999, con solapes. Solo 25 de 206 zonas tienen 30 o más anuncios; con menos, la mediana no es fiable.
+
+**Unidad geográfica.** En Euskadi `neighbourhood_cleansed` contiene **municipios**, no barrios (Donostia 1.316 anuncios, Gorliz 31). No son comparables en tamaño. En gold conviene una `dim_zona` con su nivel, y el comp set se define por zona + tipo de alojamiento + capacidad, no solo por geografía.
+
+**Reglas de silver.**
+1. Declarar el schema a mano y tolerar columnas ausentes (`listings` tiene 79, 85 o 90 columnas según el snapshot).
+2. Detectar las columnas 100 % vacías por snapshot y no cargarlas, registrándolo.
+3. `price_num`: quitar `$` y `,`, conservar el texto original y validar contra `price_quote_price_per_night` cuando exista.
+4. Flags en lugar de borrar: `price_missing`, `price_outlier` (precio 9999) e `is_long_stay` (`minimum_nights` >= 28, umbral configurable).
+5. Reparar la codificación de los textos con `Ã` (Euskadi: 1.692 filas y 20 nombres de zona; Barcelona no está afectada).
+6. En `calendar`: añadir `snapshot_date`, usar la fecha real de captura y conservar los huérfanos marcándolos.
+7. Agregar `calendar` al grano de `listings` antes de unir.
+8. Silver limpia y marca; no imputa ni elimina. Las exclusiones de negocio van en gold.
+
+**Por qué cada capa.** Bronze guarda el dato tal cual llega, sin tocarlo (por eso los acentos rotos se arreglan en silver y no en bronze). Silver limpia y da tipos. Gold modela para consumo.
 
 ---
 
@@ -91,6 +162,11 @@ Fabric  -> mismo flujo con Lakehouse+Pipeline (Paso 5)
 | **Lead time** | Días entre la reserva (o la observación) y la noche de estancia. |
 | **Winsorizar** | Recortar extremos a un percentil (por ejemplo p1 y p99) en vez de eliminarlos. |
 | **Mediana** | Valor central; no la arrastran los extremos, a diferencia de la media. |
+| **Grano** | Qué representa exactamente una fila de una tabla. En `fact_calendar` con snapshots apilados: anuncio + noche + snapshot. |
+| **Deriva de esquema** | La fuente cambia columnas con el tiempo sin avisar (`listings` pasa de 79 a 90 columnas). |
+| **Flag** | Columna que marca un caso (por ejemplo `price_outlier`) en lugar de borrar la fila. |
+| **Mojibake** | Texto con codificación rota (`SebastiÃ¡n` en vez de `Sebastián`). |
+| **Validación de datos** | Comprobación automática antes de seguir (por ejemplo, precio parseado frente a `price_quote`); si falla, el pipeline para y avisa o marca. |
 
 ---
 
