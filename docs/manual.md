@@ -20,7 +20,7 @@ Fabric  -> mismo flujo con Lakehouse+Pipeline (Paso 5)
 | 0 | Hecho | Repo, entorno Python y configuración de snapshots |
 | 1 | Hecho | Descarga a bronze: 92 ficheros, 2,1 GB |
 | 2 | Hecho | Exploración de `listings` y `calendar`; reglas de silver definidas |
-| 3 | Pendiente | Capa silver |
+| 3 | Parte 1 hecha | Silver de `listings` (Euskadi 2026-06-30) en local; los 23 snapshots se harán en Fabric con PySpark |
 | 4 | Pendiente | Modelo gold |
 | 5 | Pendiente | Migración a Fabric |
 | 6 | Pendiente | Informe Power BI |
@@ -143,6 +143,41 @@ Fabric  -> mismo flujo con Lakehouse+Pipeline (Paso 5)
 
 ---
 
+## Paso 3, parte 1: silver de `listings` (Euskadi 2026-06-30)
+
+Es la **especificación** de silver: las reglas se escriben y se prueban aquí con un snapshot y se aplicarán a los 23 en Fabric con PySpark. Evidencia en `notebooks/02_exploracion.ipynb`.
+
+| Subpaso | Qué hace |
+|---|---|
+| 3.1 | Elegir 39 columnas (las 38 presentes en los 23 snapshots, más `price_quote_price_per_night`) y declarar los tipos a mano |
+| 3.2 | Reparar acentos, `price_num` y flags |
+| 3.3a | `has_availability` y `host_is_superhost` a booleano |
+| 3.3b | `license` a categorías |
+| 3.4 | Comprobaciones de calidad |
+| 3.5 | Guardar en Parquet |
+
+**3.1 Selección y tipos.** Se dejan fuera las 12 columnas vacías, los datos personales (`host_name`, descripciones, URLs) y `amenities`. Tipos: 15 `Int64` (enteros que admiten nulos), 12 `float64`, 8 `string` y 4 fechas. Los IDs de anuncios nuevos (~1,47 x 10^18) caben en `int64`, pero se corromperían en JavaScript o Excel.
+
+**3.2 Flags y precio.** `price_num` a partir de `price` (conservando el original), más tres flags **sin nulos**: `price_missing` (572), `price_outlier` (precio 9999: 1) e `is_long_stay` (`minimum_nights` >= 28, umbral configurable: 264). Los acentos de las zonas se reparan solo si el texto contiene `Ã`, re-decodificando con `latin-1`.
+
+**3.3a Booleanos.** `t`/`f` pasan a `boolean` (verdadero, falso y desconocido). Si aparece otro valor, la conversión **falla** y el mensaje dice columna y valor. Los nulos se quedan como nulos: los 26 de `has_availability` no tienen precio y 23 no tienen reseñas (anuncios nuevos); los 6 de `host_is_superhost` son de 2 hosts nuevos capturados el último día. Un nulo es "aún no se sabe", no `f`. El porcentaje de superhosts (39,4 %) se calcula sobre los 6.242 con dato.
+
+**3.3b Licencias.** `license` mezcla un formato estructurado, textos libres y, a veces, posibles datos personales. Se convierte en `license_status` (`con_registro` 4.179, `exento` 1.232, `sin_dato` 738, `texto_libre` 99) y `exempt_type` (tourist apartment, rural tourism accommodation, hotel, hostel, seasonal rental...). **El texto original no se escribe en silver** (minimización de datos); sigue en bronze. El tipo de exento sirve para segmentar el comp set.
+
+**3.4 Calidad.** 9 comprobaciones, todas a 0: ids únicos, coordenadas en Euskadi, `accommodates` > 0, disponibilidad coherente, precio > 0, fechas de reseñas coherentes, reseñas de 12 meses <= totales y flags sin nulos. En producción cada regla lleva una gravedad: **bloquea** (un `id` duplicado infla todas las medidas) o **avisa** (unas pocas coordenadas fuera de rango son un error local), con umbral: si falla un porcentaje alto de filas, también bloquea.
+
+**3.5 Parquet.** `data/silver/listings/ciudad=euskadi/snapshot_date=2026-06-30/listings.parquet`: 6.248 filas, 46 columnas, 449 KB, sin `license`. Se conservan los tipos (booleanos, fechas, enteros con nulos), cosa que un CSV perdería. La carpeta por `ciudad` y `snapshot_date` es una **partición al estilo Hive**: el motor solo lee las carpetas que la consulta necesita (poda de particiones) y se puede recargar un único snapshot sin tocar los demás.
+
+**Errores y lecciones.**
+- `price_outlier` salió con 572 nulos: comparar un nulo con 9999 da "desconocido", no "falso". El test de regresión no lo vio porque `.sum()` ignora los nulos. Se añadió la comprobación "flags sin nulos".
+- Corregir el código no corrige el fichero ya escrito: hay que **reprocesar**. Por eso el pipeline debe poder repetirse sin duplicar (idempotencia).
+- Probar la reparación de acentos con todos los valores afectados, no con uno: `cp1252` fallaba en `Álava`.
+- Un indicador débil (`has_availability`) puede llevar a una conclusión incompleta; mirar cómo se reparte antes de fiarse.
+
+**Siguiente.** Pasar a Fabric: workspace, tres lakehouses, pipeline parametrizado y notebooks PySpark que apliquen estas reglas a los 23 snapshots.
+
+---
+
 ## Glosario
 
 | Término | Qué significa |
@@ -167,6 +202,11 @@ Fabric  -> mismo flujo con Lakehouse+Pipeline (Paso 5)
 | **Flag** | Columna que marca un caso (por ejemplo `price_outlier`) en lugar de borrar la fila. |
 | **Mojibake** | Texto con codificación rota (`SebastiÃ¡n` en vez de `Sebastián`). |
 | **Validación de datos** | Comprobación automática antes de seguir (por ejemplo, precio parseado frente a `price_quote`); si falla, el pipeline para y avisa o marca. |
+| **Parquet** | Formato columnar que conserva los tipos y comprime mucho; es la base de Delta en Fabric. |
+| **Partición Hive** | Carpetas por valor de columna (`ciudad=euskadi/snapshot_date=2026-06-30/`); el motor lee solo las que necesita (poda de particiones). |
+| **Minimización de datos** | No cargar lo que no se necesita, sobre todo datos personales (privacy by design). |
+| **Fallar rápido** | Detener el proceso ante un valor inesperado, con un mensaje claro, en vez de convertirlo en silencio. |
+| **Boolean nullable** | Tipo con tres estados: verdadero, falso y desconocido. |
 
 ---
 
