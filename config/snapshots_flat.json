@@ -1,0 +1,554 @@
+[
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-08-10",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-08-10",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-08-10",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-08-10",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-09-14",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-09-14",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-09-14",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-09-14",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-10-17",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-10-17",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-10-17",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-10-17",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-11-17",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-11-17",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-11-17",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-11-17",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-12-14",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-12-14",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-12-14",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2025-12-14",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-01-18",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-01-18",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-01-18",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-01-18",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-02-18",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-02-18",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-02-18",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-02-18",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-03-21",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-03-21",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-03-21",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-03-21",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-04-20",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-04-20",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-04-20",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-04-20",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-05-24",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-05-24",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-05-24",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-05-24",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-06-24",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-06-24",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-06-24",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "barcelona",
+    "ruta": "spain/catalonia/barcelona",
+    "fecha": "2026-06-24",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-07-30",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-07-30",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-07-30",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-07-30",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-08-31",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-08-31",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-08-31",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-08-31",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-09-29",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-09-29",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-09-29",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-09-29",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-10-31",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-10-31",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-10-31",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-10-31",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-11-30",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-11-30",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-11-30",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-11-30",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-12-31",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-12-31",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-12-31",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2025-12-31",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-01-28",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-01-28",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-01-28",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-01-28",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-02-27",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-02-27",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-02-27",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-02-27",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-03-31",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-03-31",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-03-31",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-03-31",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-04-30",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-04-30",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-04-30",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-04-30",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-05-31",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-05-31",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-05-31",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-05-31",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-06-30",
+    "ruta_fichero": "data/listings.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-06-30",
+    "ruta_fichero": "data/calendar.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-06-30",
+    "ruta_fichero": "data/reviews.csv.gz"
+  },
+  {
+    "ciudad": "euskadi",
+    "ruta": "spain/pv/euskadi",
+    "fecha": "2026-06-30",
+    "ruta_fichero": "visualisations/neighbourhoods.geojson"
+  }
+]

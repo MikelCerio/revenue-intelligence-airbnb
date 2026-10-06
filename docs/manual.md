@@ -22,7 +22,7 @@ Fabric  -> mismo flujo con Lakehouse+Pipeline (Paso 5)
 | 2 | Hecho | Exploración de `listings` y `calendar`; reglas de silver definidas |
 | 3 | Parte 1 hecha | Silver de `listings` (Euskadi 2026-06-30) en local; los 23 snapshots se harán en Fabric con PySpark |
 | 4 | Pendiente | Modelo gold |
-| 5 | Pendiente | Migración a Fabric |
+| 5 | En curso | Workspace, lakehouses y pipeline de ingesta (F1 a F3); faltan silver, gold y modelo |
 | 6 | Pendiente | Informe Power BI |
 
 ---
@@ -175,6 +175,29 @@ Es la **especificación** de silver: las reglas se escriben y se prueban aquí c
 - Un indicador débil (`has_availability`) puede llevar a una conclusión incompleta; mirar cómo se reparte antes de fiarse.
 
 **Siguiente.** Pasar a Fabric: workspace, tres lakehouses, pipeline parametrizado y notebooks PySpark que apliquen estas reglas a los 23 snapshots.
+
+---
+
+## Paso 5 (Fabric): workspace, lakehouses e ingesta
+
+**F1 Workspace.** `revenue-intelligence-airbnb` con el flujo de tareas **Medallón** (un mapa visual: no crea elementos, solo los organiza). La licencia Pro de partida era una prueba de Power BI y no daba capacidad de Fabric; la capacidad de prueba de Fabric se activó desde el perfil ("Iniciar la versión de prueba"). **Licencia y capacidad son cosas distintas**: la licencia es por usuario (publicar y compartir) y la capacidad es el cómputo del workspace (necesaria para lakehouses, notebooks y pipelines). La prueba caduca hacia 2026-12-03, así que el código y el modelo van a Git.
+
+**F2 Lakehouses.** `lh_bronze`, `lh_silver` y `lh_gold`, sin esquemas. **Files** guarda ficheros crudos (bronze) y **Tables** guarda tablas Delta registradas (silver y gold); Direct Lake solo lee Delta de `Tables`. Cada lakehouse crea un **endpoint SQL** de solo lectura sobre sus tablas.
+
+**F3 Ingesta (`pl_ingesta_snapshots`).**
+- Conexión HTTP anónima a `data.insideairbnb.com`. Actividad **Copy data en formato binario** a `lh_bronze/Files/<ciudad>/<fecha>/`: el fichero llega idéntico y no se interpreta (si se convirtiera a Delta aquí, la deriva de esquema podría romper la carga y se perdería el original).
+- Parámetros (todos de tipo Cadena): `ciudad`, `ruta`, `fecha` y `ruta_fichero` (lleva `data/` o `visualisations/`). Contenido dinámico: URL relativa con `concat`, y el nombre de archivo con `last(split(...))`. **Prueba de sensibilidad**: cambiar solo `ruta_fichero` a `visualisations/neighbourhoods.geojson` hizo aparecer ese fichero; repetir la copia sobrescribe, no duplica (idempotente).
+- Lista de trabajo: `scripts/03_genera_lista_plana.py` genera `config/snapshots_flat.json` (92 elementos = 23 snapshots x 4 ficheros) a partir de `config/snapshots.yaml`, y se sube a `lh_bronze/Files/config/`. La actividad **Lookup** `lk_lista_snapshots` la lee con "solo la primera fila" desmarcado (devuelve `count: 92`).
+- **ForEach** `fe_snapshots` sobre `@activity('lk_lista_snapshots').output.value`, no secuencial y con 4 lotes (para no saturar el servidor ajeno). Fabric no permite un ForEach dentro de otro, por eso la lista es plana. Dentro, `copy_snapshot_file` usa `item().ciudad`, `item().fecha`... en vez de `pipeline().parameters`.
+- Prueba con `take(..., 3)`: apareció `barcelona/2025-08-10` con `calendar`, `listings` y `reviews`.
+
+**Cierre de F3.** Sin el `take`, el pipeline ejecutó los 92 en 9 min 38 s (94 filas de salida: Lookup, ForEach y 92 copias) con estado Correcto. Un ForEach se marca como fallido si falla cualquier vuelta, así que Correcto implica las 92. Como el estado no basta, se verificó el **contenido** con el notebook `nb_00_verifica_bronze` (Python en Fabric, con `lh_bronze` como lakehouse predeterminado, ruta `/lakehouse/default/Files`): compara el **conjunto esperado** (leído de `snapshots_flat.json`) con el **encontrado** (`os.listdir`) y resultó `esperados: 92 | encontrados: 92`, `faltan: []`, `sobran: []`. Comparar conjuntos dice **cuál** falta o sobra, cosa que un simple recuento no detecta (un faltante y un sobrante se compensan).
+
+**Errores y lecciones.**
+- Un `pipeline().parameters.X` dentro del ForEach habría escrito los 92 ficheros en la misma carpeta, sobrescribiéndose, y el pipeline habría salido en verde: un **fallo silencioso**. Se comprueba el resultado, no solo el estado.
+- Los reintentos son seguros porque la copia es idempotente (sobrescribe); con "añadir filas" podrían duplicar.
+- El editor de expresiones avisó de un tipo en `last(split(...))` y **Evaluar expresión** lo dio por bueno: manda la evaluación, y se confirma con Validar y con una ejecución.
+- Un fichero ausente devuelve 403; dentro de un ForEach no tumba las otras vueltas, pero deja el conjunto marcado como fallido.
 
 ---
 
