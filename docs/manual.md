@@ -22,7 +22,7 @@ Fabric  -> mismo flujo con Lakehouse+Pipeline (Paso 5)
 | 2 | Hecho | Exploración de `listings` y `calendar`; reglas de silver definidas |
 | 3 | Parte 1 hecha | Silver de `listings` (Euskadi 2026-06-30) en local; los 23 snapshots se harán en Fabric con PySpark |
 | 4 | Pendiente | Modelo gold |
-| 5 | En curso | Workspace, lakehouses y pipeline de ingesta (F1 a F3); faltan silver, gold y modelo |
+| 5 | En curso | Workspace, lakehouses, ingesta y silver de `listings` (F1 a F4); faltan silver de calendar y reviews, gold y modelo |
 | 6 | Pendiente | Informe Power BI |
 
 ---
@@ -198,6 +198,27 @@ Es la **especificación** de silver: las reglas se escriben y se prueban aquí c
 - Los reintentos son seguros porque la copia es idempotente (sobrescribe); con "añadir filas" podrían duplicar.
 - El editor de expresiones avisó de un tipo en `last(split(...))` y **Evaluar expresión** lo dio por bueno: manda la evaluación, y se confirma con Validar y con una ejecución.
 - Un fichero ausente devuelve 403; dentro de un ForEach no tumba las otras vueltas, pero deja el conjunto marcado como fallido.
+
+---
+
+## Paso 5 (continuación), F4: silver de `listings` en PySpark
+
+El notebook `nb_01_silver_listings` reproduce en PySpark las reglas del Paso 3 y se comprobó contra pandas con los mismos números.
+
+- **4a Lectura.** `multiLine=True` y `escape='"'`: los textos largos traen saltos de línea dentro de comillas. Sin `multiLine` salen 10.128 filas; con él, 6.248 (como pandas). Spark lee por defecto línea a línea; pandas lo gestiona solo.
+- **4b Columnas y tipos.** Las mismas 39 columnas: 15 enteros largos, 12 decimales, 4 fechas y 8 textos. Nulos idénticos a pandas.
+- **4c Reglas.** `price_num` con `regexp_replace`; flags con `coalesce(..., False)` para que nunca sean `NULL` (comparar un nulo con 9999 da "desconocido", no "falso"); `t`/`f` a booleano con aserción que falla si aparece otro valor; acentos reparados con `encode`/`decode` nativos de Spark (ISO-8859-1), solo si el texto contiene `Ã`; `license` convertida en `license_status` y `exempt_type` y eliminada en la misma operación.
+- **4c-4 Calidad.** Con gravedad: **bloquean** `id` duplicados y flags con nulos (`assert`); **avisan** coordenadas, rangos y fechas. Si un aviso afecta a un porcentaje alto de filas, se trataría como bloqueante.
+- **4d Escritura.** Tabla Delta en `lh_silver/Tables/listings` (ruta `abfss://...`), `partitionBy("ciudad", "snapshot_date")` y `replaceWhere`: reemplaza solo la partición del snapshot, así que repetir no duplica ni toca los demás (idempotente). Un `overwrite` normal habría borrado el resto.
+- **4e Parámetros y pipeline.** `CIUDAD` y `SNAPSHOT` en una celda marcada como de parámetros, con valores por defecto; el pipeline los sustituye. `pl_silver_listings`: Lookup (92) -> Filter (`ruta_fichero = data/listings.csv.gz`, 23) -> ForEach (lotes de 2) -> actividad Notebook con `@item().ciudad` y `@item().fecha`. Prueba con `take(..., 2)` y después los 23: 26 filas de salida (23 notebooks más 3) y **23 particiones** (11 de Barcelona y 12 de Euskadi).
+
+**Comprobaciones de coherencia.** 19.325 anuncios x 365 noches = 7.053.625, y el `calendar` de ese snapshot tiene 7.053.632 filas. Barcelona pasa de 19.325 anuncios (2025-08-10) a 15.293 (2026-06-24), un descenso de ~21 %: observación a revisar, sin causa asumida.
+
+**Errores y lecciones.**
+- Un valor escrito a mano dentro de un bucle (`euskadi`, `2026-06-30` en los parámetros del notebook) habría cargado siempre el mismo snapshot con todo en verde. Dentro del bucle van `@item()`, no literales.
+- En una expresión la `@` va solo al principio (`@take(activity(...), 2)`), y el `take` de prueba debe apuntar a la lista **filtrada**, no al Lookup de 92.
+- Un `ForEach` con notebooks lanza una sesión de Spark por llamada: lotes bajos para no agotar la capacidad del trial.
+- Variables como `destino` viven en la sesión del notebook: si se reinicia, hay que redefinirlas.
 
 ---
 
