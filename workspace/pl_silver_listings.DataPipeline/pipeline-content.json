@@ -1,0 +1,131 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "JsonSource",
+            "formatSettings": {
+              "type": "JsonReadSettings"
+            },
+            "storeSettings": {
+              "type": "LakehouseReadSettings",
+              "recursive": true,
+              "enablePartitionDiscovery": false
+            }
+          },
+          "datasetSettings": {
+            "type": "Json",
+            "typeProperties": {
+              "location": {
+                "type": "LakehouseLocation",
+                "folderPath": "config",
+                "fileName": "snapshots_flat.json"
+              }
+            },
+            "schema": {},
+            "linkedService": {
+              "name": "lh_bronze",
+              "properties": {
+                "type": "Lakehouse",
+                "typeProperties": {
+                  "artifactId": "b8f1eddc-6849-9689-4dd1-c902e5b24d47",
+                  "workspaceId": "00000000-0000-0000-0000-000000000000",
+                  "rootFolder": "Files"
+                },
+                "annotations": []
+              }
+            },
+            "annotations": []
+          },
+          "firstRowOnly": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "lk_lista_snapshots",
+        "dependsOn": []
+      },
+      {
+        "type": "Filter",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('lk_lista_snapshots').output.value",
+            "type": "Expression"
+          },
+          "condition": {
+            "value": "@equals(item().ruta_fichero, 'data/listings.csv.gz')",
+            "type": "Expression"
+          }
+        },
+        "name": "flt_solo_listings",
+        "dependsOn": [
+          {
+            "activity": "lk_lista_snapshots",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "batchCount": 2,
+          "items": {
+            "value": "@activity('flt_solo_listings').output.Value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "2f1b7754-2391-b3b0-4bf1-8266cdfae733",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "CIUDAD": {
+                    "value": {
+                      "value": "@item().ciudad",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SNAPSHOT": {
+                    "value": {
+                      "value": "@item().fecha",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "nb_01_silver_listings",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "fe_snapshots_silver",
+        "dependsOn": [
+          {
+            "activity": "flt_solo_listings",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
