@@ -222,6 +222,30 @@ El notebook `nb_01_silver_listings` reproduce en PySpark las reglas del Paso 3 y
 
 ---
 
+## Paso 5 (continuación): reconstrucción del workspace y Git
+
+**Por qué hubo que reconstruir.** El primer workspace se creó como **"área de trabajo de aplicación de plantilla"** (casilla de las opciones avanzadas al crearlo): un tipo especial que **no admite Git** y que no se puede cambiar después. Se renombró a `revenue-intelligence-airbnb-old` y se creó uno normal. Se hizo **primero el nuevo y solo después se retira el viejo**, para no perder trabajo.
+
+**Qué se recuperó y cómo.**
+- Los datos de `lh_bronze` y `lh_silver` no se migran: se regeneran ejecutando los pipelines.
+- Los notebooks se exportaron como `.ipynb` (carpeta `fabric/` del repo) y se importaron en el nuevo; al importar **recuerdan el lakehouse del workspace viejo**, así que hay que quitarlo y añadir el nuevo como predeterminado.
+- Copiar y pegar actividades entre pipelines no funcionó: se recrearon a mano (están descritos más arriba).
+
+**Git integration con GitHub.**
+- Requisitos: capacidad de Fabric, el interruptor del tenant para sincronizar con GitHub, y un **token de acceso personal fine-grained** limitado a un solo repositorio con **Contents: Read and write** (Metadata de solo lectura lo añade GitHub). El token se pega solo en Fabric, nunca en chats.
+- El error "las credenciales del proveedor de Git no están autorizadas" se debió a un token con **ningún permiso** (el repo seleccionado no basta: hay que añadir los permisos).
+- Conexión: rama `master`, carpeta `workspace` (la carpeta `fabric/` guarda las exportaciones manuales, con otro formato). Cada elemento nuevo aparece en Control de código fuente y se confirma con un clic.
+
+**Silver de `listings` en el workspace nuevo.** Con `pl_silver_listings` (Lookup, Filter, ForEach y Notebook) se cargaron los 23 snapshots: la tabla `listings` de `lh_silver` tiene **23 particiones**.
+
+**Errores y lecciones.**
+- Los parámetros base de la actividad Notebook estaban guardados como **texto fijo** (`euskadi`, `2026-06-30`) en vez de `@item().ciudad` y `@item().fecha`. Las dos llamadas escribían la misma partición, y una falló con `ConcurrentAppendException` mientras la otra salía "Correcto" **sin haber cargado Barcelona**. El estado no basta: se comprobó el contenido.
+- La fuente de verdad es el **JSON del pipeline** (vista de código), no lo que muestra el cuadro de configuración.
+- Se añadió `print("PROCESANDO:", CIUDAD, SNAPSHOT)` justo debajo de la celda de parámetros: en la instantánea de cada ejecución se ve qué valores recibió el notebook.
+- Dos escrituras concurrentes sobre la misma partición provocan conflicto en Delta; sobre particiones distintas (cada snapshot la suya) no.
+
+---
+
 ## Glosario
 
 | Término | Qué significa |
