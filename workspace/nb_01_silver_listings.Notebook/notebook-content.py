@@ -325,3 +325,15 @@ spark.read.format("delta").load(destino).groupBy("ciudad", "snapshot_date").coun
 # META   "language": "python",
 # META   "language_group": "synapse_pyspark"
 # META }
+
+# CELL ********************
+
+dest_l = "abfss://revenue-intelligence-airbnb@onelake.dfs.fabric.microsoft.com/lh_silver.Lakehouse/Tables/listings"
+spark.read.format("delta").load(dest_l).groupBy("ciudad", "snapshot_date").count().orderBy("ciudad", "snapshot_date").show(30)
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
