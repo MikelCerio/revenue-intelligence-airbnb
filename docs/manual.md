@@ -21,8 +21,8 @@ Fabric  -> mismo flujo con Lakehouse+Pipeline (Paso 5)
 | 1 | Hecho | Descarga a bronze: 92 ficheros, 2,1 GB |
 | 2 | Hecho | Exploración de `listings` y `calendar`; reglas de silver definidas |
 | 3 | Parte 1 hecha | Silver de `listings` (Euskadi 2026-06-30) en local; los 23 snapshots se harán en Fabric con PySpark |
-| 4 | Pendiente | Modelo gold |
-| 5 | En curso | Workspace, lakehouses, ingesta y silver de `listings` (F1 a F4); faltan silver de calendar y reviews, gold y modelo |
+| 4 | Hecho | Modelo gold: 4 dimensiones y 2 hechos en `lh_gold` |
+| 5 | En curso | Workspace, Git, ingesta, silver de `listings` y `calendar` y gold hechos; faltan silver de reviews y geojson, modelo semántico y DAX |
 | 6 | Pendiente | Informe Power BI |
 
 ---
@@ -243,6 +243,37 @@ El notebook `nb_01_silver_listings` reproduce en PySpark las reglas del Paso 3 y
 - La fuente de verdad es el **JSON del pipeline** (vista de código), no lo que muestra el cuadro de configuración.
 - Se añadió `print("PROCESANDO:", CIUDAD, SNAPSHOT)` justo debajo de la celda de parámetros: en la instantánea de cada ejecución se ve qué valores recibió el notebook.
 - Dos escrituras concurrentes sobre la misma partición provocan conflicto en Delta; sobre particiones distintas (cada snapshot la suya) no.
+
+---
+
+## Paso 4 (gold): modelo estrella
+
+Silver `calendar` (23 particiones, **88.672.422 filas**, sin pérdidas respecto a bronze) y silver `listings` alimentan el gold, que se construye con el notebook `nb_10_gold_dimensiones` y se escribe en `lh_gold`.
+
+| Tabla | Grano | Filas |
+|---|---|---|
+| `dim_snapshot` | un snapshot (ciudad + fecha), con `snapshot_id` = `ciudad_yyyymmdd` | 23 |
+| `dim_zona` | una zona (municipio en Euskadi, barrio en Barcelona) y su grupo (provincia o distrito) | 286 |
+| `dim_listing` | un anuncio, con sus atributos más recientes y `primera_vez`, `ultima_vez`, `n_snapshots` | ~34.000 |
+| `dim_fecha` | un día, de 2025-07-01 a 2027-12-31 | 914 |
+| `fact_listing_snapshot` | un anuncio en un snapshot (precio, flags, disponibilidad, reseñas) | 242.766 |
+| `fact_calendar` | una noche de un anuncio visto desde un snapshot | 88.672.422 |
+
+**Decisiones.**
+- **Snapshots parciales.** Algunos snapshots de Inside Airbnb vienen incompletos de origen (Barcelona 2026-04-20: 7.277 anuncios frente a ~15.000; 2026-02-18: 12.786). `dim_snapshot.es_completo` los **marca** (anuncios >= 85 % de la mediana de su ciudad), no los borra, y las medidas de altas, bajas y pickup deben excluirlos. Sin ello habría bajas falsas.
+- **Claves de una columna.** Las relaciones del modelo admiten una sola columna: `snapshot_id` (hechos y `dim_snapshot`), `zona_id` (`ciudad|zona`) y `listing_id`.
+- **Dimensión frente a hecho.** La dimensión describe al anuncio (tipo, capacidad, zona); el hecho mide lo que cambia en cada foto (el precio de ese mes). Por eso el precio no está en `dim_listing`.
+- **Antelación (`dias_antelacion`).** Precalculada en `fact_calendar` para el pickup. La captura de un snapshot dura varios días (hasta ~12), así que la fecha nominal desplaza la antelación (máximo 377). Se usa la **fecha real de captura** de cada anuncio (`calendar_last_scraped`); para los 62.780 sin ella (anuncios que están en `calendar` pero no en `listings`) se estima con la primera fecha de su calendario y se marcan con `sin_fecha_captura`. Rango resultante: -1 a 364 (el -1 es un día por la zona horaria).
+- **Estrategia de escritura.** Dimensiones pequeñas derivadas: `overwrite` completo (barato y siempre coherente con silver). Hechos grandes: particionados por snapshot; hoy se reescriben enteros y queda como mejora la carga incremental con `replaceWhere`.
+- **`dim_zona`.** `assert` de que cada zona pertenece a un solo grupo: si no, las sumas por grupo se duplicarían. Hay más zonas que en un solo snapshot (215 y 71) porque algunas solo aparecen en ciertos meses.
+- **`dim_listing` y censura.** `primera_vez` es la primera vez que se **observa** el anuncio dentro de la ventana (agosto 2025 a junio 2026), no su fecha de alta. La rotación de Barcelona (12 % de anuncios en un solo snapshot) está inflada por los snapshots parciales.
+- **`dim_fecha`.** Tabla de fechas completa y sin huecos, con comprobación de que cubre todas las fechas de `fact_calendar`.
+
+**Errores y lecciones.**
+- Las variables del notebook (`Window`, `destino`...) desaparecen al reiniciar la sesión: tras un reinicio, primero la celda de imports y lecturas; un notebook debe poder ejecutarse de arriba abajo.
+- La fecha nominal de un snapshot no es la fecha de captura: comprobar el rango de la antelación por snapshot destapó el desfase.
+- Cuando falta un dato, la reserva debe ser la mejor inferencia posible (primera fecha del calendario), no una cifra peor, y se deja un flag.
+- Un recuento de silver igual al de bronze es la prueba de contenido más fuerte; los recuentos por snapshot además revelaron los parciales.
 
 ---
 
