@@ -1,0 +1,46 @@
+table dim_zona
+	lineageTag: 2d27bd7e-3128-43f9-8bb6-2ab5b32a9537
+	sourceLineageTag: [dbo].[dim_zona]
+
+	column ciudad
+		dataType: string
+		lineageTag: 8376419d-7318-4f1c-808f-48b475af8fe5
+		sourceLineageTag: ciudad
+		summarizeBy: none
+		sourceColumn: ciudad
+
+		annotation SummarizationSetBy = Automatic
+
+	column grupo
+		dataType: string
+		lineageTag: 641b49cf-c6c2-4ed4-9da0-f2b78fd56505
+		sourceLineageTag: grupo
+		summarizeBy: none
+		sourceColumn: grupo
+
+		annotation SummarizationSetBy = Automatic
+
+	column zona
+		dataType: string
+		lineageTag: 82b3fd69-8038-4fb2-b0be-f62486748a15
+		sourceLineageTag: zona
+		summarizeBy: none
+		sourceColumn: zona
+
+		annotation SummarizationSetBy = Automatic
+
+	column zona_id
+		dataType: string
+		lineageTag: ab41cce6-63fc-440c-9abe-185eda86c1ad
+		sourceLineageTag: zona_id
+		summarizeBy: none
+		sourceColumn: zona_id
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_zona = entity
+		mode: directLake
+		source
+			entityName: dim_zona
+			expressionSource: 'DirectLake - lh_gold'
+

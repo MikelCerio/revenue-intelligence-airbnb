@@ -1,0 +1,24 @@
+relationship fact_calendar_snapshot
+	fromColumn: fact_calendar.snapshot_id
+	toColumn: dim_snapshot.snapshot_id
+
+relationship fact_listing_snapshot_snapshot
+	fromColumn: fact_listing_snapshot.snapshot_id
+	toColumn: dim_snapshot.snapshot_id
+
+relationship fact_calendar_listing
+	fromColumn: fact_calendar.listing_id
+	toColumn: dim_listing.listing_id
+
+relationship fact_listing_snapshot_listing
+	fromColumn: fact_listing_snapshot.listing_id
+	toColumn: dim_listing.listing_id
+
+relationship dim_listing_zona
+	fromColumn: dim_listing.zona_id
+	toColumn: dim_zona.zona_id
+
+relationship fact_calendar_fecha
+	fromColumn: fact_calendar.fecha
+	toColumn: dim_fecha.fecha
+

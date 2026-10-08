@@ -1,0 +1,175 @@
+table fact_listing_snapshot
+	lineageTag: 6749dc35-41b4-44a5-80cd-0633fb07c99a
+	sourceLineageTag: [dbo].[fact_listing_snapshot]
+
+	/// Anuncios distintos en el contexto (snapshot, zona...).
+	measure Anuncios = DISTINCTCOUNT(fact_listing_snapshot[listing_id])
+		formatString: #,##0
+		displayFolder: Revenue
+		lineageTag: 5e9dd25a-2cea-49da-a47c-1bd915b8b6d0
+
+	/// Precio publicado mediano (en euros) de anuncios de corta estancia, con precio y sin el valor centinela 9999. Es precio publicado, no cobrado.
+	measure 'ADR mediano' = MEDIANX(FILTER(fact_listing_snapshot, fact_listing_snapshot[price_missing] = FALSE() && fact_listing_snapshot[price_outlier] = FALSE() && fact_listing_snapshot[is_long_stay] = FALSE()), fact_listing_snapshot[price_num])
+		formatString: #,##0.00
+		displayFolder: Revenue
+		lineageTag: c865222c-311f-4500-99fc-0cad80743e87
+
+	column listing_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 1e16e8ef-ac67-40b0-a155-3d99fc3ada0e
+		sourceLineageTag: listing_id
+		summarizeBy: sum
+		sourceColumn: listing_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column snapshot_id
+		dataType: string
+		lineageTag: 23ff66f7-dc6c-453f-a557-51b61744fc9d
+		sourceLineageTag: snapshot_id
+		summarizeBy: none
+		sourceColumn: snapshot_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_num
+		dataType: double
+		lineageTag: f985fabd-cc22-4c0f-b424-ea9bddacbb99
+		sourceLineageTag: price_num
+		summarizeBy: sum
+		sourceColumn: price_num
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column price_missing
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 3990ff8c-80e4-4d48-9f85-f2c720dbd1e8
+		sourceLineageTag: price_missing
+		summarizeBy: none
+		sourceColumn: price_missing
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_outlier
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 45d726bb-03c5-49d9-9f93-852c47e7faa7
+		sourceLineageTag: price_outlier
+		summarizeBy: none
+		sourceColumn: price_outlier
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_long_stay
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 591c8d07-09ce-4a6a-9a03-0238fc954ebb
+		sourceLineageTag: is_long_stay
+		summarizeBy: none
+		sourceColumn: is_long_stay
+
+		annotation SummarizationSetBy = Automatic
+
+	column minimum_nights
+		dataType: double
+		lineageTag: 692dc6f7-d6d5-4db3-b6ee-2c0c51394b85
+		sourceLineageTag: minimum_nights
+		summarizeBy: sum
+		sourceColumn: minimum_nights
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column availability_30
+		dataType: int64
+		formatString: 0
+		lineageTag: ca2b5e9d-160b-4b79-b787-011e50530ff9
+		sourceLineageTag: availability_30
+		summarizeBy: sum
+		sourceColumn: availability_30
+
+		annotation SummarizationSetBy = Automatic
+
+	column availability_60
+		dataType: int64
+		formatString: 0
+		lineageTag: f237b2f0-5979-41eb-b5da-7805909c2789
+		sourceLineageTag: availability_60
+		summarizeBy: sum
+		sourceColumn: availability_60
+
+		annotation SummarizationSetBy = Automatic
+
+	column availability_90
+		dataType: int64
+		formatString: 0
+		lineageTag: 4787917c-8e45-403f-aace-d739fe615744
+		sourceLineageTag: availability_90
+		summarizeBy: sum
+		sourceColumn: availability_90
+
+		annotation SummarizationSetBy = Automatic
+
+	column availability_365
+		dataType: int64
+		formatString: 0
+		lineageTag: 8bc7259c-fa6f-4eaf-874d-8f558f133add
+		sourceLineageTag: availability_365
+		summarizeBy: sum
+		sourceColumn: availability_365
+
+		annotation SummarizationSetBy = Automatic
+
+	column number_of_reviews
+		dataType: int64
+		formatString: 0
+		lineageTag: 593473f2-237d-4db5-bbad-b12df734d45e
+		sourceLineageTag: number_of_reviews
+		summarizeBy: sum
+		sourceColumn: number_of_reviews
+
+		annotation SummarizationSetBy = Automatic
+
+	column number_of_reviews_ltm
+		dataType: int64
+		formatString: 0
+		lineageTag: 97a13ecb-79cc-47b0-947c-b86774259534
+		sourceLineageTag: number_of_reviews_ltm
+		summarizeBy: sum
+		sourceColumn: number_of_reviews_ltm
+
+		annotation SummarizationSetBy = Automatic
+
+	column reviews_per_month
+		dataType: double
+		lineageTag: 196af417-464a-456d-a32f-457072237eee
+		sourceLineageTag: reviews_per_month
+		summarizeBy: sum
+		sourceColumn: reviews_per_month
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column review_scores_rating
+		dataType: double
+		lineageTag: 7de1c5e0-978d-4e3d-bb73-afbe28cf11fd
+		sourceLineageTag: review_scores_rating
+		summarizeBy: sum
+		sourceColumn: review_scores_rating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fact_listing_snapshot = entity
+		mode: directLake
+		source
+			entityName: fact_listing_snapshot
+			expressionSource: 'DirectLake - lh_gold'
+

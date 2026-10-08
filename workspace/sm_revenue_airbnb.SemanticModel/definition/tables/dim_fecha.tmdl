@@ -1,0 +1,79 @@
+table dim_fecha
+	lineageTag: afdcfcbe-701a-46d4-9902-6c65da2b1295
+	sourceLineageTag: [dbo].[dim_fecha]
+
+	column fecha
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 28f3d0a8-e08a-4d93-baae-06c6e7ba4b7e
+		sourceLineageTag: fecha
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+	column anio
+		dataType: int64
+		formatString: 0
+		lineageTag: c3f7c664-f809-49de-bad2-eb8ca1921f85
+		sourceLineageTag: anio
+		summarizeBy: sum
+		sourceColumn: anio
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes
+		dataType: int64
+		formatString: 0
+		lineageTag: c14a7e8e-c5e6-4705-8f4d-5e45107471cd
+		sourceLineageTag: mes
+		summarizeBy: sum
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column anio_mes
+		dataType: string
+		lineageTag: dc1b979b-bde0-4995-9b4e-b8dc1dca242b
+		sourceLineageTag: anio_mes
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column trimestre
+		dataType: int64
+		formatString: 0
+		lineageTag: 7cddb40b-a0ec-4331-b2a0-dfc238192035
+		sourceLineageTag: trimestre
+		summarizeBy: sum
+		sourceColumn: trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column dia_semana_iso
+		dataType: int64
+		formatString: 0
+		lineageTag: 95c54d39-0d79-443e-a9b8-6adbea62038a
+		sourceLineageTag: dia_semana_iso
+		summarizeBy: sum
+		sourceColumn: dia_semana_iso
+
+		annotation SummarizationSetBy = Automatic
+
+	column es_finde
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: e7f56b39-99a2-45af-b34b-cab490812629
+		sourceLineageTag: es_finde
+		summarizeBy: none
+		sourceColumn: es_finde
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_fecha = entity
+		mode: directLake
+		source
+			entityName: dim_fecha
+			expressionSource: 'DirectLake - lh_gold'
+

@@ -1,0 +1,199 @@
+table dim_listing
+	lineageTag: 7de1c885-69be-4b49-86fd-485f2cbfedab
+	sourceLineageTag: [dbo].[dim_listing]
+
+	column listing_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 8e30e639-dbc8-4a6f-babb-a94cc7883e31
+		sourceLineageTag: listing_id
+		summarizeBy: sum
+		sourceColumn: listing_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ciudad
+		dataType: string
+		lineageTag: 829689e9-c865-4a58-a5e5-542bdccef2ea
+		sourceLineageTag: ciudad
+		summarizeBy: none
+		sourceColumn: ciudad
+
+		annotation SummarizationSetBy = Automatic
+
+	column zona_id
+		dataType: string
+		lineageTag: 47c34d6c-7b7f-492d-867e-8bbbbd4ce927
+		sourceLineageTag: zona_id
+		summarizeBy: none
+		sourceColumn: zona_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column host_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 667121ed-f493-4091-a7c3-35ac1a1e6621
+		sourceLineageTag: host_id
+		summarizeBy: sum
+		sourceColumn: host_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column room_type
+		dataType: string
+		lineageTag: f7ac45d5-a795-4098-ac97-cc16be9cc772
+		sourceLineageTag: room_type
+		summarizeBy: none
+		sourceColumn: room_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column property_type
+		dataType: string
+		lineageTag: 4e1eca1c-dc6c-4f0d-8328-fb1faea9e4d2
+		sourceLineageTag: property_type
+		summarizeBy: none
+		sourceColumn: property_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column accommodates
+		dataType: int64
+		formatString: 0
+		lineageTag: 47adfdef-d233-42fc-b6fb-9ccf88453b70
+		sourceLineageTag: accommodates
+		summarizeBy: sum
+		sourceColumn: accommodates
+
+		annotation SummarizationSetBy = Automatic
+
+	column bedrooms
+		dataType: double
+		lineageTag: 656261db-bb92-4415-8e3f-d693cc87b610
+		sourceLineageTag: bedrooms
+		summarizeBy: sum
+		sourceColumn: bedrooms
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column beds
+		dataType: double
+		lineageTag: 91cb41c2-f3a7-4d7d-b479-4ef97ecaff48
+		sourceLineageTag: beds
+		summarizeBy: sum
+		sourceColumn: beds
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column bathrooms
+		dataType: double
+		lineageTag: de3bebf4-958d-49ca-8440-beacd5096480
+		sourceLineageTag: bathrooms
+		summarizeBy: sum
+		sourceColumn: bathrooms
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column latitude
+		dataType: double
+		lineageTag: fd1ab69c-59f2-45a2-8362-598d635ce436
+		sourceLineageTag: latitude
+		summarizeBy: sum
+		sourceColumn: latitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column longitude
+		dataType: double
+		lineageTag: d8e97179-295c-401a-9a75-c09bb3f20ce7
+		sourceLineageTag: longitude
+		summarizeBy: sum
+		sourceColumn: longitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column license_status
+		dataType: string
+		lineageTag: a191c5b3-9a8d-4268-ad40-2ce81f22e5ee
+		sourceLineageTag: license_status
+		summarizeBy: none
+		sourceColumn: license_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column exempt_type
+		dataType: string
+		lineageTag: 1bb634bf-5cc1-436a-a8eb-1d8f21f956f5
+		sourceLineageTag: exempt_type
+		summarizeBy: none
+		sourceColumn: exempt_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column host_is_superhost
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: d9bb117d-c4ce-460e-b4e9-9547fc3d4715
+		sourceLineageTag: host_is_superhost
+		summarizeBy: none
+		sourceColumn: host_is_superhost
+
+		annotation SummarizationSetBy = Automatic
+
+	column calculated_host_listings_count
+		dataType: int64
+		formatString: 0
+		lineageTag: c2525ad7-353f-4264-a03c-f4ed5a196d75
+		sourceLineageTag: calculated_host_listings_count
+		summarizeBy: sum
+		sourceColumn: calculated_host_listings_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column primera_vez
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 18dbec83-e387-4081-8c4e-0cc20df07177
+		sourceLineageTag: primera_vez
+		summarizeBy: none
+		sourceColumn: primera_vez
+
+		annotation SummarizationSetBy = Automatic
+
+	column ultima_vez
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 272e4920-1412-46ab-a7fd-e4039aa81375
+		sourceLineageTag: ultima_vez
+		summarizeBy: none
+		sourceColumn: ultima_vez
+
+		annotation SummarizationSetBy = Automatic
+
+	column n_snapshots
+		dataType: int64
+		formatString: 0
+		lineageTag: 5726ba1d-a36c-4d14-9c61-7822be14ee34
+		sourceLineageTag: n_snapshots
+		summarizeBy: sum
+		sourceColumn: n_snapshots
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_listing = entity
+		mode: directLake
+		source
+			entityName: dim_listing
+			expressionSource: 'DirectLake - lh_gold'
+

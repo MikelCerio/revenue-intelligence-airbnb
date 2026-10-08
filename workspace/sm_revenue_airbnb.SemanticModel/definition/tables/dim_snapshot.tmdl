@@ -1,0 +1,89 @@
+table dim_snapshot
+	lineageTag: 49c62d69-4ca6-4ca8-884f-7dacd76cf2e3
+	sourceLineageTag: [dbo].[dim_snapshot]
+
+	column snapshot_id
+		dataType: string
+		lineageTag: ac8a5432-003b-4023-9c96-b4f1e7eca506
+		sourceLineageTag: snapshot_id
+		summarizeBy: none
+		sourceColumn: snapshot_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ciudad
+		dataType: string
+		lineageTag: c1e551a8-6720-4c15-95fe-d18f1a7e42ca
+		sourceLineageTag: ciudad
+		summarizeBy: none
+		sourceColumn: ciudad
+
+		annotation SummarizationSetBy = Automatic
+
+	column snapshot_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f05269a6-da6c-423f-8807-13fba6379433
+		sourceLineageTag: snapshot_date
+		summarizeBy: none
+		sourceColumn: snapshot_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column n_anuncios
+		dataType: int64
+		formatString: 0
+		lineageTag: e9e3e382-dd61-4a1d-9a60-f461b211ba9e
+		sourceLineageTag: n_anuncios
+		summarizeBy: sum
+		sourceColumn: n_anuncios
+
+		annotation SummarizationSetBy = Automatic
+
+	column n_filas_calendar
+		dataType: int64
+		formatString: 0
+		lineageTag: 66c64aa5-8c4e-4ac5-8e99-b8a45d03565e
+		sourceLineageTag: n_filas_calendar
+		summarizeBy: sum
+		sourceColumn: n_filas_calendar
+
+		annotation SummarizationSetBy = Automatic
+
+	column mediana_ciudad
+		dataType: int64
+		formatString: 0
+		lineageTag: 7ea97092-cbd6-43b3-9260-e558b511a600
+		sourceLineageTag: mediana_ciudad
+		summarizeBy: sum
+		sourceColumn: mediana_ciudad
+
+		annotation SummarizationSetBy = Automatic
+
+	column ratio
+		dataType: double
+		lineageTag: 35b01b7e-6583-4d96-9005-3947a2418bb0
+		sourceLineageTag: ratio
+		summarizeBy: sum
+		sourceColumn: ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column es_completo
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 28a273ae-bfae-4d4d-9b6c-79a914400eb8
+		sourceLineageTag: es_completo
+		summarizeBy: none
+		sourceColumn: es_completo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_snapshot = entity
+		mode: directLake
+		source
+			entityName: dim_snapshot
+			expressionSource: 'DirectLake - lh_gold'
+

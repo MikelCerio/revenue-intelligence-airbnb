@@ -1,0 +1,91 @@
+table fact_calendar
+	lineageTag: 986d96cc-f3df-40cf-b148-a6616b548374
+	sourceLineageTag: [dbo].[fact_calendar]
+
+	/// Proporcion de noches NO disponibles en los 30 dias siguientes a la captura. Limite superior de la ocupacion real: 'no disponible' mezcla reservas, bloqueos y anuncios cerrados.
+	measure 'Ocupacion aprox 30d' = DIVIDE(CALCULATE(COUNTROWS(fact_calendar), fact_calendar[available] = FALSE(), fact_calendar[dias_antelacion] >= 0, fact_calendar[dias_antelacion] <= 29), CALCULATE(COUNTROWS(fact_calendar), fact_calendar[dias_antelacion] >= 0, fact_calendar[dias_antelacion] <= 29))
+		formatString: 0.0%
+		displayFolder: Revenue
+		lineageTag: b1fd4e22-a16b-493f-be03-4681dc88b192
+
+	/// ADR mediano por ocupacion aproximada a 30 dias. Indicador comparativo, no ingreso real.
+	measure 'RevPAR aprox 30d' = [ADR mediano] * [Ocupacion aprox 30d]
+		formatString: #,##0.00
+		displayFolder: Revenue
+		lineageTag: 33793ad5-c09a-4796-9c3d-9327bc144d7b
+
+	column listing_id
+		dataType: int64
+		formatString: 0
+		lineageTag: f0e265ca-1eef-4389-b077-20ef3836ba81
+		sourceLineageTag: listing_id
+		summarizeBy: sum
+		sourceColumn: listing_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column snapshot_id
+		dataType: string
+		lineageTag: 2358d1bb-e4b1-433e-89d1-3498ab0e715d
+		sourceLineageTag: snapshot_id
+		summarizeBy: none
+		sourceColumn: snapshot_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 3e27aacd-20b3-49a3-830d-1cbac643f20f
+		sourceLineageTag: fecha
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+	column available
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: b6d35133-1e37-494e-9ade-690f4eb5f68a
+		sourceLineageTag: available
+		summarizeBy: none
+		sourceColumn: available
+
+		annotation SummarizationSetBy = Automatic
+
+	column minimum_nights
+		dataType: int64
+		formatString: 0
+		lineageTag: 6bd596a5-940b-4a08-ae7f-2d192c3b1fdf
+		sourceLineageTag: minimum_nights
+		summarizeBy: sum
+		sourceColumn: minimum_nights
+
+		annotation SummarizationSetBy = Automatic
+
+	column dias_antelacion
+		dataType: int64
+		formatString: 0
+		lineageTag: 39298413-b379-4d78-b526-181aa65bd68f
+		sourceLineageTag: dias_antelacion
+		summarizeBy: sum
+		sourceColumn: dias_antelacion
+
+		annotation SummarizationSetBy = Automatic
+
+	column sin_fecha_captura
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 1abf8a9f-4008-41a4-be97-473581b8c688
+		sourceLineageTag: sin_fecha_captura
+		summarizeBy: none
+		sourceColumn: sin_fecha_captura
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_calendar = entity
+		mode: directLake
+		source
+			entityName: fact_calendar
+			expressionSource: 'DirectLake - lh_gold'
+
