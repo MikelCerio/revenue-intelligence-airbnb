@@ -14,6 +14,16 @@ table fact_listing_snapshot
 		displayFolder: Revenue
 		lineageTag: c865222c-311f-4500-99fc-0cad80743e87
 
+	/// Texto de aviso cuando la seleccion incluye snapshots sin precio en origen.
+	measure 'Nota precio' = IF(CALCULATE(COUNTROWS(dim_snapshot), dim_snapshot[tiene_precio] = FALSE()) > 0, "Hay snapshots sin precio publicado (dic 2025 a feb 2026): el ADR no se calcula", BLANK())
+		displayFolder: Avisos
+		lineageTag: 24c7e02c-fcb8-499e-a66f-1863e8946c04
+
+	/// Texto de aviso cuando la seleccion incluye snapshots incompletos.
+	measure 'Nota cobertura' = IF(CALCULATE(COUNTROWS(dim_snapshot), dim_snapshot[es_completo] = FALSE()) > 0, "Hay snapshots parciales (menos del 85 % de los anuncios habituales): comparar con cautela", BLANK())
+		displayFolder: Avisos
+		lineageTag: 21996067-987e-46e0-829f-a05dc8aa4598
+
 	column listing_id
 		dataType: int64
 		formatString: 0

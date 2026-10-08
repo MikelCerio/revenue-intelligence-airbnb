@@ -313,3 +313,30 @@ print("dim_fecha:", dim_fecha.count(), "filas | fechas de fact_calendar sin cubr
 # META   "language": "python",
 # META   "language_group": "synapse_pyspark"
 # META }
+
+# MARKDOWN ********************
+
+# ## 7h dim_snapshot con disponibilidad de precio
+# **Qué:** añado `pct_sin_precio` y `tiene_precio` (menos del 50 % de anuncios sin precio) a `dim_snapshot`.
+# **Por qué:** en dic-2025, ene-2026 y feb-2026 el precio no viene de origen; el informe debe poder avisarlo en vez de mostrar un ADR vacío sin explicación.
+# **Resultado esperado:** `tiene_precio = false` en los 6 snapshots de dic a feb (3 por ciudad); `true` en los demás.
+
+# CELL ********************
+
+precio = (listings.groupBy("ciudad", "snapshot_date")
+          .agg(F.round(F.avg(F.col("price_missing").cast("int")), 4).alias("pct_sin_precio")))
+
+snap3 = (con_snapshot_id(snap).join(precio, ["ciudad", "snapshot_date"])
+         .withColumn("tiene_precio", F.col("pct_sin_precio") < 0.5)
+         .select("snapshot_id", "ciudad", "snapshot_date", "n_anuncios", "n_filas_calendar",
+                 "mediana_ciudad", "ratio", "es_completo", "pct_sin_precio", "tiene_precio"))
+snap3.write.format("delta").mode("overwrite").option("overwriteSchema", "true").save(destino_gold)
+snap3.orderBy("ciudad", "snapshot_date").show(30, False)
+
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }

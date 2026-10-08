@@ -81,6 +81,19 @@ table dim_snapshot
 
 		annotation SummarizationSetBy = Automatic
 
+	column pct_sin_precio
+		dataType: double
+		formatString: 0.0%
+		lineageTag: 07060634-1088-428c-80a3-b05dc2083e28
+		summarizeBy: none
+		sourceColumn: pct_sin_precio
+
+	column tiene_precio
+		dataType: boolean
+		lineageTag: 783fcd2a-580c-4dd4-97c7-619beec523af
+		summarizeBy: none
+		sourceColumn: tiene_precio
+
 	partition dim_snapshot = entity
 		mode: directLake
 		source
