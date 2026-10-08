@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "d30080089feb0e8d099a",
   "position": {
-    "x": 330,
-    "y": 950,
+    "x": 380,
+    "y": 960,
     "z": 4,
-    "height": 100,
-    "width": 1560,
+    "height": 70,
+    "width": 1480,
     "tabOrder": 4
   },
   "visual": {
@@ -33,7 +33,29 @@
         }
       }
     },
-    "drillFilterOtherVisuals": true
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Aviso de precio'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
   },
   "filterConfig": {
     "filters": [

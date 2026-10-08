@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "6dbea4feb40eef483298",
   "position": {
-    "x": 9.4892915980230637,
-    "y": 289.42339373970344,
+    "x": 380,
+    "y": 120,
     "z": 1000,
-    "height": 280,
-    "width": 280,
+    "height": 190,
+    "width": 480,
     "tabOrder": 1000
   },
   "visual": {
@@ -52,6 +52,28 @@
         "isDefaultSort": true
       }
     },
-    "drillFilterOtherVisuals": true
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'RevPAR aproximado (30 días)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
   }
 }

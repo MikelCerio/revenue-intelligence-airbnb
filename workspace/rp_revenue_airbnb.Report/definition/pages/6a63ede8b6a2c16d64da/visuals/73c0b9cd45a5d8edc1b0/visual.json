@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "73c0b9cd45a5d8edc1b0",
   "position": {
-    "x": 9,
-    "y": 396,
+    "x": 40,
+    "y": 900,
     "z": 1,
-    "height": 386,
-    "width": 1028,
+    "height": 100,
+    "width": 1820,
     "tabOrder": 1
   },
   "visual": {
@@ -33,7 +33,29 @@
         }
       }
     },
-    "drillFilterOtherVisuals": true
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Aviso de cobertura'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
   },
   "filterConfig": {
     "filters": [

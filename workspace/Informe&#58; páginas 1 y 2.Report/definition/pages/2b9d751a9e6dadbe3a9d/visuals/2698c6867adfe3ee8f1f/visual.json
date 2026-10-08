@@ -1,0 +1,99 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "2698c6867adfe3ee8f1f",
+  "position": {
+    "x": 380,
+    "y": 560,
+    "z": 8000,
+    "height": 460,
+    "width": 1480,
+    "tabOrder": 8000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Cómo leer estas cifras",
+                    "textStyle": {
+                      "fontSize": "16pt",
+                      "color": "#1F3A5F",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "Left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Ocupación aproximada (30 días): proporción de noches no disponibles en los 30 días siguientes a cada captura. Es un límite superior de la ocupación real, porque \"no disponible\" mezcla reservas, bloqueos del propietario y anuncios cerrados.",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#1F2933"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "Left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "ADR mediano: precio publicado (no cobrado) de anuncios de corta estancia, con precio y sin el valor centinela 9999.",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#1F2933"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "Left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "RevPAR aproximado: ADR mediano por ocupación aproximada. Sirve para comparar zonas y meses, no es un ingreso real.",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#1F2933"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "Left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Límites del dato: no hay precio de diciembre de 2025 a febrero de 2026, algunos snapshots de Barcelona están incompletos, y desde marzo de 2026 el precio parece ser la cotización de una estancia concreta. Los avisos de arriba se activan solos cuando la selección los incluye.",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#1F2933"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "Left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Fuente: Inside Airbnb (CC BY 4.0).",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#6B7785"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "Left"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

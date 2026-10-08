@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "6b9f37d9054683eddcb3",
   "position": {
-    "x": 319.47281713344313,
-    "y": 289.42339373970344,
+    "x": 880,
+    "y": 120,
     "z": 2000,
-    "height": 280,
-    "width": 280,
+    "height": 190,
+    "width": 480,
     "tabOrder": 2000
   },
   "visual": {
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "fact_calendar.Ocupacion aprox 30d",
-              "nativeQueryRef": "Ocupacion aprox 30d"
+              "nativeQueryRef": "Ocupacion aprox 30d",
+              "format": "0.0%"
             }
           ]
         }
@@ -51,6 +52,28 @@
         "isDefaultSort": true
       }
     },
-    "drillFilterOtherVisuals": true
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Ocupación aproximada (30 días)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
   }
 }

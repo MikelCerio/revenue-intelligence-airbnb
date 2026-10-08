@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "f69899c90516a65547e4",
   "position": {
-    "x": 645.27182866556836,
-    "y": 289.42339373970344,
+    "x": 1380,
+    "y": 120,
     "z": 3000,
-    "height": 280,
-    "width": 280,
+    "height": 190,
+    "width": 480,
     "tabOrder": 3000
   },
   "visual": {
@@ -52,7 +52,29 @@
         "isDefaultSort": true
       }
     },
-    "drillFilterOtherVisuals": true
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ADR mediano (precio publicado)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
   },
   "filterConfig": {
     "filters": [
