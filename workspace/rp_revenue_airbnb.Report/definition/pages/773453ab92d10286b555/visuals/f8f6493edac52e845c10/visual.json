@@ -117,8 +117,7 @@
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
     "drillFilterOtherVisuals": true
