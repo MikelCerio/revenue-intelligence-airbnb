@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "ea4178c1f281f9626ae9",
+  "position": {
+    "x": 960,
+    "y": 596.24382207578253,
+    "z": 5000,
+    "height": 279.9341021416804,
+    "width": 733.83855024711693,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Nota cobertura"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Nota cobertura",
+              "nativeQueryRef": "Nota cobertura"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "1e75ad270273b6868e7a",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fact_listing_snapshot"
+              }
+            },
+            "Property": "Nota cobertura"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

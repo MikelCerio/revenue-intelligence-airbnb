@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Informe: páginas 1 y 2"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "3fe89003-7b15-93cc-4a71-b9daa46d08bc"
+  }
+}
