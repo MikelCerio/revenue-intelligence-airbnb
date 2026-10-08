@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "d30080089feb0e8d099a",
+  "position": {
+    "x": 330,
+    "y": 950,
+    "z": 4,
+    "height": 100,
+    "width": 1560,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Nota precio"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Nota precio",
+              "nativeQueryRef": "Nota precio"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "68d2239d09dbf0471f8b",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fact_listing_snapshot"
+              }
+            },
+            "Property": "Nota precio"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

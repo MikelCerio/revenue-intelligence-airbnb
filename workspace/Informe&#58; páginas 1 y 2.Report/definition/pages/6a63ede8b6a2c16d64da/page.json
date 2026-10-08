@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "6a63ede8b6a2c16d64da",
-  "displayName": "Página 2",
+  "displayName": "Estacionalidad",
   "displayOption": "FitToPage",
   "height": 1080,
   "width": 1920
