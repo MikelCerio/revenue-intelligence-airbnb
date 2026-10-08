@@ -22,7 +22,7 @@ Fabric  -> mismo flujo con Lakehouse+Pipeline (Paso 5)
 | 2 | Hecho | Exploración de `listings` y `calendar`; reglas de silver definidas |
 | 3 | Parte 1 hecha | Silver de `listings` (Euskadi 2026-06-30) en local; los 23 snapshots se harán en Fabric con PySpark |
 | 4 | Hecho | Modelo gold: 4 dimensiones y 2 hechos en `lh_gold` |
-| 5 | En curso | Workspace, Git, ingesta, silver de `listings` y `calendar` y gold hechos; faltan silver de reviews y geojson, modelo semántico y DAX |
+| 5 | En curso | Workspace, Git, ingesta, silver, gold y modelo semántico Direct Lake con medidas y avisos; falta silver de reviews y geojson |
 | 6 | Pendiente | Informe Power BI |
 
 ---
@@ -274,6 +274,33 @@ Silver `calendar` (23 particiones, **88.672.422 filas**, sin pérdidas respecto 
 - La fecha nominal de un snapshot no es la fecha de captura: comprobar el rango de la antelación por snapshot destapó el desfase.
 - Cuando falta un dato, la reserva debe ser la mejor inferencia posible (primera fecha del calendario), no una cifra peor, y se deja un flag.
 - Un recuento de silver igual al de bronze es la prueba de contenido más fuerte; los recuentos por snapshot además revelaron los parciales.
+
+---
+
+## Modelo semántico Direct Lake (`sm_revenue_airbnb`)
+
+Modelo sobre las 6 tablas de `lh_gold`, **Direct Lake**: lee las tablas Delta directamente, sin copiar datos ni refresco programado.
+
+**Relaciones** (todas muchos a uno, filtro en una sola dirección, de la dimensión al hecho): `fact_calendar` y `fact_listing_snapshot` con `dim_snapshot` por `snapshot_id`; los dos hechos con `dim_listing` por `listing_id`; `dim_listing` con `dim_zona` por `zona_id`; `fact_calendar` con `dim_fecha` por `fecha`. Verificado con una consulta que cruza dimensión y hecho: Euskadi 25.509.090 filas en 12 snapshots y Barcelona 63.163.332 en 11, iguales a los totales de silver.
+
+**Medidas** (carpeta Revenue):
+- `Ocupacion aprox 30d`: noches `available = false` entre noches totales, solo con `dias_antelacion` de 0 a 29. Una misma noche aparece en varios snapshots; mirar los 30 días siguientes a cada captura compara fotos del mismo horizonte. Es un límite superior de la ocupación real (`f` mezcla reservas, bloqueos y anuncios cerrados).
+- `ADR mediano`: mediana del precio publicado, sin precios nulos, sin el valor 9999 y sin larga estancia (los flags de silver). Es precio publicado, no cobrado.
+- `RevPAR aprox 30d`: ADR mediano por ocupación aproximada; indicador comparativo, no ingreso real.
+- `Anuncios`: anuncios distintos en el contexto.
+- Avisos (carpeta Avisos): `Nota precio` y `Nota cobertura` devuelven un texto solo cuando la selección incluye snapshots sin precio o parciales; se adaptan al filtro.
+
+**Primeros resultados** (último snapshot completo): Barcelona 2026-06-24, ocupación 66,6 %, ADR 252 € y RevPAR aprox. 167,9 €; Euskadi 2026-06-30, 69,3 %, 199,8 € y 138,4 €. La ocupación a 30 días de Euskadi muestra la estacionalidad: 76 % en julio de 2025, 36 % en diciembre y 69 % en junio de 2026.
+
+**Hallazgos sobre el precio.**
+- **Dic 2025, ene y feb 2026: 100 % de anuncios sin precio en bronze**, en las dos ciudades (origen, no un fallo del modelo). El ADR devuelve vacío, que es más honesto que 0 (un precio de 0 € diría "gratis"; vacío dice "no se sabe"). `dim_snapshot.tiene_precio` y `pct_sin_precio` lo marcan.
+- **Desde marzo 2026 aparecen columnas `price_quote_*`** con una fecha de check-in distinta en cada snapshot (de 6 a 45 días después de la captura). Hipótesis, no hecho: el precio pasa a ser la cotización de una estancia concreta, por lo que el ADR no es comparable con los meses anteriores. La mediana de Barcelona pasa de 113 € (nov) a 177 y 277 € (primavera), que no es el mercado sino, probablemente, un cambio de método. Se declara como limitación y no se compara el ADR entre ambos periodos.
+
+**Cosas aprendidas.**
+- Tras crear relaciones en un modelo Direct Lake hay que **refrescar** (reapunta a las tablas Delta, no copia datos); sin ello la consulta falla con "la relación debe recalcularse".
+- Un refresco **no añade columnas nuevas** de la tabla Delta: se declaran en el modelo (`pct_sin_precio`, `tiene_precio`). En Direct Lake no hay columnas calculadas sobre tablas del lakehouse, así que lo derivado va en gold.
+- La herramienta MCP de Power BI se autentica **por su cuenta** (no reutiliza la sesión abierta del navegador, por seguridad) y pide un inicio de sesión interactivo; la conexión caduca y hay que repetirla.
+- 31.390 filas de `fact_calendar` (0,04 %) corresponden a anuncios que nunca aparecen en `listings`: salen como "(en blanco)" en los análisis por zona.
 
 ---
 
