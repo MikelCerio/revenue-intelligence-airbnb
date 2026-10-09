@@ -24,6 +24,47 @@ table fact_listing_snapshot
 		displayFolder: Avisos
 		lineageTag: 21996067-987e-46e0-829f-a05dc8aa4598
 
+	/// Anuncios distintos con precio valido (corta estancia, sin precio vacio ni centinela 9999): la muestra real del ADR.
+	measure 'Anuncios con precio' = CALCULATE(DISTINCTCOUNT(fact_listing_snapshot[listing_id]), fact_listing_snapshot[price_missing] = FALSE(), fact_listing_snapshot[price_outlier] = FALSE(), fact_listing_snapshot[is_long_stay] = FALSE())
+		formatString: #,##0
+		displayFolder: Fiabilidad
+		lineageTag: 98df3524-8d8f-4999-a1c5-93d32f298bca
+
+	/// Nivel de fiabilidad segun anuncios: 1 = 100 o mas, 2 = 50 a 99, 3 = 30 a 49, 4 = menos de 30. Ver docs/auditoria-fiabilidad.md.
+	measure 'Orden fiabilidad' = VAR n = [Anuncios] RETURN IF(ISBLANK(n), BLANK(), IF(n >= 100, 1, IF(n >= 50, 2, IF(n >= 30, 3, 4))))
+		formatString: 0
+		displayFolder: Fiabilidad
+		lineageTag: 4e1fda56-f686-422b-ac75-9a08191e2905
+
+	/// Etiqueta del nivel de fiabilidad de la zona.
+	measure 'Nivel fiabilidad' = SWITCH([Orden fiabilidad], 1, "1 · Fiable (100 o más)", 2, "2 · Aceptable (50 a 99)", 3, "3 · Orientativo (30 a 49)", 4, "4 · No fiable (menos de 30)", BLANK())
+		displayFolder: Fiabilidad
+		lineageTag: f2ecfa00-5537-4379-a920-7cf1851dc1a9
+
+	/// Margen aproximado al 95 % de la ocupacion: 1,96 x 0,32 / raiz(anuncios). 0,32 es la desviacion tipica entre anuncios observada en junio de 2026.
+	measure 'Margen ocupacion' = IF([Anuncios] > 0, 1.96 * 0.32 / SQRT([Anuncios]), BLANK())
+		formatString: "±"0.0%
+		displayFolder: Fiabilidad
+		lineageTag: 0314c281-bb36-4748-ba20-f13531a8ff76
+
+	/// ADR mediano solo si hay 30 o mas anuncios con precio valido; si no, vacio.
+	measure 'ADR fiable' = IF([Anuncios con precio] >= 30, [ADR mediano], BLANK())
+		formatString: #,##0.00
+		displayFolder: Fiabilidad
+		lineageTag: d4af90b8-8f46-451f-937f-b9f70a557b1c
+
+	/// RevPAR aproximado solo si hay 30 o mas anuncios con precio valido; si no, vacio.
+	measure 'RevPAR fiable' = IF([Anuncios con precio] >= 30, [ADR mediano] * [Ocupacion aprox 30d], BLANK())
+		formatString: #,##0.00
+		displayFolder: Fiabilidad
+		lineageTag: 7a6a455a-d8d7-4976-b6d3-d84500dc4bca
+
+	/// Clave para ordenar: primero el nivel de fiabilidad y, dentro de cada nivel, de mayor a menor RevPAR. Ordenar de menor a mayor.
+	measure 'Clave orden' = [Orden fiabilidad] * 100000 - COALESCE([RevPAR fiable], 0)
+		formatString: 0
+		displayFolder: Fiabilidad
+		lineageTag: 18935519-1f94-4d8a-8d31-07bf037892c7
+
 	column listing_id
 		dataType: int64
 		formatString: 0

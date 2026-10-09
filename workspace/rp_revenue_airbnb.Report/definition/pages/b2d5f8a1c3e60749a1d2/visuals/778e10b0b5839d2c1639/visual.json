@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "6e4144ffc3754b3fcbf9",
+  "name": "778e10b0b5839d2c1639",
   "position": {
     "x": 1180,
     "y": 580,
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ocupación aproximada mes a mes (según el barrio elegido)'"
+                  "Value": "'Ocupación aproximada mes a mes (según el municipio elegido)'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "7ff087f784f3ffbf9d06",
+        "name": "da00b88f40c2113b3a4c",
         "field": {
           "Column": {
             "Expression": {
@@ -139,7 +139,7 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'barcelona'"
+                          "Value": "'euskadi'"
                         }
                       }
                     ]

@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "ccbc1066fd22f32ec8f4",
+  "name": "db4f35b76ebce0d947a2",
   "position": {
     "x": 1180,
     "y": 120,
@@ -17,6 +17,21 @@
           "projections": [
             {
               "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Nivel fiabilidad"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Nivel fiabilidad",
+              "nativeQueryRef": "Nivel fiabilidad",
+              "active": true
+            },
+            {
+              "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
@@ -27,8 +42,7 @@
                 }
               },
               "queryRef": "dim_zona.zona",
-              "nativeQueryRef": "zona",
-              "active": true
+              "nativeQueryRef": "zona"
             },
             {
               "field": {
@@ -68,11 +82,25 @@
                       "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "ADR mediano"
+                  "Property": "Margen ocupacion"
                 }
               },
-              "queryRef": "fact_listing_snapshot.ADR mediano",
-              "nativeQueryRef": "ADR mediano",
+              "queryRef": "fact_listing_snapshot.Margen ocupacion",
+              "nativeQueryRef": "Margen ocupacion"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "ADR fiable"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.ADR fiable",
+              "nativeQueryRef": "ADR fiable",
               "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
             },
             {
@@ -80,15 +108,30 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fact_calendar"
+                      "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "RevPAR aprox 30d"
+                  "Property": "RevPAR fiable"
                 }
               },
-              "queryRef": "fact_calendar.RevPAR aprox 30d",
-              "nativeQueryRef": "RevPAR aprox 30d",
+              "queryRef": "fact_listing_snapshot.RevPAR fiable",
+              "nativeQueryRef": "RevPAR fiable",
               "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Clave orden"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Clave orden",
+              "nativeQueryRef": "Clave orden",
+              "format": "0"
             }
           ]
         }
@@ -100,13 +143,13 @@
               "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "fact_calendar"
+                    "Entity": "fact_listing_snapshot"
                   }
                 },
-                "Property": "RevPAR aprox 30d"
+                "Property": "Clave orden"
               }
             },
-            "direction": "Descending"
+            "direction": "Ascending"
           }
         ],
         "isDefaultSort": false
@@ -126,7 +169,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Comparación por municipio (30 o más anuncios)'"
+                  "Value": "'Comparación por barrio: primero los más fiables (columna Orden = nivel y RevPAR)'"
                 }
               }
             }
@@ -139,7 +182,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "1f36a5164436f991dd17",
+        "name": "bd2dc0c03a5657363a5c",
         "field": {
           "Column": {
             "Expression": {
@@ -180,59 +223,11 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'euskadi'"
+                          "Value": "'barcelona'"
                         }
                       }
                     ]
                   ]
-                }
-              }
-            }
-          ]
-        }
-      },
-      {
-        "name": "e92d0610ad94dd6bf312",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fact_listing_snapshot"
-              }
-            },
-            "Property": "Anuncios"
-          }
-        },
-        "type": "Advanced",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "f",
-              "Entity": "fact_listing_snapshot",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "Comparison": {
-                  "ComparisonKind": 2,
-                  "Left": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Source": "f"
-                        }
-                      },
-                      "Property": "Anuncios"
-                    }
-                  },
-                  "Right": {
-                    "Literal": {
-                      "Value": "30L"
-                    }
-                  }
                 }
               }
             }

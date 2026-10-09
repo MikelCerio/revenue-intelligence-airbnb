@@ -32,7 +32,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Zonas · ranking por municipio o barrio (solo zonas con 30 o más anuncios)",
+                    "value": "Zonas · ranking por municipio o barrio (cuatro niveles de fiabilidad según el número de anuncios)",
                     "textStyle": {
                       "fontSize": "13pt",
                       "color": "#6B7785"
