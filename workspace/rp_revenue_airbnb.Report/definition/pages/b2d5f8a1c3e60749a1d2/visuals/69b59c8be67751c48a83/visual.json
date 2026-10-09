@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "e4773670c34ea7c6e61e",
+  "name": "69b59c8be67751c48a83",
   "position": {
-    "x": 1540,
+    "x": 1205,
     "y": 580,
-    "z": 4,
+    "z": 3,
     "height": 420,
-    "width": 340,
-    "tabOrder": 4
+    "width": 330,
+    "tabOrder": 3
   },
   "visual": {
     "visualType": "clusteredColumnChart",
@@ -39,15 +39,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fact_calendar"
+                      "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "Ocupacion aprox 30d"
+                  "Property": "Anuncios por mes"
                 }
               },
-              "queryRef": "fact_calendar.Ocupacion aprox 30d",
-              "nativeQueryRef": "Ocupacion aprox 30d",
-              "format": "0.0%"
+              "queryRef": "fact_listing_snapshot.Anuncios por mes",
+              "nativeQueryRef": "Anuncios por mes",
+              "format": "#,0"
             }
           ]
         }
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ocupación aproximada por temporada (según el municipio elegido)'"
+                  "Value": "'Anuncios por temporada'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "6b35efc4904087006a75",
+        "name": "2c187acf9b6babf58aa6",
         "field": {
           "Column": {
             "Expression": {
@@ -151,7 +151,7 @@
         }
       },
       {
-        "name": "bb9f1abf8f7da268a21f",
+        "name": "3e9043fe0483531ff24b",
         "field": {
           "Measure": {
             "Expression": {

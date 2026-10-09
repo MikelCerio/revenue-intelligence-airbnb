@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "1859343671265deaf7f3",
+  "name": "7b4c740ad217294d901c",
   "position": {
-    "x": 1540,
+    "x": 1550,
     "y": 580,
-    "z": 4,
+    "z": 3,
     "height": 420,
-    "width": 340,
-    "tabOrder": 4
+    "width": 330,
+    "tabOrder": 3
   },
   "visual": {
     "visualType": "clusteredColumnChart",
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ocupación aproximada por temporada (según el barrio elegido)'"
+                  "Value": "'Ocupación aproximada por temporada'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "156508a4c120332838c7",
+        "name": "32bbfafbee61ba6ed2d9",
         "field": {
           "Column": {
             "Expression": {
@@ -139,7 +139,7 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'barcelona'"
+                          "Value": "'euskadi'"
                         }
                       }
                     ]
@@ -151,7 +151,7 @@
         }
       },
       {
-        "name": "9e98de08d6d23151c115",
+        "name": "df7c48fdae3579146990",
         "field": {
           "Measure": {
             "Expression": {

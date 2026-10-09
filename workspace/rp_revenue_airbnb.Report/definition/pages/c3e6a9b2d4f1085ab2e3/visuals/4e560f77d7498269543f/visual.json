@@ -1,64 +1,39 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "e326da57846055e19732",
+  "name": "4e560f77d7498269543f",
   "position": {
-    "x": 1180,
-    "y": 120,
-    "z": 2,
-    "height": 440,
-    "width": 700,
-    "tabOrder": 2
+    "x": 1550,
+    "y": 580,
+    "z": 3,
+    "height": 420,
+    "width": 330,
+    "tabOrder": 3
   },
   "visual": {
-    "visualType": "tableEx",
+    "visualType": "clusteredColumnChart",
     "query": {
       "queryState": {
-        "Values": {
+        "Category": {
           "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fact_listing_snapshot"
-                    }
-                  },
-                  "Property": "Nivel fiabilidad"
-                }
-              },
-              "queryRef": "fact_listing_snapshot.Nivel fiabilidad",
-              "nativeQueryRef": "Nivel fiabilidad",
-              "active": true
-            },
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_zona"
+                      "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "zona"
+                  "Property": "temporada"
                 }
               },
-              "queryRef": "dim_zona.zona",
-              "nativeQueryRef": "zona"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fact_listing_snapshot"
-                    }
-                  },
-                  "Property": "Anuncios por mes"
-                }
-              },
-              "queryRef": "fact_listing_snapshot.Anuncios por mes",
-              "nativeQueryRef": "Anuncios por mes",
-              "format": "#,0"
-            },
+              "queryRef": "dim_snapshot.temporada",
+              "nativeQueryRef": "temporada",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
             {
               "field": {
                 "Measure": {
@@ -73,65 +48,6 @@
               "queryRef": "fact_calendar.Ocupacion aprox 30d",
               "nativeQueryRef": "Ocupacion aprox 30d",
               "format": "0.0%"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fact_listing_snapshot"
-                    }
-                  },
-                  "Property": "Margen ocupacion"
-                }
-              },
-              "queryRef": "fact_listing_snapshot.Margen ocupacion",
-              "nativeQueryRef": "Margen ocupacion"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fact_listing_snapshot"
-                    }
-                  },
-                  "Property": "ADR fiable"
-                }
-              },
-              "queryRef": "fact_listing_snapshot.ADR fiable",
-              "nativeQueryRef": "ADR fiable",
-              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fact_listing_snapshot"
-                    }
-                  },
-                  "Property": "RevPAR fiable"
-                }
-              },
-              "queryRef": "fact_listing_snapshot.RevPAR fiable",
-              "nativeQueryRef": "RevPAR fiable",
-              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fact_listing_snapshot"
-                    }
-                  },
-                  "Property": "Clave orden"
-                }
-              },
-              "queryRef": "fact_listing_snapshot.Clave orden",
-              "nativeQueryRef": "Clave orden",
-              "format": "0"
             }
           ]
         }
@@ -140,19 +56,19 @@
         "sort": [
           {
             "field": {
-              "Measure": {
+              "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "fact_listing_snapshot"
+                    "Entity": "dim_snapshot"
                   }
                 },
-                "Property": "Clave orden"
+                "Property": "temporada"
               }
             },
             "direction": "Ascending"
           }
         ],
-        "isDefaultSort": false
+        "isDefaultSort": true
       }
     },
     "visualContainerObjects": {
@@ -169,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Comparación por municipio: de más a menos fiable'"
+                  "Value": "'Ocupación aproximada por temporada'"
                 }
               }
             }
@@ -182,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "cd3d095c532b18d54d83",
+        "name": "9f239bfb6a9a2123cfc8",
         "field": {
           "Column": {
             "Expression": {
@@ -223,7 +139,7 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'euskadi'"
+                          "Value": "'barcelona'"
                         }
                       }
                     ]
@@ -235,7 +151,7 @@
         }
       },
       {
-        "name": "15b8fe2f4485e99264bf",
+        "name": "4c62fd216a0435797ddb",
         "field": {
           "Measure": {
             "Expression": {

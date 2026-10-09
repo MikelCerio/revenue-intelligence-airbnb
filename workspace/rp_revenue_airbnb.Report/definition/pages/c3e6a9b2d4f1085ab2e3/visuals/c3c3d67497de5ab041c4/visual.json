@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "a34d1e748a169ac05e6c",
+  "name": "c3c3d67497de5ab041c4",
   "position": {
     "x": 40,
     "y": 120,
     "z": 0,
-    "height": 880,
-    "width": 260,
+    "height": 90,
+    "width": 1840,
     "tabOrder": 0
   },
   "visual": {
@@ -64,6 +64,13 @@
       "general": [
         {
           "properties": {
+            "orientation": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
             "filter": {
               "filter": {
                 "Version": 2,
@@ -136,7 +143,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "a0bdd45a86e97d7f4556",
+        "name": "317e2e70b9435aaf2fd7",
         "field": {
           "Column": {
             "Expression": {
