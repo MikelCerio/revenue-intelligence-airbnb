@@ -14,6 +14,60 @@ table fact_calendar
 		displayFolder: Revenue
 		lineageTag: 33793ad5-c09a-4796-9c3d-9327bc144d7b
 
+	/// Minimo mensual de ocupacion aproximada: valor de cada snapshot dentro de la seleccion (por ejemplo una temporada); los meses sin dato se ignoran.
+	measure 'Ocupacion min' = MINX(VALUES(dim_snapshot[snapshot_date]), [Ocupacion aprox 30d])
+		formatString: 0.0%
+		displayFolder: Resumen por periodo
+		lineageTag: ab450eb1-f17c-4f42-9310-3b6627a91c66
+
+	/// Media mensual de ocupacion aproximada: valor de cada snapshot dentro de la seleccion (por ejemplo una temporada); los meses sin dato se ignoran.
+	measure 'Ocupacion media' = AVERAGEX(VALUES(dim_snapshot[snapshot_date]), [Ocupacion aprox 30d])
+		formatString: 0.0%
+		displayFolder: Resumen por periodo
+		lineageTag: f824e92b-de2a-4919-8e9a-b6b0c1965596
+
+	/// Maximo mensual de ocupacion aproximada: valor de cada snapshot dentro de la seleccion (por ejemplo una temporada); los meses sin dato se ignoran.
+	measure 'Ocupacion max' = MAXX(VALUES(dim_snapshot[snapshot_date]), [Ocupacion aprox 30d])
+		formatString: 0.0%
+		displayFolder: Resumen por periodo
+		lineageTag: d21cbfec-2bb4-4bee-b0a2-d17f9317fc7d
+
+	/// Minimo mensual de ADR mediano: valor de cada snapshot dentro de la seleccion (por ejemplo una temporada); los meses sin dato se ignoran.
+	measure 'ADR min' = MINX(VALUES(dim_snapshot[snapshot_date]), [ADR mediano])
+		formatString: #,##0.00
+		displayFolder: Resumen por periodo
+		lineageTag: 751a9f59-eb21-4eed-8319-9eb1150b8746
+
+	/// Media mensual de ADR mediano: valor de cada snapshot dentro de la seleccion (por ejemplo una temporada); los meses sin dato se ignoran.
+	measure 'ADR media' = AVERAGEX(VALUES(dim_snapshot[snapshot_date]), [ADR mediano])
+		formatString: #,##0.00
+		displayFolder: Resumen por periodo
+		lineageTag: 8a692438-336c-4457-852c-15aca087374f
+
+	/// Maximo mensual de ADR mediano: valor de cada snapshot dentro de la seleccion (por ejemplo una temporada); los meses sin dato se ignoran.
+	measure 'ADR max' = MAXX(VALUES(dim_snapshot[snapshot_date]), [ADR mediano])
+		formatString: #,##0.00
+		displayFolder: Resumen por periodo
+		lineageTag: 7690bf02-d6f8-4b2b-bd56-79b24247d5e3
+
+	/// Minimo mensual de RevPAR aproximado: valor de cada snapshot dentro de la seleccion (por ejemplo una temporada); los meses sin dato se ignoran.
+	measure 'RevPAR min' = MINX(VALUES(dim_snapshot[snapshot_date]), [RevPAR aprox 30d])
+		formatString: #,##0.00
+		displayFolder: Resumen por periodo
+		lineageTag: aa2814d3-4792-471d-9ab4-209c91751892
+
+	/// Media mensual de RevPAR aproximado: valor de cada snapshot dentro de la seleccion (por ejemplo una temporada); los meses sin dato se ignoran.
+	measure 'RevPAR media' = AVERAGEX(VALUES(dim_snapshot[snapshot_date]), [RevPAR aprox 30d])
+		formatString: #,##0.00
+		displayFolder: Resumen por periodo
+		lineageTag: 89dba81a-02a4-474c-acc2-230943b0c068
+
+	/// Maximo mensual de RevPAR aproximado: valor de cada snapshot dentro de la seleccion (por ejemplo una temporada); los meses sin dato se ignoran.
+	measure 'RevPAR max' = MAXX(VALUES(dim_snapshot[snapshot_date]), [RevPAR aprox 30d])
+		formatString: #,##0.00
+		displayFolder: Resumen por periodo
+		lineageTag: 9b8d08cc-a525-457f-8d9b-8d2a5bed3288
+
 	column listing_id
 		dataType: int64
 		formatString: 0
