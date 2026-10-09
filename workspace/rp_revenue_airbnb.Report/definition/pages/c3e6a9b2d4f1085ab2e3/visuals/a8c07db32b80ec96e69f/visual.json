@@ -1,39 +1,49 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "53044f91821cf969210d",
+  "name": "a8c07db32b80ec96e69f",
   "position": {
-    "x": 1205,
-    "y": 580,
-    "z": 3,
-    "height": 420,
-    "width": 330,
-    "tabOrder": 3
+    "x": 840,
+    "y": 230,
+    "z": 2,
+    "height": 770,
+    "width": 620,
+    "tabOrder": 2
   },
   "visual": {
-    "visualType": "clusteredColumnChart",
+    "visualType": "tableEx",
     "query": {
       "queryState": {
-        "Category": {
+        "Values": {
           "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Nivel fiabilidad"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Nivel fiabilidad",
+              "nativeQueryRef": "Nivel fiabilidad",
+              "active": true
+            },
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_snapshot"
+                      "Entity": "dim_zona"
                     }
                   },
-                  "Property": "temporada"
+                  "Property": "zona"
                 }
               },
-              "queryRef": "dim_snapshot.temporada",
-              "nativeQueryRef": "temporada",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
+              "queryRef": "dim_zona.zona",
+              "nativeQueryRef": "zona"
+            },
             {
               "field": {
                 "Measure": {
@@ -48,6 +58,80 @@
               "queryRef": "fact_listing_snapshot.Anuncios por mes",
               "nativeQueryRef": "Anuncios por mes",
               "format": "#,0"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_calendar"
+                    }
+                  },
+                  "Property": "Ocupacion aprox 30d"
+                }
+              },
+              "queryRef": "fact_calendar.Ocupacion aprox 30d",
+              "nativeQueryRef": "Ocupacion aprox 30d",
+              "format": "0.0%"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Margen ocupacion"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Margen ocupacion",
+              "nativeQueryRef": "Margen ocupacion"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "ADR fiable"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.ADR fiable",
+              "nativeQueryRef": "ADR fiable",
+              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "RevPAR fiable"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.RevPAR fiable",
+              "nativeQueryRef": "RevPAR fiable",
+              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Clave orden"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Clave orden",
+              "nativeQueryRef": "Clave orden",
+              "format": "0"
             }
           ]
         }
@@ -56,19 +140,19 @@
         "sort": [
           {
             "field": {
-              "Column": {
+              "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "dim_snapshot"
+                    "Entity": "fact_listing_snapshot"
                   }
                 },
-                "Property": "temporada"
+                "Property": "Clave orden"
               }
             },
             "direction": "Ascending"
           }
         ],
-        "isDefaultSort": true
+        "isDefaultSort": false
       }
     },
     "visualContainerObjects": {
@@ -85,7 +169,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Anuncios por temporada'"
+                  "Value": "'Ranking por barrio, de más a menos fiable · pulsa una fila para verlo en el mapa'"
                 }
               }
             }
@@ -98,7 +182,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "57561ecb8467f2b2b546",
+        "name": "fcd8a5c2547e81e81980",
         "field": {
           "Column": {
             "Expression": {
@@ -151,7 +235,7 @@
         }
       },
       {
-        "name": "ddb783413939768dfd11",
+        "name": "4f369dd0ffe4b2d494a2",
         "field": {
           "Measure": {
             "Expression": {

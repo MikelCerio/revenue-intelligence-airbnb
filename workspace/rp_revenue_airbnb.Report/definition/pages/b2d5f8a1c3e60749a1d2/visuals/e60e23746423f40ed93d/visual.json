@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "4e560f77d7498269543f",
+  "name": "e60e23746423f40ed93d",
   "position": {
-    "x": 1550,
-    "y": 580,
+    "x": 1480,
+    "y": 500,
     "z": 3,
-    "height": 420,
-    "width": 330,
+    "height": 230,
+    "width": 400,
     "tabOrder": 3
   },
   "visual": {
@@ -39,15 +39,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fact_calendar"
+                      "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "Ocupacion aprox 30d"
+                  "Property": "Anuncios por mes"
                 }
               },
-              "queryRef": "fact_calendar.Ocupacion aprox 30d",
-              "nativeQueryRef": "Ocupacion aprox 30d",
-              "format": "0.0%"
+              "queryRef": "fact_listing_snapshot.Anuncios por mes",
+              "nativeQueryRef": "Anuncios por mes",
+              "format": "#,0"
             }
           ]
         }
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ocupación aproximada por temporada'"
+                  "Value": "'Anuncios por temporada'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "9f239bfb6a9a2123cfc8",
+        "name": "0b3ca44c8d201ecbacc2",
         "field": {
           "Column": {
             "Expression": {
@@ -139,7 +139,7 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'barcelona'"
+                          "Value": "'euskadi'"
                         }
                       }
                     ]
@@ -151,7 +151,7 @@
         }
       },
       {
-        "name": "4c62fd216a0435797ddb",
+        "name": "5e30a0f5e49d2e191be0",
         "field": {
           "Measure": {
             "Expression": {

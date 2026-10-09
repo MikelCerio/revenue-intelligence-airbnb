@@ -1,16 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "69b59c8be67751c48a83",
+  "name": "70c7e363ef4de679a15d",
   "position": {
-    "x": 1205,
-    "y": 580,
+    "x": 1480,
+    "y": 230,
     "z": 3,
-    "height": 420,
-    "width": 330,
+    "height": 230,
+    "width": 400,
     "tabOrder": 3
   },
   "visual": {
-    "visualType": "clusteredColumnChart",
+    "visualType": "lineChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,11 +23,11 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "temporada"
+                  "Property": "snapshot_date"
                 }
               },
-              "queryRef": "dim_snapshot.temporada",
-              "nativeQueryRef": "temporada",
+              "queryRef": "dim_snapshot.snapshot_date",
+              "nativeQueryRef": "snapshot_date",
               "active": true
             }
           ]
@@ -62,7 +62,7 @@
                     "Entity": "dim_snapshot"
                   }
                 },
-                "Property": "temporada"
+                "Property": "snapshot_date"
               }
             },
             "direction": "Ascending"
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Anuncios por temporada'"
+                  "Value": "'Anuncios por mes (según el municipio elegido)'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "2c187acf9b6babf58aa6",
+        "name": "1bbc6545aa9bc945b317",
         "field": {
           "Column": {
             "Expression": {
@@ -151,7 +151,7 @@
         }
       },
       {
-        "name": "3e9043fe0483531ff24b",
+        "name": "c4eb972874481b912cf8",
         "field": {
           "Measure": {
             "Expression": {
