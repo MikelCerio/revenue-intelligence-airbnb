@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "fafb3c355ec557245f2b",
+  "name": "e326da57846055e19732",
   "position": {
     "x": 1180,
     "y": 120,
@@ -52,11 +52,11 @@
                       "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "Anuncios"
+                  "Property": "Anuncios por mes"
                 }
               },
-              "queryRef": "fact_listing_snapshot.Anuncios",
-              "nativeQueryRef": "Anuncios",
+              "queryRef": "fact_listing_snapshot.Anuncios por mes",
+              "nativeQueryRef": "Anuncios por mes",
               "format": "#,0"
             },
             {
@@ -169,7 +169,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Comparación por municipio: primero los más fiables (columna Orden = nivel y RevPAR)'"
+                  "Value": "'Comparación por municipio: de más a menos fiable'"
                 }
               }
             }
@@ -182,7 +182,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "6be902f2a781eea69277",
+        "name": "cd3d095c532b18d54d83",
         "field": {
           "Column": {
             "Expression": {
@@ -228,6 +228,54 @@
                       }
                     ]
                   ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "15b8fe2f4485e99264bf",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fact_listing_snapshot"
+              }
+            },
+            "Property": "Orden fiabilidad"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "f",
+              "Entity": "fact_listing_snapshot",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "ComparisonKind": 4,
+                  "Left": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "f"
+                        }
+                      },
+                      "Property": "Orden fiabilidad"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "3L"
+                    }
+                  }
                 }
               }
             }

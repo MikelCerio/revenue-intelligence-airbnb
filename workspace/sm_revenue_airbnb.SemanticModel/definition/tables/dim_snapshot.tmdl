@@ -94,6 +94,12 @@ table dim_snapshot
 		summarizeBy: none
 		sourceColumn: tiene_precio
 
+	column temporada
+		dataType: string
+		lineageTag: 76a13df9-f8a5-415d-b096-26116039d727
+		summarizeBy: none
+		sourceColumn: temporada
+
 	partition dim_snapshot = entity
 		mode: directLake
 		source

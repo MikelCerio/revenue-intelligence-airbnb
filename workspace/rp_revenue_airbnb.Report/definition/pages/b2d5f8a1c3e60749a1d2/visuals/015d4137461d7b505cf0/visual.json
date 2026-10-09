@@ -1,16 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "8f77584907481a928e9d",
+  "name": "015d4137461d7b505cf0",
   "position": {
     "x": 1180,
     "y": 580,
     "z": 3,
     "height": 420,
-    "width": 700,
+    "width": 340,
     "tabOrder": 3
   },
   "visual": {
-    "visualType": "lineChart",
+    "visualType": "clusteredColumnChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,11 +23,11 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "snapshot_date"
+                  "Property": "temporada"
                 }
               },
-              "queryRef": "dim_snapshot.snapshot_date",
-              "nativeQueryRef": "snapshot_date",
+              "queryRef": "dim_snapshot.temporada",
+              "nativeQueryRef": "temporada",
               "active": true
             }
           ]
@@ -39,15 +39,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fact_calendar"
+                      "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "Ocupacion aprox 30d"
+                  "Property": "Anuncios por mes"
                 }
               },
-              "queryRef": "fact_calendar.Ocupacion aprox 30d",
-              "nativeQueryRef": "Ocupacion aprox 30d",
-              "format": "0.0%"
+              "queryRef": "fact_listing_snapshot.Anuncios por mes",
+              "nativeQueryRef": "Anuncios por mes",
+              "format": "#,0"
             }
           ]
         }
@@ -62,7 +62,7 @@
                     "Entity": "dim_snapshot"
                   }
                 },
-                "Property": "snapshot_date"
+                "Property": "temporada"
               }
             },
             "direction": "Ascending"
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ocupación aproximada mes a mes (según el barrio elegido)'"
+                  "Value": "'Anuncios por temporada (según el municipio elegido)'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "2e35fd6c6c784a56061d",
+        "name": "039a8268edffbaee2533",
         "field": {
           "Column": {
             "Expression": {
@@ -139,11 +139,59 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'barcelona'"
+                          "Value": "'euskadi'"
                         }
                       }
                     ]
                   ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "9c51c1f6fef9eab1c2b6",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fact_listing_snapshot"
+              }
+            },
+            "Property": "Orden fiabilidad"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "f",
+              "Entity": "fact_listing_snapshot",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "ComparisonKind": 4,
+                  "Left": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "f"
+                        }
+                      },
+                      "Property": "Orden fiabilidad"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "3L"
+                    }
+                  }
                 }
               }
             }

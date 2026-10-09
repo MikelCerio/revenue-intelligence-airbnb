@@ -66,11 +66,11 @@
                       "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "Anuncios"
+                  "Property": "Anuncios por mes"
                 }
               },
-              "queryRef": "fact_listing_snapshot.Anuncios",
-              "nativeQueryRef": "Anuncios",
+              "queryRef": "fact_listing_snapshot.Anuncios por mes",
+              "nativeQueryRef": "Anuncios por mes",
               "format": "#,0"
             },
             {
@@ -194,6 +194,55 @@
     }
   },
   "filterConfig": {
-    "filters": []
+    "filters": [
+      {
+        "name": "e5f6a7b8c9d0e1f2a3b4",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fact_listing_snapshot"
+              }
+            },
+            "Property": "Orden fiabilidad"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "f",
+              "Entity": "fact_listing_snapshot",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "ComparisonKind": 4,
+                  "Left": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "f"
+                        }
+                      },
+                      "Property": "Orden fiabilidad"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "3L"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
   }
 }

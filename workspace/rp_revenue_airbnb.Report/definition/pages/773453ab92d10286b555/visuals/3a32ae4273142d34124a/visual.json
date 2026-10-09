@@ -23,33 +23,15 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "snapshot_date"
+                  "Property": "temporada"
                 }
               },
-              "queryRef": "dim_snapshot.snapshot_date",
-              "nativeQueryRef": "snapshot_date",
+              "queryRef": "dim_snapshot.temporada",
+              "nativeQueryRef": "temporada",
               "active": true
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_snapshot"
-                  }
-                },
-                "Property": "snapshot_date"
-              }
-            },
-            "direction": "Ascending"
-          }
-        ],
-        "isDefaultSort": true
       }
     },
     "objects": {
@@ -91,7 +73,7 @@
                                   "Source": "d"
                                 }
                               },
-                              "Property": "snapshot_date"
+                              "Property": "temporada"
                             }
                           }
                         ],
@@ -99,7 +81,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "datetime'2026-06-30T00:00:00'"
+                                "Value": "'2 · Verano'"
                               }
                             }
                           ]
@@ -162,7 +144,7 @@
                 "Entity": "dim_snapshot"
               }
             },
-            "Property": "snapshot_date"
+            "Property": "temporada"
           }
         },
         "type": "Categorical"

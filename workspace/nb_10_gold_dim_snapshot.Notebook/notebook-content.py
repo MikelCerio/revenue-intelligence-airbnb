@@ -344,25 +344,20 @@ snap3.orderBy("ciudad", "snapshot_date").show(30, False)
 # MARKDOWN ********************
 
 # ## 7i dim_snapshot con temporada
-# **Qué:** añado `temporada` (invierno, primavera, verano, otoño) y `temporada_orden` a `dim_snapshot`, según el mes del snapshot.
+# **Qué:** añado `temporada` a `dim_snapshot` según el mes del snapshot, con un número delante para que se ordene bien: 1 · Primavera, 2 · Verano, 3 · Otoño, 4 · Invierno.
 # **Por qué:** permite al informe comparar la ocupación por estación. La ocupación mira los 30 días siguientes a la captura, así que la estación del snapshot es una aproximación de la estación de las noches medidas. Con 12 meses de datos hay una sola vez cada estación: se compara entre estaciones, no entre años.
-# **Resultado esperado:** 23 filas; dic-feb = invierno, mar-may = primavera, jun-ago = verano, sep-nov = otoño. `temporada_orden` va de 1 (primavera) a 4 (invierno) para ordenar de forma natural.
+# **Resultado esperado:** 23 filas; dic-feb = invierno, mar-may = primavera, jun-ago = verano, sep-nov = otoño.
 
 # CELL ********************
 
 mes = F.month("snapshot_date")
-snap4 = (snap3
-         .withColumn("temporada", F.when(mes.isin(12, 1, 2), "invierno")
-                                   .when(mes.isin(3, 4, 5), "primavera")
-                                   .when(mes.isin(6, 7, 8), "verano")
-                                   .otherwise("otoño"))
-         .withColumn("temporada_orden", F.when(mes.isin(3, 4, 5), 1)
-                                         .when(mes.isin(6, 7, 8), 2)
-                                         .when(mes.isin(9, 10, 11), 3)
-                                         .otherwise(4)))
+snap4 = snap3.withColumn("temporada", F.when(mes.isin(3, 4, 5), "1 · Primavera")
+                                       .when(mes.isin(6, 7, 8), "2 · Verano")
+                                       .when(mes.isin(9, 10, 11), "3 · Otoño")
+                                       .otherwise("4 · Invierno"))
 assert snap4.count() == 23 and snap4.filter(F.col("temporada").isNull()).count() == 0
 snap4.write.format("delta").mode("overwrite").option("overwriteSchema", "true").save(destino_gold)
-snap4.orderBy("ciudad", "snapshot_date").select("ciudad", "snapshot_date", "temporada", "temporada_orden").show(30, False)
+snap4.orderBy("ciudad", "snapshot_date").select("ciudad", "snapshot_date", "temporada").show(30, False)
 
 # METADATA ********************
 

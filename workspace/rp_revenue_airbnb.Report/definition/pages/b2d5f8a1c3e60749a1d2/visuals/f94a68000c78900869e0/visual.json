@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "f607000a9702276afd77",
+  "name": "f94a68000c78900869e0",
   "position": {
     "x": 320,
     "y": 120,
@@ -75,11 +75,11 @@
                       "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "Anuncios"
+                  "Property": "Anuncios por mes"
                 }
               },
-              "queryRef": "fact_listing_snapshot.Anuncios",
-              "nativeQueryRef": "Anuncios",
+              "queryRef": "fact_listing_snapshot.Anuncios por mes",
+              "nativeQueryRef": "Anuncios por mes",
               "format": "#,0"
             },
             {
@@ -177,7 +177,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'RevPAR aproximado por municipio (solo con 30 o más anuncios con precio) · pulsa un municipio, Ctrl para comparar'"
+                  "Value": "'RevPAR aproximado por municipio (zonas con 30 o más anuncios) · pulsa un municipio, Ctrl para comparar'"
                 }
               }
             }
@@ -190,7 +190,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "85db0c1f8f35a7365b89",
+        "name": "88a7aec7a1dbb49eff09",
         "field": {
           "Column": {
             "Expression": {
@@ -236,6 +236,54 @@
                       }
                     ]
                   ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "8e7ae0cbbb16ab38c97d",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fact_listing_snapshot"
+              }
+            },
+            "Property": "Orden fiabilidad"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "f",
+              "Entity": "fact_listing_snapshot",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "ComparisonKind": 4,
+                  "Left": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "f"
+                        }
+                      },
+                      "Property": "Orden fiabilidad"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "3L"
+                    }
+                  }
                 }
               }
             }
