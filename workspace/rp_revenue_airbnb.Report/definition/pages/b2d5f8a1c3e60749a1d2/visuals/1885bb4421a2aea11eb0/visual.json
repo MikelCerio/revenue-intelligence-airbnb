@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "d46a6976935d3ee1be0c",
+  "name": "1885bb4421a2aea11eb0",
   "position": {
-    "x": 380,
+    "x": 1450,
     "y": 120,
-    "z": 1,
+    "z": 3,
     "height": 880,
-    "width": 720,
-    "tabOrder": 1
+    "width": 520,
+    "tabOrder": 3
   },
   "visual": {
     "visualType": "shapeMap",
@@ -116,7 +116,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Euskadi · RevPAR aproximado por municipio'"
+                  "Value": "'RevPAR aproximado por municipio'"
                 }
               }
             }
@@ -129,7 +129,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "620b0e67d3cf473930d2",
+        "name": "04a9b622754a0522d55c",
         "field": {
           "Column": {
             "Expression": {

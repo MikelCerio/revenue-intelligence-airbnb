@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "d196f092a74c1971b230",
+  "name": "6f9360a2d64e70626d38",
   "position": {
-    "x": 1120,
+    "x": 1450,
     "y": 120,
-    "z": 2,
+    "z": 3,
     "height": 880,
-    "width": 720,
-    "tabOrder": 2
+    "width": 520,
+    "tabOrder": 3
   },
   "visual": {
     "visualType": "shapeMap",
@@ -116,7 +116,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Barcelona · RevPAR aproximado por barrio'"
+                  "Value": "'RevPAR aproximado por barrio'"
                 }
               }
             }
@@ -129,7 +129,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "5a022105f4dba2fb1039",
+        "name": "6b1959c9a164721aea5c",
         "field": {
           "Column": {
             "Expression": {
