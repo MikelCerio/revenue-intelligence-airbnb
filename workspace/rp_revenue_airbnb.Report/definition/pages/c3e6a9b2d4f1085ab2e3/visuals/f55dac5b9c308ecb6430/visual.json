@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "6f9360a2d64e70626d38",
+  "name": "f55dac5b9c308ecb6430",
   "position": {
-    "x": 1450,
+    "x": 320,
     "y": 120,
-    "z": 3,
+    "z": 1,
     "height": 880,
-    "width": 520,
-    "tabOrder": 3
+    "width": 840,
+    "tabOrder": 1
   },
   "visual": {
     "visualType": "shapeMap",
@@ -46,7 +46,57 @@
                 }
               },
               "queryRef": "fact_calendar.RevPAR aprox 30d",
-              "nativeQueryRef": "RevPAR aprox 30d"
+              "nativeQueryRef": "RevPAR aprox 30d",
+              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+            }
+          ]
+        },
+        "Tooltips": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_calendar"
+                    }
+                  },
+                  "Property": "Ocupacion aprox 30d"
+                }
+              },
+              "queryRef": "fact_calendar.Ocupacion aprox 30d",
+              "nativeQueryRef": "Ocupacion aprox 30d",
+              "format": "0.0%"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "ADR mediano"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.ADR mediano",
+              "nativeQueryRef": "ADR mediano",
+              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Anuncios"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Anuncios",
+              "nativeQueryRef": "Anuncios",
+              "format": "#,0"
             }
           ]
         }
@@ -83,23 +133,6 @@
             }
           }
         }
-      ],
-      "dataPoint": [
-        {
-          "properties": {
-            "fill": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#1F3A5F'"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
       ]
     },
     "visualContainerObjects": {
@@ -116,7 +149,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'RevPAR aproximado por barrio'"
+                  "Value": "'RevPAR aproximado por barrio · pulsa un barrio (Ctrl para comparar varios)'"
                 }
               }
             }
@@ -129,7 +162,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "6b1959c9a164721aea5c",
+        "name": "4f1f1c009d2b723c12ad",
         "field": {
           "Column": {
             "Expression": {
@@ -175,6 +208,54 @@
                       }
                     ]
                   ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "f26ab4d653bee3457d97",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fact_listing_snapshot"
+              }
+            },
+            "Property": "Anuncios"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "f",
+              "Entity": "fact_listing_snapshot",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "ComparisonKind": 2,
+                  "Left": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "f"
+                        }
+                      },
+                      "Property": "Anuncios"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "30L"
+                    }
+                  }
                 }
               }
             }

@@ -4,5 +4,12 @@
   "displayName": "Mapa Euskadi",
   "displayOption": "FitToPage",
   "height": 1080,
-  "width": 1920
+  "width": 1920,
+  "visualInteractions": [
+    {
+      "source": "c050ae950b62cad2e31b",
+      "target": "41cd9feb8ef2a03c0c38",
+      "type": "NoFilter"
+    }
+  ]
 }

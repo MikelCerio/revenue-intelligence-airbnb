@@ -4,5 +4,12 @@
   "displayName": "Mapa Barcelona",
   "displayOption": "FitToPage",
   "height": 1080,
-  "width": 1920
+  "width": 1920,
+  "visualInteractions": [
+    {
+      "source": "1a81968bd07b82fcd8c2",
+      "target": "6e4144ffc3754b3fcbf9",
+      "type": "NoFilter"
+    }
+  ]
 }
