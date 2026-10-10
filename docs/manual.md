@@ -304,6 +304,45 @@ Modelo sobre las 6 tablas de `lh_gold`, **Direct Lake**: lee las tablas Delta di
 
 ---
 
+## Informe de Power BI, mapas y fiabilidad por zona
+
+**Informe `rp_revenue_airbnb`** (formato PBIR, en `workspace/`). Tema propio "Revenue Sobrio" (azul marino, fondo gris claro), páginas generadas con scripts para poder reproducirlas:
+- **Resumen**, **Estacionalidad** y **Zonas** (ranking por municipio o barrio).
+- **Mapa Euskadi** y **Mapa Barcelona**: un *Shape Map* con los polígonos del GeoJSON de Inside Airbnb incrustado en el visual, coloreado por RevPAR; botones de temporada; tabla de ranking pegada al mapa; y tres gráficos (anuncios por mes, anuncios por temporada, ocupación por temporada). Pinchar una fila resalta la zona en el mapa y al revés; con Ctrl se comparan varias.
+- Un Shape Map carga un solo mapa por visual, por eso hay una página por ciudad. Los nombres de zona deben coincidir con `dim_zona[zona]`: 215/215 en Euskadi y 71/71 en Barcelona tras reparar el mojibake del GeoJSON.
+- Los visuales se escribieron a mano en JSON, no desde la interfaz: se verifican actualizando desde Git y mirando el resultado.
+
+**Auditoría de fiabilidad** (detalle en [auditoria-fiabilidad.md](auditoria-fiabilidad.md)). Con intervalos de confianza por *bootstrap* a nivel de anuncio y la estabilidad mes a mes se vio que:
+- Con menos de unos 30 anuncios, la ocupación de una zona cambia varios puntos de un mes a otro por puro azar (margen de ±15 a 20 puntos con 3 a 10 anuncios; ±6 de mediana con 30 o más; ±3 con más de 100).
+- Solo una de cada cuatro comparaciones de ocupación entre zonas muestra una diferencia fuera del margen de error.
+- El ADR necesita su propio corte: usa solo anuncios con precio válido, que pueden ser mucho menos que los anuncios totales.
+
+**Cuatro niveles de fiabilidad** (medidas en `fact_listing_snapshot`, carpeta Fiabilidad), según los anuncios por mes de la zona:
+
+| Nivel | Anuncios | Qué se hace |
+|---|---|---|
+| 1 Fiable | 100 o más | cifra normal, arriba del ranking |
+| 2 Aceptable | 50 a 99 | cifra con margen "±" |
+| 3 Orientativo | 30 a 49 | cifra, al final del ranking |
+| 4 No mostrar | menos de 30 | se oculta del mapa y de las tablas |
+
+- `Anuncios por mes` es la media mensual de la selección, para no contar dos veces los anuncios que se repiten entre meses.
+- `ADR fiable` y `RevPAR fiable` salen vacíos si hay menos de 30 anuncios con precio válido (`Anuncios con precio por mes`).
+- `Margen ocupacion` = 1,96 x 0,32 / raíz(anuncios); 0,32 es la desviación típica entre anuncios observada en junio de 2026.
+- `Clave orden` ordena por nivel y, dentro de cada nivel, por RevPAR; Power BI exige que esa columna esté en la tabla para poder ordenar por ella.
+- `Ocupacion/ADR/RevPAR min, media y max`: valor mensual mínimo, medio y máximo dentro de la selección (por ejemplo una temporada).
+
+**Temporada.** `dim_snapshot[temporada]` (sección 7i de `nb_10`): 1 Primavera (mar-may), 2 Verano (jun-ago), 3 Otoño (sep-nov), 4 Invierno (dic-feb), con el número delante para que se ordene bien. Con 12 meses hay una sola vez cada estación: se compara entre estaciones, no entre años, y cada una tiene como mucho tres puntos. Los eventos (ferias, congresos) quedan fuera por ahora.
+
+**Mapa web interactivo** (artefacto HTML privado, no versionado aquí): misma lógica con un desplegable para la métrica del color, zoom, ficha de zona con mínimo y máximo, y comparación de hasta seis zonas. Su ADR usa el recuento de anuncios con precio válido calculado en local con una regla parecida a la del modelo.
+
+**Cosas aprendidas.**
+- Un fallo del tipo "uno o más campos" en un visual suele ser una columna que el modelo espera pero que aún no existe en Delta: ejecutar el notebook, refrescar el modelo y después actualizar el informe.
+- Una cifra sin muestra suficiente es peor que ninguna cifra: ocultar es más honesto que mostrar con un aviso.
+- Medir **precisión** (ruido) no es medir **exactitud** (sesgo): no hay verdad externa con la que contrastar la ocupación.
+
+---
+
 ## Glosario
 
 | Término | Qué significa |
@@ -333,6 +372,11 @@ Modelo sobre las 6 tablas de `lh_gold`, **Direct Lake**: lee las tablas Delta di
 | **Minimización de datos** | No cargar lo que no se necesita, sobre todo datos personales (privacy by design). |
 | **Fallar rápido** | Detener el proceso ante un valor inesperado, con un mensaje claro, en vez de convertirlo en silencio. |
 | **Boolean nullable** | Tipo con tres estados: verdadero, falso y desconocido. |
+| **Bootstrap** | Remuestrear los propios datos muchas veces para estimar la incertidumbre de una cifra (intervalo de confianza) sin suponer una distribución. |
+| **Intervalo de confianza al 95 %** | Rango en el que, repitiendo el muestreo, caería la cifra real el 95 % de las veces; cuanto más pequeña la muestra, más ancho. |
+| **Precisión y exactitud** | Precisión es cuánto ruido tiene una medida; exactitud, cuánto se aleja de la realidad (sesgo). Aquí solo se puede medir la precisión. |
+| **Nivel de fiabilidad** | Clasificación de una zona por número de anuncios (fiable, aceptable, orientativo, no mostrar) que decide si se enseña su cifra. |
+| **Shape Map** | Visual de Power BI que colorea polígonos (GeoJSON o TopoJSON) según una medida; no necesita servicios de mapas externos. |
 
 ---
 
@@ -351,4 +395,10 @@ Modelo sobre las 6 tablas de `lh_gold`, **Direct Lake**: lee las tablas Delta di
 6. ¿Por qué la mediana por barrio como referencia de comp set y no la media?
    - *Mi respuesta:*
 7. Si `host_since` viene vacía en este snapshot, ¿cómo compruebas los otros 22 antes de descartarla?
+   - *Mi respuesta:*
+8. Una zona tiene 8 anuncios y un ADR de 195 €. ¿Por qué no deberías enseñarlo, y qué corte usarías?
+   - *Mi respuesta:*
+9. Dos zonas tienen ocupaciones de 62 % y 66 %. ¿Cómo decides si la diferencia es real o ruido?
+   - *Mi respuesta:*
+10. ¿Por qué el corte del ADR se calcula sobre anuncios con precio válido y no sobre todos los anuncios?
    - *Mi respuesta:*
