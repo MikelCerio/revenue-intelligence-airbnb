@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "a8fd8283dffb568555c1",
+  "name": "9e68dc44f10a76098b78",
   "position": {
     "x": 1480,
     "y": 230,
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "b16f2edf78edf26d8c52",
+        "name": "ef334d6aff02e07b2732",
         "field": {
           "Column": {
             "Expression": {
@@ -144,54 +144,6 @@
                       }
                     ]
                   ]
-                }
-              }
-            }
-          ]
-        }
-      },
-      {
-        "name": "bc146dceabc39a53cb20",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fact_listing_snapshot"
-              }
-            },
-            "Property": "Orden fiabilidad"
-          }
-        },
-        "type": "Advanced",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "f",
-              "Entity": "fact_listing_snapshot",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "Comparison": {
-                  "ComparisonKind": 4,
-                  "Left": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Source": "f"
-                        }
-                      },
-                      "Property": "Orden fiabilidad"
-                    }
-                  },
-                  "Right": {
-                    "Literal": {
-                      "Value": "3L"
-                    }
-                  }
                 }
               }
             }

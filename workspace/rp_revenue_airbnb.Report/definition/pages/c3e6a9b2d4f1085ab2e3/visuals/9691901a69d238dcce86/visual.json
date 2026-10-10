@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "b315fdd8abae591af4a5",
+  "name": "9691901a69d238dcce86",
   "position": {
     "x": 1480,
-    "y": 500,
+    "y": 770,
     "z": 3,
     "height": 230,
     "width": 400,
@@ -39,15 +39,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fact_listing_snapshot"
+                      "Entity": "fact_calendar"
                     }
                   },
-                  "Property": "Anuncios por mes"
+                  "Property": "Ocupacion aprox 30d"
                 }
               },
-              "queryRef": "fact_listing_snapshot.Anuncios por mes",
-              "nativeQueryRef": "Anuncios por mes",
-              "format": "#,0"
+              "queryRef": "fact_calendar.Ocupacion aprox 30d",
+              "nativeQueryRef": "Ocupacion aprox 30d",
+              "format": "0.0%"
             }
           ]
         }
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Anuncios por temporada'"
+                  "Value": "'Ocupación aproximada por temporada'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "e31c4b846f572c0f2a7d",
+        "name": "6e1fee57c4d9487d6372",
         "field": {
           "Column": {
             "Expression": {
@@ -139,59 +139,11 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'euskadi'"
+                          "Value": "'barcelona'"
                         }
                       }
                     ]
                   ]
-                }
-              }
-            }
-          ]
-        }
-      },
-      {
-        "name": "42b2a72e6a6e662329db",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fact_listing_snapshot"
-              }
-            },
-            "Property": "Orden fiabilidad"
-          }
-        },
-        "type": "Advanced",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "f",
-              "Entity": "fact_listing_snapshot",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "Comparison": {
-                  "ComparisonKind": 4,
-                  "Left": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Source": "f"
-                        }
-                      },
-                      "Property": "Orden fiabilidad"
-                    }
-                  },
-                  "Right": {
-                    "Literal": {
-                      "Value": "3L"
-                    }
-                  }
                 }
               }
             }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "d7d10e45956f7f48793d",
+  "name": "47565bba05acb6fb437a",
   "position": {
     "x": 40,
     "y": 120,
@@ -42,6 +42,26 @@
               "expr": {
                 "Literal": {
                   "Value": "'Basic'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "selection": [
+        {
+          "properties": {
+            "singleSelect": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "selectAllCheckboxEnabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
@@ -101,7 +121,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'euskadi'"
+                                "Value": "'barcelona'"
                               }
                             }
                           ]
@@ -143,7 +163,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "646103c836c0e10604cc",
+        "name": "ed63296e52f2a73d2e78",
         "field": {
           "Column": {
             "Expression": {

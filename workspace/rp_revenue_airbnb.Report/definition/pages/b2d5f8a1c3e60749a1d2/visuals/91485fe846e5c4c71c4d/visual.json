@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "2f5546c9c834946f5299",
+  "name": "91485fe846e5c4c71c4d",
   "position": {
-    "x": 330,
+    "x": 40,
     "y": 120,
-    "z": 0,
+    "z": 5,
     "height": 90,
-    "width": 1550,
-    "tabOrder": 0
+    "width": 270,
+    "tabOrder": 5
   },
   "visual": {
     "visualType": "slicer",
@@ -23,11 +23,11 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "temporada"
+                  "Property": "ciudad"
                 }
               },
-              "queryRef": "dim_snapshot.temporada",
-              "nativeQueryRef": "temporada",
+              "queryRef": "dim_snapshot.ciudad",
+              "nativeQueryRef": "ciudad",
               "active": true
             }
           ]
@@ -42,6 +42,26 @@
               "expr": {
                 "Literal": {
                   "Value": "'Basic'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "selection": [
+        {
+          "properties": {
+            "singleSelect": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "selectAllCheckboxEnabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
@@ -93,7 +113,7 @@
                                   "Source": "d"
                                 }
                               },
-                              "Property": "temporada"
+                              "Property": "ciudad"
                             }
                           }
                         ],
@@ -101,7 +121,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'2 · Verano'"
+                                "Value": "'euskadi'"
                               }
                             }
                           ]
@@ -130,7 +150,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Temporada'"
+                  "Value": "'Ciudad'"
                 }
               }
             }
@@ -143,7 +163,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "a078f3dec75e0fb7ac95",
+        "name": "4fea24e639d760267dab",
         "field": {
           "Column": {
             "Expression": {
@@ -151,7 +171,7 @@
                 "Entity": "dim_snapshot"
               }
             },
-            "Property": "temporada"
+            "Property": "ciudad"
           }
         },
         "type": "Categorical"

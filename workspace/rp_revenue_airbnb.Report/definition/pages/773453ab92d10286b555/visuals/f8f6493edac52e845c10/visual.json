@@ -203,7 +203,7 @@
                 "Entity": "fact_listing_snapshot"
               }
             },
-            "Property": "Orden fiabilidad"
+            "Property": "Clave orden"
           }
         },
         "type": "Advanced",
@@ -220,7 +220,7 @@
             {
               "Condition": {
                 "Comparison": {
-                  "ComparisonKind": 4,
+                  "ComparisonKind": 3,
                   "Left": {
                     "Measure": {
                       "Expression": {
@@ -228,12 +228,12 @@
                           "Source": "f"
                         }
                       },
-                      "Property": "Orden fiabilidad"
+                      "Property": "Clave orden"
                     }
                   },
                   "Right": {
                     "Literal": {
-                      "Value": "3L"
+                      "Value": "350000L"
                     }
                   }
                 }

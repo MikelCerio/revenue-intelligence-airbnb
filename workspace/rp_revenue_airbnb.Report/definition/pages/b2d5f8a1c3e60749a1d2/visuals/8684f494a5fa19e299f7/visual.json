@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "ee5f4a277350809c3900",
+  "name": "8684f494a5fa19e299f7",
   "position": {
     "x": 330,
     "y": 120,
@@ -42,6 +42,26 @@
               "expr": {
                 "Literal": {
                   "Value": "'Basic'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "selection": [
+        {
+          "properties": {
+            "singleSelect": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "selectAllCheckboxEnabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
@@ -143,7 +163,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "69eed120b029de60e0ec",
+        "name": "3f7bb9d385c04b65a9c2",
         "field": {
           "Column": {
             "Expression": {

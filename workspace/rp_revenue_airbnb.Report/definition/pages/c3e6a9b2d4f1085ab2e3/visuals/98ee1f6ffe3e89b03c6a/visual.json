@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "07fce3118492460b78c4",
+  "name": "98ee1f6ffe3e89b03c6a",
   "position": {
     "x": 840,
     "y": 230,
@@ -169,7 +169,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ranking por municipio, de más a menos fiable · pulsa una fila para verlo en el mapa'"
+                  "Value": "'Ranking por barrio, de más a menos fiable · pulsa una fila para verlo en el mapa'"
                 }
               }
             }
@@ -182,7 +182,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "3e88dbb5ae2dc5d6eab9",
+        "name": "4b7b653a8ce466cd323a",
         "field": {
           "Column": {
             "Expression": {
@@ -223,7 +223,7 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'euskadi'"
+                          "Value": "'barcelona'"
                         }
                       }
                     ]
@@ -235,7 +235,7 @@
         }
       },
       {
-        "name": "ad9524f846b738723059",
+        "name": "e08c451d17a5fd7ae4d9",
         "field": {
           "Measure": {
             "Expression": {
@@ -243,7 +243,7 @@
                 "Entity": "fact_listing_snapshot"
               }
             },
-            "Property": "Orden fiabilidad"
+            "Property": "Clave orden"
           }
         },
         "type": "Advanced",
@@ -260,7 +260,7 @@
             {
               "Condition": {
                 "Comparison": {
-                  "ComparisonKind": 4,
+                  "ComparisonKind": 3,
                   "Left": {
                     "Measure": {
                       "Expression": {
@@ -268,12 +268,12 @@
                           "Source": "f"
                         }
                       },
-                      "Property": "Orden fiabilidad"
+                      "Property": "Clave orden"
                     }
                   },
                   "Right": {
                     "Literal": {
-                      "Value": "3L"
+                      "Value": "350000L"
                     }
                   }
                 }
