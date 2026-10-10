@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "fact_listing_snapshot.Nivel fiabilidad",
-              "nativeQueryRef": "Nivel fiabilidad",
-              "active": true
+              "nativeQueryRef": "Nivel fiabilidad"
             },
             {
               "field": {

@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "3d40decf2d5340995e98",
+  "name": "45e6584f579d8da827e3",
   "position": {
     "x": 840,
     "y": 230,
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "fact_listing_snapshot.Nivel fiabilidad",
-              "nativeQueryRef": "Nivel fiabilidad",
-              "active": true
+              "nativeQueryRef": "Nivel fiabilidad"
             },
             {
               "field": {
@@ -169,7 +168,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ranking por municipio, de más a menos fiable · pulsa una fila para verlo en el mapa'"
+                  "Value": "'Ranking por barrio, de más a menos fiable · pulsa una fila para verlo en el mapa'"
                 }
               }
             }
@@ -182,7 +181,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "01be0800324cf26a5dc2",
+        "name": "d295a3731d7b31cb6cbc",
         "field": {
           "Column": {
             "Expression": {
@@ -223,7 +222,7 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'euskadi'"
+                          "Value": "'barcelona'"
                         }
                       }
                     ]
@@ -235,7 +234,7 @@
         }
       },
       {
-        "name": "8033f36257a5c4d98339",
+        "name": "a6f4c35890743f7aa43f",
         "field": {
           "Measure": {
             "Expression": {

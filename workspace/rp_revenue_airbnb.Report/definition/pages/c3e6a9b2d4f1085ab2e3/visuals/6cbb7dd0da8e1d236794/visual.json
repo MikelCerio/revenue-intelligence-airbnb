@@ -1,16 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "e31271dfe63bc0362e87",
+  "name": "6cbb7dd0da8e1d236794",
   "position": {
     "x": 1480,
-    "y": 500,
+    "y": 230,
     "z": 3,
     "height": 230,
     "width": 400,
     "tabOrder": 3
   },
   "visual": {
-    "visualType": "clusteredColumnChart",
+    "visualType": "lineChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,11 +23,11 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "temporada"
+                  "Property": "snapshot_date"
                 }
               },
-              "queryRef": "dim_snapshot.temporada",
-              "nativeQueryRef": "temporada",
+              "queryRef": "dim_snapshot.snapshot_date",
+              "nativeQueryRef": "snapshot_date",
               "active": true
             }
           ]
@@ -62,7 +62,7 @@
                     "Entity": "dim_snapshot"
                   }
                 },
-                "Property": "temporada"
+                "Property": "snapshot_date"
               }
             },
             "direction": "Ascending"
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Anuncios por temporada'"
+                  "Value": "'Anuncios por mes (según el barrio elegido)'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "9db39439ec144b59f2af",
+        "name": "85d19b77ae058204a85e",
         "field": {
           "Column": {
             "Expression": {
@@ -151,7 +151,7 @@
         }
       },
       {
-        "name": "b2cd974f667d98a5cbde",
+        "name": "5573d0a8e67480993163",
         "field": {
           "Measure": {
             "Expression": {

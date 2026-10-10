@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "789a28b20250e1e696a8",
+  "name": "ef6d9beabe5b82662b12",
   "position": {
     "x": 40,
     "y": 230,
@@ -161,6 +161,50 @@
             }
           }
         }
+      ],
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "FillRule": {
+                      "Input": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "fact_listing_snapshot"
+                            }
+                          },
+                          "Property": "RevPAR fiable"
+                        }
+                      },
+                      "FillRule": {
+                        "linearGradient2": {
+                          "min": {
+                            "color": {
+                              "Literal": {
+                                "Value": "'#E3EEF7'"
+                              }
+                            }
+                          },
+                          "max": {
+                            "color": {
+                              "Literal": {
+                                "Value": "'#1F3A5F'"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -190,7 +234,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "88890ffbae3aa2838bf7",
+        "name": "cf489ec56676916d7999",
         "field": {
           "Column": {
             "Expression": {
@@ -243,7 +287,7 @@
         }
       },
       {
-        "name": "cbc73528efe33983f761",
+        "name": "91a15ae761e7c1a10376",
         "field": {
           "Measure": {
             "Expression": {
