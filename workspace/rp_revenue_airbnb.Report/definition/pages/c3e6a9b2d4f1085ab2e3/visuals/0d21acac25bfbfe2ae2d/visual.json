@@ -1,16 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "9eb68a3be26fc73caf6e",
+  "name": "0d21acac25bfbfe2ae2d",
   "position": {
     "x": 1480,
-    "y": 230,
+    "y": 500,
     "z": 3,
     "height": 230,
     "width": 400,
     "tabOrder": 3
   },
   "visual": {
-    "visualType": "lineChart",
+    "visualType": "clusteredColumnChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,11 +23,11 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "snapshot_date"
+                  "Property": "temporada"
                 }
               },
-              "queryRef": "dim_snapshot.snapshot_date",
-              "nativeQueryRef": "snapshot_date",
+              "queryRef": "dim_snapshot.temporada",
+              "nativeQueryRef": "temporada",
               "active": true
             }
           ]
@@ -62,7 +62,7 @@
                     "Entity": "dim_snapshot"
                   }
                 },
-                "Property": "snapshot_date"
+                "Property": "temporada"
               }
             },
             "direction": "Ascending"
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Anuncios por mes (según el municipio elegido)'"
+                  "Value": "'Anuncios por temporada'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "7c2208e5996648384a88",
+        "name": "ad5e18421efde5e669fe",
         "field": {
           "Column": {
             "Expression": {
@@ -139,7 +139,7 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'euskadi'"
+                          "Value": "'barcelona'"
                         }
                       }
                     ]
@@ -151,7 +151,7 @@
         }
       },
       {
-        "name": "02b8103c5aef2830755d",
+        "name": "f2f43dedb296a0323bc5",
         "field": {
           "Measure": {
             "Expression": {

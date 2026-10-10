@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "b343860b72809d27e81b",
+  "name": "d7d10e45956f7f48793d",
   "position": {
     "x": 40,
     "y": 120,
-    "z": 0,
+    "z": 5,
     "height": 90,
-    "width": 1840,
-    "tabOrder": 0
+    "width": 270,
+    "tabOrder": 5
   },
   "visual": {
     "visualType": "slicer",
@@ -23,11 +23,11 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "temporada"
+                  "Property": "ciudad"
                 }
               },
-              "queryRef": "dim_snapshot.temporada",
-              "nativeQueryRef": "temporada",
+              "queryRef": "dim_snapshot.ciudad",
+              "nativeQueryRef": "ciudad",
               "active": true
             }
           ]
@@ -93,7 +93,7 @@
                                   "Source": "d"
                                 }
                               },
-                              "Property": "temporada"
+                              "Property": "ciudad"
                             }
                           }
                         ],
@@ -101,7 +101,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'2 · Verano'"
+                                "Value": "'euskadi'"
                               }
                             }
                           ]
@@ -130,7 +130,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Temporada'"
+                  "Value": "'Ciudad'"
                 }
               }
             }
@@ -143,7 +143,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "ad14f22d633740685a6e",
+        "name": "646103c836c0e10604cc",
         "field": {
           "Column": {
             "Expression": {
@@ -151,7 +151,7 @@
                 "Entity": "dim_snapshot"
               }
             },
-            "Property": "temporada"
+            "Property": "ciudad"
           }
         },
         "type": "Categorical"

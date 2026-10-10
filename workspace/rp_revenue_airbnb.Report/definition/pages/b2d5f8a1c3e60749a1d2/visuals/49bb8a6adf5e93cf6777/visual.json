@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "4ec2ca4d807792cd4d38",
+  "name": "49bb8a6adf5e93cf6777",
   "position": {
     "x": 1480,
-    "y": 500,
+    "y": 770,
     "z": 3,
     "height": 230,
     "width": 400,
@@ -39,15 +39,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fact_listing_snapshot"
+                      "Entity": "fact_calendar"
                     }
                   },
-                  "Property": "Anuncios por mes"
+                  "Property": "Ocupacion aprox 30d"
                 }
               },
-              "queryRef": "fact_listing_snapshot.Anuncios por mes",
-              "nativeQueryRef": "Anuncios por mes",
-              "format": "#,0"
+              "queryRef": "fact_calendar.Ocupacion aprox 30d",
+              "nativeQueryRef": "Ocupacion aprox 30d",
+              "format": "0.0%"
             }
           ]
         }
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Anuncios por temporada'"
+                  "Value": "'Ocupación aproximada por temporada'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "882c9773d1f86928cb74",
+        "name": "7810cdba4fbdebfe4799",
         "field": {
           "Column": {
             "Expression": {
@@ -139,7 +139,7 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'barcelona'"
+                          "Value": "'euskadi'"
                         }
                       }
                     ]
@@ -151,7 +151,7 @@
         }
       },
       {
-        "name": "d61c72ff74be50fda0cf",
+        "name": "a04d89f93b9d0a188fbe",
         "field": {
           "Measure": {
             "Expression": {

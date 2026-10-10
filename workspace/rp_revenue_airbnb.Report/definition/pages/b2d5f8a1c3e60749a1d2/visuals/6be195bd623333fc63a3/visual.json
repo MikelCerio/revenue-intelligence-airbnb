@@ -1,16 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "d77e596fed03b482ce23",
+  "name": "6be195bd623333fc63a3",
   "position": {
     "x": 1480,
-    "y": 770,
+    "y": 230,
     "z": 3,
     "height": 230,
     "width": 400,
     "tabOrder": 3
   },
   "visual": {
-    "visualType": "clusteredColumnChart",
+    "visualType": "lineChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,11 +23,11 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "temporada"
+                  "Property": "snapshot_date"
                 }
               },
-              "queryRef": "dim_snapshot.temporada",
-              "nativeQueryRef": "temporada",
+              "queryRef": "dim_snapshot.snapshot_date",
+              "nativeQueryRef": "snapshot_date",
               "active": true
             }
           ]
@@ -39,15 +39,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fact_calendar"
+                      "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "Ocupacion aprox 30d"
+                  "Property": "Anuncios por mes"
                 }
               },
-              "queryRef": "fact_calendar.Ocupacion aprox 30d",
-              "nativeQueryRef": "Ocupacion aprox 30d",
-              "format": "0.0%"
+              "queryRef": "fact_listing_snapshot.Anuncios por mes",
+              "nativeQueryRef": "Anuncios por mes",
+              "format": "#,0"
             }
           ]
         }
@@ -62,7 +62,7 @@
                     "Entity": "dim_snapshot"
                   }
                 },
-                "Property": "temporada"
+                "Property": "snapshot_date"
               }
             },
             "direction": "Ascending"
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ocupación aproximada por temporada'"
+                  "Value": "'Anuncios por mes (según el municipio elegido)'"
                 }
               }
             }
@@ -98,7 +98,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "61e1e7385a141d43b974",
+        "name": "58ceb2c6319d3912ff84",
         "field": {
           "Column": {
             "Expression": {
@@ -139,7 +139,7 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'barcelona'"
+                          "Value": "'euskadi'"
                         }
                       }
                     ]
@@ -151,7 +151,7 @@
         }
       },
       {
-        "name": "e06ff59a47c9b983c2b5",
+        "name": "3bdd6f81413d2bca8d37",
         "field": {
           "Measure": {
             "Expression": {
