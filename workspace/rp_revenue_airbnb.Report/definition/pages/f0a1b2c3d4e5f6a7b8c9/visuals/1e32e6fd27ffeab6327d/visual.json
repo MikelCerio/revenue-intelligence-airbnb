@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "a35164af8b574298ddc2",
+  "name": "1e32e6fd27ffeab6327d",
   "position": {
-    "x": 660,
-    "y": 560,
-    "z": 5,
-    "height": 370,
+    "x": 1280,
+    "y": 555,
+    "z": 6,
+    "height": 375,
     "width": 600,
-    "tabOrder": 5
+    "tabOrder": 6
   },
   "visual": {
     "visualType": "textbox",
@@ -19,9 +19,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "5. Caro no significa lleno",
+                    "value": "6. Barcelona, el contraste",
                     "textStyle": {
-                      "fontSize": "16pt",
+                      "fontSize": "15pt",
                       "color": "#1F3A5F",
                       "fontWeight": "bold"
                     }
@@ -31,9 +31,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "Entre zonas, precio y ocupación apenas van juntos (correlación −0,17 en Barcelona y 0,33 en Euskadi). Por eso se compara por RevPAR, que junta los dos, y no por precio u ocupación por separado.",
+                    "value": "El barrio mediano pierde un 24 % de anuncios en un año y casi no tiene temporada baja en los datos (3 puntos). Lo segundo puede ser efecto del dato: hay que validarlo antes de afirmarlo.",
                     "textStyle": {
-                      "fontSize": "13pt",
+                      "fontSize": "12pt",
                       "color": "#1F2933"
                     }
                   }

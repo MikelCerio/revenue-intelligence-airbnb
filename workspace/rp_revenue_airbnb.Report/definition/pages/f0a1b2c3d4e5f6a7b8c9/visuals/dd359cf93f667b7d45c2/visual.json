@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "15d706e23bf4e71e86b5",
+  "name": "dd359cf93f667b7d45c2",
   "position": {
     "x": 40,
-    "y": 560,
-    "z": 4,
-    "height": 370,
+    "y": 160,
+    "z": 1,
+    "height": 375,
     "width": 600,
-    "tabOrder": 4
+    "tabOrder": 1
   },
   "visual": {
     "visualType": "textbox",
@@ -19,9 +19,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "4. Dónde rinde más un anuncio",
+                    "value": "1. Corto o largo plazo: depende de la capital",
                     "textStyle": {
-                      "fontSize": "16pt",
+                      "fontSize": "15pt",
                       "color": "#1F3A5F",
                       "fontWeight": "bold"
                     }
@@ -31,9 +31,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "RevPAR aproximado medio anual: Donostia 151 €, Zarautz 117 €; en Barcelona, Fort Pienc 192 € y la Antiga Esquerra de l'Eixample 185 €. El barrio mediano de Barcelona (134 €) casi duplica al municipio mediano de Euskadi (81 €).",
+                    "value": "Lo que deja al año un piso turístico mediano frente a alquilarlo de forma habitual (en bruto): Donostia 31.815 € frente a 13.583 € (2,3 veces); Bilbao 13.952 € frente a 12.133 € (1,15 veces); Vitoria-Gasteiz 5.820 € frente a 10.214 € (gana el alquiler largo). En Bilbao, tras comisiones, limpieza y gestión, el turístico mediano probablemente rinde menos que el largo.",
                     "textStyle": {
-                      "fontSize": "13pt",
+                      "fontSize": "12pt",
                       "color": "#1F2933"
                     }
                   }

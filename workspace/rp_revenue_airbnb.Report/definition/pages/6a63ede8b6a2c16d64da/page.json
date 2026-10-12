@@ -4,5 +4,22 @@
   "displayName": "Estacionalidad",
   "displayOption": "FitToPage",
   "height": 1080,
-  "width": 1920
+  "width": 1920,
+  "visualInteractions": [
+    {
+      "source": "1235e78b9a319fb65732",
+      "target": "a4506aa12e7a02190439",
+      "type": "NoFilter"
+    },
+    {
+      "source": "1235e78b9a319fb65732",
+      "target": "73c0b9cd45a5d8edc1b0",
+      "type": "NoFilter"
+    },
+    {
+      "source": "1235e78b9a319fb65732",
+      "target": "99b94ff9c6220c2a7ffb",
+      "type": "NoFilter"
+    }
+  ]
 }

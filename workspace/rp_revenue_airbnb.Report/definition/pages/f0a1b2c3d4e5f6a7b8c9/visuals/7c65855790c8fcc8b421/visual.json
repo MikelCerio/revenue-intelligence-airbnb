@@ -1,11 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "5d49eb0a3f003eb41557",
+  "name": "7c65855790c8fcc8b421",
   "position": {
     "x": 1280,
-    "y": 170,
+    "y": 160,
     "z": 3,
-    "height": 370,
+    "height": 375,
     "width": 600,
     "tabOrder": 3
   },
@@ -19,9 +19,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "3. La oferta de Barcelona se encoge",
+                    "value": "3. Bilbao se profesionaliza deprisa",
                     "textStyle": {
-                      "fontSize": "16pt",
+                      "fontSize": "15pt",
                       "color": "#1F3A5F",
                       "fontWeight": "bold"
                     }
@@ -31,9 +31,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "Entre agosto de 2025 y junio de 2026, los anuncios bajan un 24 % en el barrio mediano y ninguno crece. En Euskadi, un 4 %. Los datos no dicen la causa (regulación, abandono o cambio de captura).",
+                    "value": "Los anuncios de anfitriones con 10 o más pisos pasan del 22 % al 29 % en Bilbao en un año. En Donostia ya son el 38 %.",
                     "textStyle": {
-                      "fontSize": "13pt",
+                      "fontSize": "12pt",
                       "color": "#1F2933"
                     }
                   }

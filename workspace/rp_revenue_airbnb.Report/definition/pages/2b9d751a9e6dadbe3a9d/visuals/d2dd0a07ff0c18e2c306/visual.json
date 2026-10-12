@@ -23,33 +23,15 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "snapshot_date"
+                  "Property": "temporada"
                 }
               },
-              "queryRef": "dim_snapshot.snapshot_date",
-              "nativeQueryRef": "snapshot_date",
+              "queryRef": "dim_snapshot.temporada",
+              "nativeQueryRef": "temporada",
               "active": true
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_snapshot"
-                  }
-                },
-                "Property": "snapshot_date"
-              }
-            },
-            "direction": "Ascending"
-          }
-        ],
-        "isDefaultSort": true
       }
     },
     "objects": {
@@ -89,47 +71,6 @@
                   "Value": "0D"
                 }
               }
-            },
-            "filter": {
-              "filter": {
-                "Version": 2,
-                "From": [
-                  {
-                    "Name": "d",
-                    "Entity": "dim_snapshot",
-                    "Type": 0
-                  }
-                ],
-                "Where": [
-                  {
-                    "Condition": {
-                      "In": {
-                        "Expressions": [
-                          {
-                            "Column": {
-                              "Expression": {
-                                "SourceRef": {
-                                  "Source": "d"
-                                }
-                              },
-                              "Property": "snapshot_date"
-                            }
-                          }
-                        ],
-                        "Values": [
-                          [
-                            {
-                              "Literal": {
-                                "Value": "datetime'2026-06-30T00:00:00'"
-                              }
-                            }
-                          ]
-                        ]
-                      }
-                    }
-                  }
-                ]
-              }
             }
           }
         }
@@ -150,7 +91,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Snapshot'"
+                  "Value": "'Temporada (sin selección: año completo)'"
                 }
               }
             }
@@ -162,7 +103,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "11a05b8dd28aa7bd0022",
+        "name": "0eaf9bd6d7e1702c8dff",
         "field": {
           "Column": {
             "Expression": {
@@ -170,7 +111,7 @@
                 "Entity": "dim_snapshot"
               }
             },
-            "Property": "snapshot_date"
+            "Property": "temporada"
           }
         },
         "type": "Categorical"

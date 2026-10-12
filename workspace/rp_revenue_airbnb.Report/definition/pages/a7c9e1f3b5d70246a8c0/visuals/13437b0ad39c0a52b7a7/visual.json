@@ -1,11 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "005ff73b20d4b4c48f5d",
+  "name": "13437b0ad39c0a52b7a7",
   "position": {
     "x": 40,
     "y": 30,
     "z": 0,
-    "height": 110,
+    "height": 80,
     "width": 1840,
     "tabOrder": 0
   },
@@ -19,9 +19,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "Conclusiones · Revenue Intelligence sobre Inside Airbnb",
+                    "value": "Euskadi de un vistazo",
                     "textStyle": {
-                      "fontSize": "26pt",
+                      "fontSize": "22pt",
                       "color": "#1F3A5F",
                       "fontWeight": "bold"
                     }
@@ -31,9 +31,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "Barcelona y Euskadi, 12 meses de snapshots (jul 2025 a jun 2026). Solo zonas con 30 o más anuncios al mes. Cifras aproximadas: ocupación como límite superior y precio publicado, no cobrado.",
+                    "value": "Año completo, solo municipios con 30 o más anuncios al mes. Tres preguntas de inversor: dónde rinde más, dónde aguanta el invierno y dónde crece o se retira la oferta.",
                     "textStyle": {
-                      "fontSize": "12pt",
+                      "fontSize": "11pt",
                       "color": "#5F6B7A"
                     }
                   }

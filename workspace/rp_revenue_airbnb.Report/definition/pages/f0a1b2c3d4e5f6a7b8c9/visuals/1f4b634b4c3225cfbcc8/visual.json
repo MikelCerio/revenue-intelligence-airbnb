@@ -1,11 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "0a5608270d240b04b86c",
+  "name": "1f4b634b4c3225cfbcc8",
   "position": {
     "x": 660,
-    "y": 170,
+    "y": 160,
     "z": 2,
-    "height": 370,
+    "height": 375,
     "width": 600,
     "tabOrder": 2
   },
@@ -19,9 +19,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "2. Barcelona apenas tiene temporada baja en los datos",
+                    "value": "2. Dos ciudades, media oferta",
                     "textStyle": {
-                      "fontSize": "16pt",
+                      "fontSize": "15pt",
                       "color": "#1F3A5F",
                       "fontWeight": "bold"
                     }
@@ -31,9 +31,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "La caída de verano a invierno es de solo 3 puntos. Puede deberse al propio dato (\"no disponible\" mezcla reservas, bloqueos y estancias largas): es una hipótesis que hay que validar antes de afirmarla.",
+                    "value": "Donostia (25,8 %) y Bilbao (25,6 %) concentran la mitad de los anuncios de Euskadi. Vitoria-Gasteiz, solo el 2,8 %.",
                     "textStyle": {
-                      "fontSize": "13pt",
+                      "fontSize": "12pt",
                       "color": "#1F2933"
                     }
                   }

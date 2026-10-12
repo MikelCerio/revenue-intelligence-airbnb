@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "121bfd5e9d0df7f53ac0",
+  "name": "d93f5631a8810b56e4cc",
   "position": {
-    "x": 1280,
-    "y": 560,
-    "z": 6,
-    "height": 370,
+    "x": 40,
+    "y": 555,
+    "z": 4,
+    "height": 375,
     "width": 600,
-    "tabOrder": 6
+    "tabOrder": 4
   },
   "visual": {
     "visualType": "textbox",
@@ -19,9 +19,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "6. Solo una parte del mapa es fiable",
+                    "value": "4. Euskadi vive del verano",
                     "textStyle": {
-                      "fontSize": "16pt",
+                      "fontSize": "15pt",
                       "color": "#1F3A5F",
                       "fontWeight": "bold"
                     }
@@ -31,9 +31,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "23 municipios de Euskadi y 49 barrios de Barcelona superan los 30 anuncios de media. Con menos, la ocupación tiene un margen de ±15 a 20 puntos, y solo 1 de cada 4 comparaciones entre zonas es distinguible del ruido.",
+                    "value": "La ocupación cae 33 puntos de verano a invierno en el municipio mediano; más de 40 en Hondarribia y Zarautz. Vitoria-Gasteiz es lo más estable (14 puntos).",
                     "textStyle": {
-                      "fontSize": "13pt",
+                      "fontSize": "12pt",
                       "color": "#1F2933"
                     }
                   }
