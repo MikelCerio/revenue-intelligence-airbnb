@@ -47,7 +47,8 @@
               },
               "queryRef": "fact_calendar.Ocupacion aprox 30d",
               "nativeQueryRef": "Ocupacion aprox 30d",
-              "format": "0.0%"
+              "format": "0.0%",
+              "displayName": "Ocupación"
             }
           ]
         }

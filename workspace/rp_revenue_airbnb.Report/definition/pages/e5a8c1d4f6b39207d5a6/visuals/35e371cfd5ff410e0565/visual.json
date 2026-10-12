@@ -28,7 +28,8 @@
               },
               "queryRef": "dim_zona.zona",
               "nativeQueryRef": "zona",
-              "active": true
+              "active": true,
+              "displayName": "Zona"
             }
           ]
         },
@@ -47,7 +48,8 @@
               },
               "queryRef": "fact_listing_snapshot.Ocupacion visible",
               "nativeQueryRef": "Ocupacion visible",
-              "format": "0.0%"
+              "format": "0.0%",
+              "displayName": "Ocupación"
             }
           ]
         },
@@ -66,7 +68,8 @@
               },
               "queryRef": "fact_listing_snapshot.ADR fiable",
               "nativeQueryRef": "ADR fiable",
-              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
+              "displayName": "ADR"
             }
           ]
         },
@@ -85,7 +88,8 @@
               },
               "queryRef": "fact_listing_snapshot.Anuncios visibles",
               "nativeQueryRef": "Anuncios visibles",
-              "format": "#,0"
+              "format": "#,0",
+              "displayName": "Anuncios/mes"
             }
           ]
         }
@@ -113,7 +117,29 @@
         }
       ]
     },
-    "drillFilterOtherVisuals": true
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "categoryLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "7D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
   },
   "filterConfig": {
     "filters": []

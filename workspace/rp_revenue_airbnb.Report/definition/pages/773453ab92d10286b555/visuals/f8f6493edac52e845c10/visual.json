@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "dim_zona.grupo",
-              "nativeQueryRef": "grupo"
+              "nativeQueryRef": "grupo",
+              "displayName": "Grupo"
             },
             {
               "field": {
@@ -41,7 +42,8 @@
                 }
               },
               "queryRef": "dim_zona.zona",
-              "nativeQueryRef": "zona"
+              "nativeQueryRef": "zona",
+              "displayName": "Zona"
             },
             {
               "field": {
@@ -55,7 +57,8 @@
                 }
               },
               "queryRef": "fact_listing_snapshot.Nivel fiabilidad",
-              "nativeQueryRef": "Nivel fiabilidad"
+              "nativeQueryRef": "Nivel fiabilidad",
+              "displayName": "Nivel"
             },
             {
               "field": {
@@ -70,7 +73,8 @@
               },
               "queryRef": "fact_listing_snapshot.Anuncios visibles",
               "nativeQueryRef": "Anuncios visibles",
-              "format": "#,0"
+              "format": "#,0",
+              "displayName": "Anuncios/mes"
             },
             {
               "field": {
@@ -85,7 +89,8 @@
               },
               "queryRef": "fact_listing_snapshot.Ocupacion visible",
               "nativeQueryRef": "Ocupacion visible",
-              "format": "0.0%"
+              "format": "0.0%",
+              "displayName": "Ocupación"
             },
             {
               "field": {
@@ -99,7 +104,8 @@
                 }
               },
               "queryRef": "fact_listing_snapshot.Margen ocupacion",
-              "nativeQueryRef": "Margen ocupacion"
+              "nativeQueryRef": "Margen ocupacion",
+              "displayName": "Margen ±"
             },
             {
               "field": {
@@ -114,7 +120,8 @@
               },
               "queryRef": "fact_listing_snapshot.ADR fiable",
               "nativeQueryRef": "ADR fiable",
-              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
+              "displayName": "ADR"
             },
             {
               "field": {
@@ -129,7 +136,8 @@
               },
               "queryRef": "fact_listing_snapshot.RevPAR fiable",
               "nativeQueryRef": "RevPAR fiable",
-              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
+              "displayName": "RevPAR"
             },
             {
               "field": {
@@ -144,7 +152,8 @@
               },
               "queryRef": "fact_listing_snapshot.Clave orden",
               "nativeQueryRef": "Clave orden",
-              "format": "0"
+              "format": "0",
+              "displayName": "Orden"
             }
           ]
         }

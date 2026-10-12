@@ -47,7 +47,8 @@
               },
               "queryRef": "fact_listing_snapshot.Anuncios por mes",
               "nativeQueryRef": "Anuncios por mes",
-              "format": "#,0"
+              "format": "#,0",
+              "displayName": "Anuncios/mes"
             }
           ]
         }
