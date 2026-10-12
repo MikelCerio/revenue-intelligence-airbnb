@@ -76,12 +76,18 @@ spark.read.format("delta").load(destino_gold).orderBy("ciudad", "snapshot_date")
 
 # CELL ********************
 
+# Nombres oficiales: Inside Airbnb usa alguna grafía antigua. Solo cambia el nombre visible;
+# zona_id conserva el nombre de origen para no romper la relación con los hechos.
+# El mapa (GeoJSON incrustado en el informe) usa el mismo nombre corregido.
+NOMBRES_OFICIALES = {"Mungai": "Mungia"}
+
 zonas = (listings.select("ciudad",
                          F.col("neighbourhood_group_cleansed").alias("grupo"),
                          F.col("neighbourhood_cleansed").alias("zona"))
          .where(F.col("zona").isNotNull())
          .distinct()
-         .withColumn("zona_id", F.concat_ws("|", "ciudad", "zona")))
+         .withColumn("zona_id", F.concat_ws("|", "ciudad", "zona"))
+         .replace(NOMBRES_OFICIALES, subset=["zona"]))
 
 n_filas = zonas.count()
 n_zonas = zonas.select("zona_id").distinct().count()
