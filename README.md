@@ -4,6 +4,8 @@ Proyecto de portfolio de **analítica de revenue para alquiler turístico**, con
 
 > **Estado:** en construcción. Funcionan la ingesta, silver (`listings` y `calendar`), el gold, el modelo y un informe de 3 páginas. Pendientes: reseñas como proxy de demanda, seguridad por filas (RLS) y alertas de calidad.
 
+**[Mapa interactivo](https://mikelcerio.github.io/revenue-intelligence-airbnb/mapa/)**: ocupación, ADR y RevPAR aproximados por municipio y barrio, por temporada y con niveles de fiabilidad.
+
 ## Qué responde
 
 Con datos abiertos de **Barcelona** y **Euskadi** (23 snapshots mensuales, de julio de 2025 a junio de 2026):
