@@ -1,0 +1,52 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "5d49eb0a3f003eb41557",
+  "position": {
+    "x": 1280,
+    "y": 170,
+    "z": 3,
+    "height": 370,
+    "width": 600,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "3. La oferta de Barcelona se encoge",
+                    "textStyle": {
+                      "fontSize": "16pt",
+                      "color": "#1F3A5F",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Entre agosto de 2025 y junio de 2026, los anuncios bajan un 24 % en el barrio mediano y ninguno crece. En Euskadi, un 4 %. Los datos no dicen la causa (regulación, abandono o cambio de captura).",
+                    "textStyle": {
+                      "fontSize": "13pt",
+                      "color": "#1F2933"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {}
+  },
+  "filterConfig": {
+    "filters": []
+  }
+}

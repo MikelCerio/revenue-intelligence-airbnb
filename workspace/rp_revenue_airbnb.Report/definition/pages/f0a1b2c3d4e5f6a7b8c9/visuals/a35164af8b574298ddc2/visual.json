@@ -1,0 +1,52 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "a35164af8b574298ddc2",
+  "position": {
+    "x": 660,
+    "y": 560,
+    "z": 5,
+    "height": 370,
+    "width": 600,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "5. Caro no significa lleno",
+                    "textStyle": {
+                      "fontSize": "16pt",
+                      "color": "#1F3A5F",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Entre zonas, precio y ocupación apenas van juntos (correlación −0,17 en Barcelona y 0,33 en Euskadi). Por eso se compara por RevPAR, que junta los dos, y no por precio u ocupación por separado.",
+                    "textStyle": {
+                      "fontSize": "13pt",
+                      "color": "#1F2933"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {}
+  },
+  "filterConfig": {
+    "filters": []
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "f5e7f261325a84d88429",
+  "position": {
+    "x": 40,
+    "y": 170,
+    "z": 1,
+    "height": 370,
+    "width": 600,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "1. Euskadi vive del verano",
+                    "textStyle": {
+                      "fontSize": "16pt",
+                      "color": "#1F3A5F",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "La ocupación aproximada cae 33 puntos de verano a invierno (mediana de municipios). En Hondarribia y Zarautz, más de 40. Vitoria-Gasteiz es lo más estable: 14 puntos.",
+                    "textStyle": {
+                      "fontSize": "13pt",
+                      "color": "#1F2933"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {}
+  },
+  "filterConfig": {
+    "filters": []
+  }
+}

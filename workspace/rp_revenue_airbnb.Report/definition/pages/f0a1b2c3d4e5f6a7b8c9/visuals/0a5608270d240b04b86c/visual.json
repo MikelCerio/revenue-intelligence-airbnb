@@ -1,0 +1,52 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "0a5608270d240b04b86c",
+  "position": {
+    "x": 660,
+    "y": 170,
+    "z": 2,
+    "height": 370,
+    "width": 600,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "2. Barcelona apenas tiene temporada baja en los datos",
+                    "textStyle": {
+                      "fontSize": "16pt",
+                      "color": "#1F3A5F",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "La caída de verano a invierno es de solo 3 puntos. Puede deberse al propio dato (\"no disponible\" mezcla reservas, bloqueos y estancias largas): es una hipótesis que hay que validar antes de afirmarla.",
+                    "textStyle": {
+                      "fontSize": "13pt",
+                      "color": "#1F2933"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {}
+  },
+  "filterConfig": {
+    "filters": []
+  }
+}

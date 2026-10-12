@@ -1,0 +1,52 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "121bfd5e9d0df7f53ac0",
+  "position": {
+    "x": 1280,
+    "y": 560,
+    "z": 6,
+    "height": 370,
+    "width": 600,
+    "tabOrder": 6
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "6. Solo una parte del mapa es fiable",
+                    "textStyle": {
+                      "fontSize": "16pt",
+                      "color": "#1F3A5F",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "23 municipios de Euskadi y 49 barrios de Barcelona superan los 30 anuncios de media. Con menos, la ocupación tiene un margen de ±15 a 20 puntos, y solo 1 de cada 4 comparaciones entre zonas es distinguible del ruido.",
+                    "textStyle": {
+                      "fontSize": "13pt",
+                      "color": "#1F2933"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {}
+  },
+  "filterConfig": {
+    "filters": []
+  }
+}
