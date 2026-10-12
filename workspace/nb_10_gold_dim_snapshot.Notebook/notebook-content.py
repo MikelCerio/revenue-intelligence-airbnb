@@ -89,6 +89,18 @@ zonas = (listings.select("ciudad",
          .withColumn("zona_id", F.concat_ws("|", "ciudad", "zona"))
          .replace(NOMBRES_OFICIALES, subset=["zona"]))
 
+# Zonas de mercado residencial tensionado (Ley 12/2023) en vigor durante el periodo de datos (jul 2025 - jun 2026).
+# Barcelona: resolucion de 14-mar-2024 (en vigor 16-mar-2024). Euskadi: lista oficial del Gobierno Vasco
+# (eremutentsionatua.euskadi.eus); Basauri se declara despues del periodo y queda fuera.
+TENSIONADAS_EUSKADI = ["Arrasate", "Astigarraga", "Barakaldo", "Bilbao", "Donostia-San Sebastián", "Errenteria",
+                       "Galdakao", "Hernani", "Irun", "Lasarte-Oria", "Lezo", "Pasaia", "Tolosa", "Usurbil",
+                       "Vitoria-Gasteiz", "Zestoa", "Zumaia"]
+zonas = zonas.withColumn("tensionada",
+    F.when((F.col("ciudad") == "barcelona") | ((F.col("ciudad") == "euskadi") & F.col("zona").isin(TENSIONADAS_EUSKADI)), "Sí")
+     .otherwise("No"))
+encontradas = zonas.where((F.col("ciudad") == "euskadi") & (F.col("tensionada") == "Sí")).count()
+assert encontradas == len(TENSIONADAS_EUSKADI), f"Solo {encontradas} de {len(TENSIONADAS_EUSKADI)} municipios tensionados casan por nombre"
+
 n_filas = zonas.count()
 n_zonas = zonas.select("zona_id").distinct().count()
 print("filas:", n_filas, "| zonas únicas:", n_zonas)

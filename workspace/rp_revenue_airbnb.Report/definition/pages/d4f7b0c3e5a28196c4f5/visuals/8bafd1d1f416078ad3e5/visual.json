@@ -32,6 +32,21 @@
             },
             {
               "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_zona"
+                    }
+                  },
+                  "Property": "tensionada"
+                }
+              },
+              "queryRef": "dim_zona.tensionada",
+              "nativeQueryRef": "tensionada",
+              "displayName": "Tensionada"
+            },
+            {
+              "field": {
                 "Measure": {
                   "Expression": {
                     "SourceRef": {

@@ -132,6 +132,21 @@
               "nativeQueryRef": "RevPAR fiable",
               "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
               "displayName": "RevPAR"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_zona"
+                    }
+                  },
+                  "Property": "tensionada"
+                }
+              },
+              "queryRef": "dim_zona.tensionada",
+              "nativeQueryRef": "tensionada",
+              "displayName": "Tensionada"
             }
           ]
         }

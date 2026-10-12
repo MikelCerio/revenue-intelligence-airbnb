@@ -38,6 +38,13 @@ table dim_zona
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Sí si el municipio o barrio era zona de mercado residencial tensionado (Ley 12/2023) durante el periodo de datos.
+	column tensionada
+		dataType: string
+		lineageTag: 2d01b304-aec0-434b-86d8-a8388e882364
+		summarizeBy: none
+		sourceColumn: tensionada
+
 	partition dim_zona = entity
 		mode: directLake
 		source
