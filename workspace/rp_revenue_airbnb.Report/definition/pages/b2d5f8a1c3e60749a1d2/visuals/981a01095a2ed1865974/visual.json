@@ -1,16 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "9e68dc44f10a76098b78",
+  "name": "981a01095a2ed1865974",
   "position": {
     "x": 1480,
-    "y": 230,
+    "y": 500,
     "z": 3,
     "height": 230,
     "width": 400,
     "tabOrder": 3
   },
   "visual": {
-    "visualType": "lineChart",
+    "visualType": "clusteredColumnChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,11 +23,11 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "snapshot_date"
+                  "Property": "temporada"
                 }
               },
-              "queryRef": "dim_snapshot.snapshot_date",
-              "nativeQueryRef": "snapshot_date",
+              "queryRef": "dim_snapshot.temporada",
+              "nativeQueryRef": "temporada",
               "active": true
             }
           ]
@@ -62,7 +62,7 @@
                     "Entity": "dim_snapshot"
                   }
                 },
-                "Property": "snapshot_date"
+                "Property": "temporada"
               }
             },
             "direction": "Ascending"
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Anuncios por mes (según el barrio elegido)'"
+                  "Value": "'Anuncios por temporada'"
                 }
               }
             }
@@ -96,60 +96,6 @@
     "drillFilterOtherVisuals": true
   },
   "filterConfig": {
-    "filters": [
-      {
-        "name": "ef334d6aff02e07b2732",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "dim_snapshot"
-              }
-            },
-            "Property": "ciudad"
-          }
-        },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "d",
-              "Entity": "dim_snapshot",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "d"
-                          }
-                        },
-                        "Property": "ciudad"
-                      }
-                    }
-                  ],
-                  "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'barcelona'"
-                        }
-                      }
-                    ]
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      }
-    ]
+    "filters": []
   }
 }

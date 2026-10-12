@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "079c36698a59efec890d",
+  "name": "2c5291cb6149878b9422",
   "position": {
     "x": 1480,
-    "y": 500,
+    "y": 770,
     "z": 3,
     "height": 230,
     "width": 400,
@@ -39,15 +39,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fact_listing_snapshot"
+                      "Entity": "fact_calendar"
                     }
                   },
-                  "Property": "Anuncios por mes"
+                  "Property": "Ocupacion aprox 30d"
                 }
               },
-              "queryRef": "fact_listing_snapshot.Anuncios por mes",
-              "nativeQueryRef": "Anuncios por mes",
-              "format": "#,0"
+              "queryRef": "fact_calendar.Ocupacion aprox 30d",
+              "nativeQueryRef": "Ocupacion aprox 30d",
+              "format": "0.0%"
             }
           ]
         }
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Anuncios por temporada'"
+                  "Value": "'Ocupación aproximada por temporada'"
                 }
               }
             }
@@ -96,60 +96,6 @@
     "drillFilterOtherVisuals": true
   },
   "filterConfig": {
-    "filters": [
-      {
-        "name": "445f1d58987f36339efa",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "dim_snapshot"
-              }
-            },
-            "Property": "ciudad"
-          }
-        },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "d",
-              "Entity": "dim_snapshot",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "d"
-                          }
-                        },
-                        "Property": "ciudad"
-                      }
-                    }
-                  ],
-                  "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'barcelona'"
-                        }
-                      }
-                    ]
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      }
-    ]
+    "filters": []
   }
 }

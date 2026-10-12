@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "564b04b4fd28a7646b32",
+  "name": "40e78ef7d4206fd79080",
   "position": {
     "x": 1480,
     "y": 230,
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Anuncios por mes (según el municipio elegido)'"
+                  "Value": "'Anuncios por mes (según el barrio elegido)'"
                 }
               }
             }
@@ -96,60 +96,6 @@
     "drillFilterOtherVisuals": true
   },
   "filterConfig": {
-    "filters": [
-      {
-        "name": "ce35fdfc800eabcb3186",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "dim_snapshot"
-              }
-            },
-            "Property": "ciudad"
-          }
-        },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "d",
-              "Entity": "dim_snapshot",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "d"
-                          }
-                        },
-                        "Property": "ciudad"
-                      }
-                    }
-                  ],
-                  "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'euskadi'"
-                        }
-                      }
-                    ]
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      }
-    ]
+    "filters": []
   }
 }

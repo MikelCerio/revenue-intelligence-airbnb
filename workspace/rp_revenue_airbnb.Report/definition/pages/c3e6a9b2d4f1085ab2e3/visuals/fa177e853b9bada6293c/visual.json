@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "a283058beda7909e9c25",
+  "name": "fa177e853b9bada6293c",
   "position": {
     "x": 40,
     "y": 230,
@@ -42,12 +42,12 @@
                       "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "RevPAR fiable"
+                  "Property": "Ocupacion visible"
                 }
               },
-              "queryRef": "fact_listing_snapshot.RevPAR fiable",
-              "nativeQueryRef": "RevPAR fiable",
-              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+              "queryRef": "fact_listing_snapshot.Ocupacion visible",
+              "nativeQueryRef": "Ocupacion visible",
+              "format": "0.0%"
             }
           ]
         },
@@ -75,27 +75,12 @@
                       "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "Anuncios por mes"
+                  "Property": "Anuncios visibles"
                 }
               },
-              "queryRef": "fact_listing_snapshot.Anuncios por mes",
-              "nativeQueryRef": "Anuncios por mes",
+              "queryRef": "fact_listing_snapshot.Anuncios visibles",
+              "nativeQueryRef": "Anuncios visibles",
               "format": "#,0"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fact_calendar"
-                    }
-                  },
-                  "Property": "Ocupacion aprox 30d"
-                }
-              },
-              "queryRef": "fact_calendar.Ocupacion aprox 30d",
-              "nativeQueryRef": "Ocupacion aprox 30d",
-              "format": "0.0%"
             },
             {
               "field": {
@@ -124,6 +109,21 @@
               },
               "queryRef": "fact_listing_snapshot.ADR fiable",
               "nativeQueryRef": "ADR fiable",
+              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "RevPAR fiable"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.RevPAR fiable",
+              "nativeQueryRef": "RevPAR fiable",
               "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
             }
           ]
@@ -177,7 +177,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'RevPAR aproximado por barrio (zonas con 30 o más anuncios) · pulsa un barrio, Ctrl para comparar'"
+                  "Value": "'Ocupación aproximada por barrio (solo zonas con 30 o más anuncios al mes) · pulsa un barrio, Ctrl para comparar'"
                 }
               }
             }
@@ -188,60 +188,6 @@
     "drillFilterOtherVisuals": true
   },
   "filterConfig": {
-    "filters": [
-      {
-        "name": "a525e547eded45493106",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "dim_snapshot"
-              }
-            },
-            "Property": "ciudad"
-          }
-        },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "d",
-              "Entity": "dim_snapshot",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "d"
-                          }
-                        },
-                        "Property": "ciudad"
-                      }
-                    }
-                  ],
-                  "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'barcelona'"
-                        }
-                      }
-                    ]
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      }
-    ]
+    "filters": []
   }
 }

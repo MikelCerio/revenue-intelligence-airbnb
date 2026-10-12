@@ -17,20 +17,6 @@
           "projections": [
             {
               "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fact_listing_snapshot"
-                    }
-                  },
-                  "Property": "Nivel fiabilidad"
-                }
-              },
-              "queryRef": "fact_listing_snapshot.Nivel fiabilidad",
-              "nativeQueryRef": "Nivel fiabilidad"
-            },
-            {
-              "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
@@ -65,11 +51,25 @@
                       "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "Anuncios por mes"
+                  "Property": "Nivel fiabilidad"
                 }
               },
-              "queryRef": "fact_listing_snapshot.Anuncios por mes",
-              "nativeQueryRef": "Anuncios por mes",
+              "queryRef": "fact_listing_snapshot.Nivel fiabilidad",
+              "nativeQueryRef": "Nivel fiabilidad"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Anuncios visibles"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Anuncios visibles",
+              "nativeQueryRef": "Anuncios visibles",
               "format": "#,0"
             },
             {
@@ -77,14 +77,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fact_calendar"
+                      "Entity": "fact_listing_snapshot"
                     }
                   },
-                  "Property": "Ocupacion aprox 30d"
+                  "Property": "Ocupacion visible"
                 }
               },
-              "queryRef": "fact_calendar.Ocupacion aprox 30d",
-              "nativeQueryRef": "Ocupacion aprox 30d",
+              "queryRef": "fact_listing_snapshot.Ocupacion visible",
+              "nativeQueryRef": "Ocupacion visible",
               "format": "0.0%"
             },
             {
@@ -193,55 +193,6 @@
     }
   },
   "filterConfig": {
-    "filters": [
-      {
-        "name": "e5f6a7b8c9d0e1f2a3b4",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fact_listing_snapshot"
-              }
-            },
-            "Property": "Clave orden"
-          }
-        },
-        "type": "Advanced",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "f",
-              "Entity": "fact_listing_snapshot",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "Comparison": {
-                  "ComparisonKind": 3,
-                  "Left": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Source": "f"
-                        }
-                      },
-                      "Property": "Clave orden"
-                    }
-                  },
-                  "Right": {
-                    "Literal": {
-                      "Value": "350000L"
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    ]
+    "filters": []
   }
 }

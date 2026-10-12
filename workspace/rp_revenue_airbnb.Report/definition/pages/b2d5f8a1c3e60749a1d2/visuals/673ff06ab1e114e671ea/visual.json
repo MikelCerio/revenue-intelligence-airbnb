@@ -1,16 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "634fde19ba8641ac9362",
+  "name": "673ff06ab1e114e671ea",
   "position": {
     "x": 1480,
-    "y": 500,
+    "y": 230,
     "z": 3,
     "height": 230,
     "width": 400,
     "tabOrder": 3
   },
   "visual": {
-    "visualType": "clusteredColumnChart",
+    "visualType": "lineChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,11 +23,11 @@
                       "Entity": "dim_snapshot"
                     }
                   },
-                  "Property": "temporada"
+                  "Property": "snapshot_date"
                 }
               },
-              "queryRef": "dim_snapshot.temporada",
-              "nativeQueryRef": "temporada",
+              "queryRef": "dim_snapshot.snapshot_date",
+              "nativeQueryRef": "snapshot_date",
               "active": true
             }
           ]
@@ -62,7 +62,7 @@
                     "Entity": "dim_snapshot"
                   }
                 },
-                "Property": "temporada"
+                "Property": "snapshot_date"
               }
             },
             "direction": "Ascending"
@@ -85,7 +85,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Anuncios por temporada'"
+                  "Value": "'Anuncios por mes (según el municipio elegido)'"
                 }
               }
             }
@@ -96,60 +96,6 @@
     "drillFilterOtherVisuals": true
   },
   "filterConfig": {
-    "filters": [
-      {
-        "name": "96e0dab35f74d0fc68e7",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "dim_snapshot"
-              }
-            },
-            "Property": "ciudad"
-          }
-        },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "d",
-              "Entity": "dim_snapshot",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "d"
-                          }
-                        },
-                        "Property": "ciudad"
-                      }
-                    }
-                  ],
-                  "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'euskadi'"
-                        }
-                      }
-                    ]
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      }
-    ]
+    "filters": []
   }
 }
