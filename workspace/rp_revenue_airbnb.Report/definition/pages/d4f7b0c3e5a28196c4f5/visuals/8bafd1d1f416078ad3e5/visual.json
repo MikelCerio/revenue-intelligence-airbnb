@@ -1,0 +1,200 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "8bafd1d1f416078ad3e5",
+  "position": {
+    "x": 960,
+    "y": 130,
+    "z": 2,
+    "height": 890,
+    "width": 920,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_zona"
+                    }
+                  },
+                  "Property": "zona"
+                }
+              },
+              "queryRef": "dim_zona.zona",
+              "nativeQueryRef": "zona"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Nivel fiabilidad"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Nivel fiabilidad",
+              "nativeQueryRef": "Nivel fiabilidad"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Anuncios visibles"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Anuncios visibles",
+              "nativeQueryRef": "Anuncios visibles",
+              "format": "#,0"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "RevPAR fiable"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.RevPAR fiable",
+              "nativeQueryRef": "RevPAR fiable",
+              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Ocupacion visible"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Ocupacion visible",
+              "nativeQueryRef": "Ocupacion visible",
+              "format": "0.0%"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "ADR fiable"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.ADR fiable",
+              "nativeQueryRef": "ADR fiable",
+              "format": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\""
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Caida invierno"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Caida invierno",
+              "nativeQueryRef": "Caida invierno",
+              "format": "+0\" pp\";-0\" pp\";0\" pp\""
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Variacion anuncios"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Variacion anuncios",
+              "nativeQueryRef": "Variacion anuncios",
+              "format": "+0%;-0%;0%"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_listing_snapshot"
+                    }
+                  },
+                  "Property": "Clave orden"
+                }
+              },
+              "queryRef": "fact_listing_snapshot.Clave orden",
+              "nativeQueryRef": "Clave orden",
+              "format": "0"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fact_listing_snapshot"
+                  }
+                },
+                "Property": "Clave orden"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": false
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Ficha de inversor por municipio: de más a menos fiable y, dentro, por RevPAR'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": []
+  }
+}

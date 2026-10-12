@@ -89,6 +89,18 @@ table fact_listing_snapshot
 		displayFolder: Fiabilidad
 		lineageTag: 862e73ab-eff2-40d3-bf92-cefb852eee29
 
+	/// Puntos de ocupacion que se pierden de verano a invierno (ocupacion de verano menos la de invierno, x100). Mide la estacionalidad; solo zonas con 30 o mas anuncios.
+	measure 'Caida invierno' = VAR o = [Orden fiabilidad] VAR v = CALCULATE([Ocupacion aprox 30d], dim_snapshot[temporada] = "2 · Verano") VAR i = CALCULATE([Ocupacion aprox 30d], dim_snapshot[temporada] = "4 · Invierno") RETURN IF(NOT ISBLANK(o) && o <= 3 && NOT ISBLANK(v) && NOT ISBLANK(i), (v - i) * 100, BLANK())
+		formatString: +0" pp";-0" pp";0" pp"
+		displayFolder: Inversor
+		lineageTag: 484ed762-b0de-4831-9e56-17539fe0328f
+
+	/// Cambio de anuncios entre el primer y el ultimo snapshot completo de la ciudad. Senal de crecimiento o retirada de la oferta; solo zonas con 30 o mas anuncios.
+	measure 'Variacion anuncios' = VAR o = [Orden fiabilidad] VAR f = CALCULATE(MIN(dim_snapshot[snapshot_date]), dim_snapshot[es_completo] = TRUE()) VAR l = CALCULATE(MAX(dim_snapshot[snapshot_date]), dim_snapshot[es_completo] = TRUE()) VAR a = CALCULATE([Anuncios], dim_snapshot[snapshot_date] = f) VAR b = CALCULATE([Anuncios], dim_snapshot[snapshot_date] = l) RETURN IF(NOT ISBLANK(o) && o <= 3 && a > 0, DIVIDE(b, a) - 1, BLANK())
+		formatString: +0%;-0%;0%
+		displayFolder: Inversor
+		lineageTag: 5f4795af-6d6b-4ea4-a6e0-c6364d4a302e
+
 	column listing_id
 		dataType: int64
 		formatString: 0

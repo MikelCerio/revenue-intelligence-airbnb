@@ -334,6 +334,8 @@ Modelo sobre las 6 tablas de `lh_gold`, **Direct Lake**: lee las tablas Delta di
 
 **Temporada.** `dim_snapshot[temporada]` (sección 7i de `nb_10`): 1 Primavera (mar-may), 2 Verano (jun-ago), 3 Otoño (sep-nov), 4 Invierno (dic-feb), con el número delante para que se ordene bien. Con 12 meses hay una sola vez cada estación: se compara entre estaciones, no entre años, y cada una tiene como mucho tres puntos. Los eventos (ferias, congresos) quedan fuera por ahora.
 
+**Páginas Inversor (Euskadi y Barcelona).** Año completo, solo zonas con 30 o más anuncios al mes: gráfico de dispersión ocupación frente a ADR (tamaño = anuncios; arriba a la derecha, "caro y lleno") y ficha por zona con nivel, RevPAR, ocupación, ADR, `Caida invierno` (puntos de ocupación de verano a invierno) y `Variacion anuncios` (primer frente a último snapshot completo). Primeros datos: RevPAR medio anual (mediana) 134 € en Barcelona y 81 € en Euskadi; caída en invierno de 3 y 33 puntos; anuncios −24 % y −4 %. La ocupación casi plana de Barcelona y su caída de oferta están por explicar (regulación, abandono o cambio de captura).
+
 **Mapa web interactivo** (artefacto HTML privado, no versionado aquí): misma lógica con un desplegable para la métrica del color, zoom, ficha de zona con mínimo y máximo, y comparación de hasta seis zonas. Su ADR usa el recuento de anuncios con precio válido calculado en local con una regla parecida a la del modelo.
 
 **Cosas aprendidas.**
