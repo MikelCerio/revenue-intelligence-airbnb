@@ -249,7 +249,8 @@ function paintNote() {
   const el = document.getElementById("note"); el.hidden = !msgs.length; el.textContent = msgs.join(". ") + (msgs.length ? "." : "");
 }
 function paintRank() {
-  const rows = table(S.season).sort((a, b) => a.t - b.t || ((b.a[S.metric] ?? -1e9) - (a.a[S.metric] ?? -1e9)));
+  const rows0 = table(S.season), mk = rows0.some(r => r.a[S.metric] != null) ? S.metric : "occ";
+  const rows = rows0.sort((a, b) => a.t - b.t || ((b.a[mk] ?? -1e9) - (a.a[mk] ?? -1e9)));
   const tb = document.getElementById("rank"); tb.innerHTML = "";
   const names = ["", "Fiables · 100 o más anuncios", "Aceptables · 50 a 99", "Orientativas · 30 a 49"];
   let last = 0;
