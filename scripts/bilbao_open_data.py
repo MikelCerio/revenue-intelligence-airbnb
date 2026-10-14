@@ -110,7 +110,7 @@ def precio_referencia():
 
 def anuncios_con_distrito(distritos):
     cols = ["id", "latitude", "longitude", "room_type", "neighbourhood_cleansed", "minimum_nights",
-            "number_of_reviews_ltm", "number_of_reviews", "availability_365", "accommodates"]
+            "number_of_reviews_ltm", "number_of_reviews", "availability_365", "accommodates", "calculated_host_listings_count"]
     L = pd.read_csv(LISTINGS, usecols=cols, low_memory=False)
     L = L[L.neighbourhood_cleansed == "Bilbao"].copy()
     cods = list(distritos)
@@ -272,6 +272,79 @@ def p6_tamano_mercado(activos, distritos):
     return resumen, por_distrito.drop(columns="cod").sort_values("falta_mes", ascending=False)
 
 
+# Donostia: Inside Airbnb no la divide en barrios. Se usan los 7 distritos censales del INE y se
+# nombran con los barrios conocidos que caen dentro (coordenadas aproximadas de referencia).
+BARRIOS_DONOSTIA = {
+    "Parte Vieja": (-1.9858, 43.3238), "Centro": (-1.9810, 43.3180), "Gros": (-1.9750, 43.3240),
+    "Antiguo": (-2.0100, 43.3110), "Amara": (-1.9800, 43.3060), "Egia": (-1.9700, 43.3180),
+    "Altza": (-1.9270, 43.3170), "Intxaurrondo": (-1.9500, 43.3130), "Aiete": (-2.0000, 43.3050),
+    "Ibaeta": (-2.0200, 43.3060), "Igeldo": (-2.0500, 43.3150), "Loiola": (-1.9600, 43.2970),
+    "Ulia": (-1.9600, 43.3260),
+}
+
+
+def distritos_donostia():
+    a_wgs84 = Transformer.from_crs("EPSG:25830", "EPSG:4326", always_xy=True).transform
+    por_distrito = {}
+    for sr in shapefile.Reader(str(DATOS / "ine_2024" / "SECC_CE_20240101.shp")).iterShapeRecords():
+        if sr.record["CUMUN"] == "20069":
+            por_distrito.setdefault(int(sr.record["CDIS"]), []).append(transform(a_wgs84, shape(sr.shape.__geo_interface__)))
+    res = {}
+    for cd, g in sorted(por_distrito.items()):
+        geom = unary_union(g).buffer(0)
+        dentro = [b for b, (x, y) in BARRIOS_DONOSTIA.items() if geom.contains(Point(x, y))]
+        res[cd] = (f"{cd:02d} · " + (", ".join(dentro) if dentro else "sin barrio de referencia"), geom)
+    print(f"  Donostia: {sum(len(v) for v in por_distrito.values())} secciones censales en {len(res)} distritos")
+    return res
+
+
+def p7_donostia(precio_ref):
+    """Donostia por distrito: oferta, ingreso estimado y tamaño del mercado, con el mismo método que Bilbao."""
+    dist = distritos_donostia()
+    L = pd.read_csv(LISTINGS, usecols=["id", "latitude", "longitude", "room_type", "neighbourhood_cleansed", "minimum_nights",
+                                       "number_of_reviews_ltm", "number_of_reviews", "availability_365", "accommodates",
+                                       "calculated_host_listings_count"], low_memory=False)
+    L = L[L.neighbourhood_cleansed.astype(str).str.startswith("Donostia")].copy()
+    cods = list(dist); arbol = STRtree([dist[c][1] for c in cods])
+    L["cod"] = [(lambda h: cods[h[0]] if len(h) else None)(arbol.query(Point(x, y), predicate="within")) for x, y in zip(L.longitude, L.latitude)]
+    print(f"  anuncios de Donostia: {len(L)}; fuera de los distritos: {L.cod.isna().sum()}")
+    L["precio"] = L.id.map(precio_ref)
+    A = L[(L.room_type == "Entire home/apt") & (L.minimum_nights <= 30) & (L.number_of_reviews_ltm > 0) & L.precio.notna() & L.cod.notna()].copy()
+    A["noches"] = np.minimum(A.number_of_reviews_ltm / TASA_RESENA * np.maximum(ESTANCIA_MEDIA, A.minimum_nights), TOPE_OCUPACION * 365)
+    A["ingreso_mes"] = A.noches * A.precio / 12
+    oferta = L[L.room_type == "Entire home/apt"].groupby("cod").size()
+    filas = []
+    for cod, g in A.groupby("cod"):
+        fila = {"distrito": dist[cod][0], "pisos_completos": int(oferta.get(cod, 0)), "pisos_activos": len(g)}
+        if len(g) >= UMBRAL_PRIVACIDAD:
+            fila.update(precio_noche_mediano=round(g.precio.median()), ingreso_mes_p25=round(g.ingreso_mes.quantile(.25)),
+                        ingreso_mes_mediana=round(g.ingreso_mes.median()), ingreso_mes_p75=round(g.ingreso_mes.quantile(.75)))
+        filas.append(fila)
+    t_ingreso = pd.DataFrame(filas).sort_values("ingreso_mes_mediana", ascending=False)
+    resumen, por_distrito = p6_tamano_mercado(A, {c: (dist[c][0], None) for c in dist})
+    gj = {"type": "FeatureCollection", "features": [
+        {"type": "Feature", "properties": {"cod": c, "distrito": n}, "geometry": mapping(g.simplify(0.0001))} for c, (n, g) in dist.items()]}
+    (SALIDA / "donostia_distritos.geojson").write_text(json.dumps(gj, ensure_ascii=False), encoding="utf-8")
+    return t_ingreso, resumen, por_distrito, A
+
+
+def p8_segmentos(A_bilbao, A_donostia):
+    """Particulares, pequeños y profesionales: cuánto rinden y cuántos quedan por debajo de sus iguales."""
+    filas = []
+    for ciudad, A in (("Bilbao", A_bilbao), ("Donostia", A_donostia)):
+        A = A.copy()
+        A["segmento"] = pd.cut(A.calculated_host_listings_count, [0, 1, 9, 10**6], labels=["particular (1)", "pequeño (2-9)", "profesional (10+)"])
+        A["cap"] = pd.cut(A.accommodates, [0, 2, 4, 6, 99], labels=["1-2", "3-4", "5-6", "7+"])
+        g = A.groupby(["cod", "cap"], observed=True)
+        A["n_grupo"] = g["ingreso_mes"].transform("size"); A["q25"] = g["ingreso_mes"].transform(lambda x: x.quantile(.25))
+        B = A[A.n_grupo >= UMBRAL_PRIVACIDAD]
+        for s, h in B.groupby("segmento", observed=True):
+            filas.append(dict(ciudad=ciudad, segmento=s, pisos=len(h), ingreso_mes_mediana=round(h.ingreso_mes.median()),
+                              precio_noche_mediano=round(h.precio.median()), noches_mes=round(h.noches.median() / 12, 1),
+                              pct_por_debajo_de_iguales=round(100 * (h.ingreso_mes < h.q25).mean())))
+    return pd.DataFrame(filas)
+
+
 def main():
     SALIDA.mkdir(parents=True, exist_ok=True)
     print("1. Descarga"); descargar()
@@ -297,6 +370,12 @@ def main():
     print("10. P6 tamaño del mercado (pisos por debajo de sus iguales)")
     r6, t6 = p6_tamano_mercado(activos, distritos); print(r6); print(t6.to_string(index=False))
     t6.to_csv(SALIDA / "p6_tamano_mercado_distrito.csv", index=False)
+    print("11. P7 Donostia por distrito")
+    t7, r7, t7b, A_don = p7_donostia(precio_ref); print(t7.to_string(index=False)); print(r7); print(t7b.to_string(index=False))
+    t7.to_csv(SALIDA / "p7_donostia_ingreso_distrito.csv", index=False); t7b.to_csv(SALIDA / "p7_donostia_tamano_mercado.csv", index=False)
+    (SALIDA / "p7_donostia_resumen.json").write_text(json.dumps({k: (int(v) if isinstance(v, (np.integer,)) else float(v) if isinstance(v, (np.floating,)) else v) for k, v in r7.items()}, ensure_ascii=False, indent=1), encoding="utf-8")
+    print("12. P8 tipo de anfitrión")
+    t8 = p8_segmentos(activos, A_don); print(t8.to_string(index=False)); t8.to_csv(SALIDA / "p8_tipo_anfitrion.csv", index=False)
     (SALIDA / "p6_tamano_mercado_resumen.json").write_text(json.dumps({k: (float(v) if isinstance(v, (np.floating,)) else int(v) if isinstance(v, (np.integer,)) else v) for k, v in r6.items()}, ensure_ascii=False, indent=1), encoding="utf-8")
     t1.to_csv(SALIDA / "p1_oferta_distrito.csv", index=False)
     t2.to_csv(SALIDA / "p2_ingreso_distrito.csv", index=False)
