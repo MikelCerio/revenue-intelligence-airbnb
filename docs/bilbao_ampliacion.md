@@ -105,6 +105,30 @@ Alquiler largo: capitales con contratos nuevos (4.º trimestre de 2025); el rest
 
 De 820 pisos comparados en 16 grupos, 119 pisos con 10 o más reseñas ingresan menos que el 75 % de sus iguales: les faltan unos **113.100 € al mes** en total (mediana de 960 € por piso) para llegar a la mediana de su grupo. Otros 52 pisos están "baratos y llenos" (114 € frente a 156 € de sus iguales). Del total que falta, Ibaiondo, Abando y Uribarri suman el 88 %. De los que rinden poco, el 43 % tiene menos de 10 reseñas y el 43 % deja libres 270 días o más: no todos están mal gestionados.
 
+## 8b. Donostia por distrito (P7)
+
+Inside Airbnb trata Donostia como una sola zona, así que se usan los 7 distritos censales del INE (CUMUN 20069, 141 secciones). Cada distrito lleva el nombre de los barrios de referencia que contiene; los nombres son aproximados. Mismo método que en Bilbao: 949 pisos en 23 grupos de distrito y capacidad.
+
+- Ingreso bruto mensual del piso mediano: de 3.184 € (Parte Vieja) a 1.826 € (Antiguo-Aiete-Ibaeta).
+- 177 pisos con 10 o más reseñas rinden por debajo del 75 % de sus iguales: les faltan unos **308.400 € al mes** (mediana de 1.659 € por piso), casi el triple que en Bilbao.
+- 97 pisos "baratos y llenos": 204 € frente a 289 € de sus iguales.
+- Sin distritos (solo capacidad) el hueco salía casi igual (unos 321.000 €): no lo explica la ubicación.
+
+## 8c. Tipo de anfitrión (P8)
+
+Segmentos por `calculated_host_listings_count`: particular (1 anuncio), pequeño (2 a 9) y profesional (10 o más). Un anfitrión con 10 o más anuncios suele ser una gestora, no un "gran tenedor".
+
+| Ciudad | Segmento | Pisos | Ingreso/mes mediano | Noches/mes | % por debajo de iguales |
+|---|---|---|---|---|---|
+| Bilbao | Particular | 327 | 1.553 € | 8,0 | 18 % |
+| Bilbao | Pequeño | 260 | 1.384 € | 7,5 | 25 % |
+| Bilbao | Profesional | 233 | 823 € | 5,5 | 35 % |
+| Donostia | Particular | 315 | 3.069 € | 11,5 | 17 % |
+| Donostia | Pequeño | 234 | 2.515 € | 9,0 | 24 % |
+| Donostia | Profesional | 400 | 1.937 € | 5,0 | 34 % |
+
+Límite: las gestoras venden también por Booking y canal directo y Airbnb solo ve una parte, así que la diferencia puede ser menor. La ocupación del calendario a 30 días también la muestra (63 % frente a 73 % en Bilbao).
+
 ## 9. Paso a Fabric (pendiente)
 
 1. Subir a `lh_bronze/Files/opendata/` las fuentes públicas.
