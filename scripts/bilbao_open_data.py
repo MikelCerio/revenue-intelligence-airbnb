@@ -89,9 +89,28 @@ def habitantes_por_distrito():
     return pob.to_dict()
 
 
+SNAPSHOTS_PRECIO = ("2026-03-31", "2026-04-30", "2026-05-31", "2026-06-30")
+
+
+def precio_referencia():
+    """Precio por noche de referencia de cada anuncio: mediana de sus precios de marzo a junio de 2026.
+
+    Desde marzo de 2026 el precio de Inside Airbnb es una cotización para fechas cercanas a la captura;
+    usar solo junio sobrestimaba el ingreso anual (precios de verano). Diciembre a febrero no traen precio.
+    """
+    trozos = []
+    for s in SNAPSHOTS_PRECIO:
+        X = pd.read_csv(LISTINGS.parents[1] / s / "listings.csv.gz", usecols=["id", "price"], low_memory=False)
+        X["p"] = pd.to_numeric(X.price.astype(str).str.replace(r"[^0-9.]", "", regex=True), errors="coerce")
+        trozos.append(X[(X.p > 0) & (X.p < 9999)][["id", "p"]])
+    ref = pd.concat(trozos).groupby("id").p.median()
+    print(f"  precio de referencia (mediana mar-jun 2026) para {len(ref)} anuncios de Euskadi")
+    return ref
+
+
 def anuncios_con_distrito(distritos):
-    cols = ["latitude", "longitude", "room_type", "neighbourhood_cleansed", "minimum_nights",
-            "number_of_reviews_ltm", "price"]
+    cols = ["id", "latitude", "longitude", "room_type", "neighbourhood_cleansed", "minimum_nights",
+            "number_of_reviews_ltm", "number_of_reviews", "availability_365", "accommodates"]
     L = pd.read_csv(LISTINGS, usecols=cols, low_memory=False)
     L = L[L.neighbourhood_cleansed == "Bilbao"].copy()
     cods = list(distritos)
@@ -111,10 +130,10 @@ def p1_oferta(L, distritos, pob):
     return T.sort_values("pisos_por_1000_hab", ascending=False)
 
 
-def p2_ingreso(L, distritos):
+def p2_ingreso(L, distritos, precio_ref):
     P = L[(L.room_type == "Entire home/apt") & (L.minimum_nights <= 30)].copy()
-    P["precio"] = pd.to_numeric(P.price.astype(str).str.replace(r"[^0-9.]", "", regex=True), errors="coerce")
-    activos = P[(P.number_of_reviews_ltm > 0) & P.precio.notna() & (P.precio < 9999)].copy()
+    P["precio"] = P.id.map(precio_ref)
+    activos = P[(P.number_of_reviews_ltm > 0) & P.precio.notna()].copy()
     print(f"  pisos de corta estancia: {len(P)}; activos con precio (al menos 1 reseña en 12 meses): {len(activos)}")
     noches = activos.number_of_reviews_ltm / TASA_RESENA * np.maximum(ESTANCIA_MEDIA, activos.minimum_nights)
     activos["noches"] = np.minimum(noches, TOPE_OCUPACION * 365)
@@ -192,6 +211,67 @@ def p4_costes(activos, distritos):
     return T
 
 
+def p5_municipios(precio_ref):
+    """Bilbao frente a Donostia, la costa y Vitoria-Gasteiz: ingreso, neto del dueño y alquiler largo (EMAL 2025)."""
+    largo = {  # capitales: contratos nuevos 4T 2025; resto: renta media vigente de su área funcional
+        "Bilbao": 1011.1, "Donostia-San Sebastián": 1131.9, "Vitoria-Gasteiz": 851.2, "Zarautz": 778.1,
+        "Hondarribia": 930.9, "Getxo": 833.9, "Sopelana": 833.9, "Bakio": 766.7, "Bermeo": 594.6,
+        "Lekeitio": 594.6, "Mundaka": 594.6}
+    def arreglar(s):
+        try:
+            return s.encode("cp1252").decode("utf-8")
+        except Exception:
+            return s
+    L = pd.read_csv(LISTINGS, usecols=["id", "neighbourhood_cleansed", "room_type", "minimum_nights", "number_of_reviews_ltm"], low_memory=False)
+    L["municipio"] = L.neighbourhood_cleansed.astype(str).map(arreglar)
+    L["precio"] = L.id.map(precio_ref)
+    A = L[(L.room_type == "Entire home/apt") & (L.minimum_nights <= 30) & (L.number_of_reviews_ltm > 0) & L.precio.notna()].copy()
+    A["noches"] = np.minimum(A.number_of_reviews_ltm / TASA_RESENA * np.maximum(ESTANCIA_MEDIA, A.minimum_nights), TOPE_OCUPACION * 365)
+    A["ingreso_mes"] = A.noches * A.precio / 12
+    e = ESCENARIOS["propietario_solo"]
+    fijo = e["suministros"] + e["comunidad"] + e["seguro"] + e["ibi_basura"]
+    filas = []
+    for m, g in A.groupby("municipio"):
+        if m not in largo or len(g) < 30:
+            continue
+        bruto = g.ingreso_mes.median(); noches_mes = g.noches.median() / 12
+        neto = bruto * (1 - e["comision_plataforma"] - e["mantenimiento_pct"]) - noches_mes / ESTANCIA_MEDIA * e["limpieza_estancia"] - fijo
+        neto_largo = largo[m] - (e["comunidad"] + e["seguro"] + e["ibi_basura"])
+        filas.append(dict(municipio=m, pisos_activos=len(g), precio_noche_mediano=round(g.precio.median()), noches_mes=round(noches_mes, 1),
+                          ingreso_mes_mediana=round(bruto), ingreso_mes_p25=round(g.ingreso_mes.quantile(.25)), ingreso_mes_p75=round(g.ingreso_mes.quantile(.75)),
+                          neto_propietario_solo=round(neto), neto_alquiler_largo=round(neto_largo), turistico_entre_largo=round(neto / neto_largo, 2),
+                          bruto_anual=round(bruto * 12), largo_bruto_anual=round(largo[m] * 12)))
+    return pd.DataFrame(filas).sort_values("ingreso_mes_mediana", ascending=False)
+
+
+def p6_tamano_mercado(activos, distritos):
+    """Pisos que rinden por debajo de sus iguales (mismo distrito y capacidad, grupos de 10 o más)."""
+    A = activos.copy()
+    A["cap"] = pd.cut(A.accommodates, [0, 2, 4, 6, 99], labels=["1-2", "3-4", "5-6", "7+"])
+    A["occ"] = A.noches / 365
+    g = A.groupby(["cod", "cap"], observed=True)
+    A["n_grupo"] = g["precio"].transform("size")
+    for c in ("precio", "occ", "ingreso_mes"):
+        A[c + "_q25"] = g[c].transform(lambda x: x.quantile(.25)); A[c + "_q75"] = g[c].transform(lambda x: x.quantile(.75)); A[c + "_med"] = g[c].transform("median")
+    B = A[A.n_grupo >= UMBRAL_PRIVACIDAD].copy()
+    B["rinde_poco"] = B.ingreso_mes < B.ingreso_mes_q25
+    B["establecido"] = B.number_of_reviews >= 10
+    B["barato_lleno"] = (B.occ >= B.occ_q75) & (B.precio <= B.precio_q25)
+    B["falta_mes"] = np.where(B.rinde_poco, B.ingreso_mes_med - B.ingreso_mes, 0)
+    rp = B[B.rinde_poco]; est = B[B.rinde_poco & B.establecido]; bl = B[B.barato_lleno]
+    resumen = dict(pisos_comparados=len(B), grupos=B.groupby(["cod", "cap"], observed=True).ngroups,
+                   rinden_poco=len(rp), pct_rinden_poco_pocas_resenas=round(100 * (rp.number_of_reviews < 10).mean()),
+                   pct_rinden_poco_270_dias_libres=round(100 * (rp.availability_365 >= 270).mean()),
+                   establecidos_rinden_poco=len(est), falta_mes_establecidos=round(est.falta_mes.sum(), -2),
+                   falta_mes_establecido_mediana=round(est.falta_mes.median()), falta_mes_total=round(B.falta_mes.sum(), -2),
+                   baratos_llenos=len(bl), precio_baratos_llenos=round(bl.precio.median()), precio_iguales=round(bl.precio_med.median()),
+                   subida_baratos_llenos_mes=round(((bl.precio_med - bl.precio) * bl.noches / 12).sum(), -2))
+    por_distrito = B.groupby("cod").agg(pisos=("precio", "size"), rinden_poco=("rinde_poco", "sum"), falta_mes=("falta_mes", "sum")).reset_index()
+    por_distrito["distrito"] = por_distrito.cod.map({c: distritos[c][0] for c in distritos})
+    por_distrito["falta_mes"] = por_distrito.falta_mes.round(-2)
+    return resumen, por_distrito.drop(columns="cod").sort_values("falta_mes", ascending=False)
+
+
 def main():
     SALIDA.mkdir(parents=True, exist_ok=True)
     print("1. Descarga"); descargar()
@@ -199,7 +279,8 @@ def main():
     print("3. Habitantes"); pob = habitantes_por_distrito()
     print("4. Anuncios"); L = anuncios_con_distrito(distritos)
     print("5. P1 oferta"); t1 = p1_oferta(L, distritos, pob); print(t1.to_string(index=False))
-    print("6. P2 ingreso"); t2, activos = p2_ingreso(L, distritos); print(t2.to_string(index=False))
+    print("6. P2 ingreso"); precio_ref = precio_referencia()
+    t2, activos = p2_ingreso(L, distritos, precio_ref); print(t2.to_string(index=False))
     precio = activos.precio.median()
     print(f"7. P3 impuesto (precio por noche mediano de Bilbao: {precio:.0f} EUR)"); t3 = p3_impuesto(precio)
     print(t3[t3.personas == 2].to_string(index=False))
@@ -211,6 +292,12 @@ def main():
     print(f"  propietario solo: cubre los gastos fijos ({fijo:.0f} EUR/mes) con {fijo / margen_noche:.1f} noches al mes "
           f"a {precio:.0f} EUR; igualar el alquiler largo neto exige {(t4.neto_alquiler_largo.iloc[0] + fijo) / margen_noche:.1f} noches")
     t4.to_csv(SALIDA / "p4_costes_distrito.csv", index=False)
+    print("9. P5 Bilbao frente a Donostia, la costa y Vitoria-Gasteiz")
+    t5 = p5_municipios(precio_ref); print(t5.to_string(index=False)); t5.to_csv(SALIDA / "p5_comparativa_municipios.csv", index=False)
+    print("10. P6 tamaño del mercado (pisos por debajo de sus iguales)")
+    r6, t6 = p6_tamano_mercado(activos, distritos); print(r6); print(t6.to_string(index=False))
+    t6.to_csv(SALIDA / "p6_tamano_mercado_distrito.csv", index=False)
+    (SALIDA / "p6_tamano_mercado_resumen.json").write_text(json.dumps({k: (float(v) if isinstance(v, (np.floating,)) else int(v) if isinstance(v, (np.integer,)) else v) for k, v in r6.items()}, ensure_ascii=False, indent=1), encoding="utf-8")
     t1.to_csv(SALIDA / "p1_oferta_distrito.csv", index=False)
     t2.to_csv(SALIDA / "p2_ingreso_distrito.csv", index=False)
     t3.to_csv(SALIDA / "p3_impuesto_escenarios.csv", index=False)
