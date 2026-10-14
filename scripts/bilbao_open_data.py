@@ -143,6 +143,55 @@ def p3_impuesto(precio_noche):
     return pd.DataFrame(filas)
 
 
+# Modelo de costes (P4). Todo son supuestos editables; la fuente o el motivo va al lado.
+# Importes mensuales por piso salvo que se indique. Sin hipoteca ni IRPF.
+ESCENARIOS = {
+    "propietario_solo": dict(
+        comision_plataforma=0.1876,   # Airbnb solo anfitrión 15,5 % + IVA 21 % no recuperable (Rentals Scale Up, Hostaway)
+        comision_gestora=0.0,
+        limpieza_estancia=55.0,       # SUPUESTO: limpieza externa unas 2,5 h + lavandería y amenities (sin cifra pública en Bilbao)
+        suministros=180.0,            # luz 57 + gas 43 + agua 18 (medias de hogar 2026) + internet 40 + extra por rotación 22
+        comunidad=80.0, seguro=30.0, ibi_basura=40.0,  # medias de propietario en España
+        software=0.0,
+        mantenimiento_pct=0.03),      # SUPUESTO: reposición y pequeñas reparaciones
+    "con_gestora": dict(
+        comision_plataforma=0.1876, comision_gestora=0.20,  # gestoras: 15-30 % habitual (Chekin)
+        limpieza_estancia=55.0, suministros=180.0, comunidad=80.0, seguro=30.0, ibi_basura=40.0,
+        software=0.0, mantenimiento_pct=0.03),
+    "gestora_con_escala": dict(
+        comision_plataforma=0.155 * 0.7,  # SUPUESTO: 30 % de reservas directas sin comisión; con IVA deducible
+        comision_gestora=0.0,
+        limpieza_estancia=35.0,       # SUPUESTO: equipo propio y lavandería por volumen
+        suministros=180.0, comunidad=80.0, seguro=30.0, ibi_basura=40.0,
+        software=25.0,                # SUPUESTO: PMS y herramientas por piso
+        mantenimiento_pct=0.02),
+}
+ALQUILER_LARGO_MES = 1011.1   # EMAL Gobierno Vasco: renta media de contratos nuevos en Bilbao, 4.º trimestre de 2025
+
+
+def p4_costes(activos, distritos):
+    """Neto mensual antes de hipoteca e impuestos del piso mediano de cada distrito, por escenario."""
+    filas = []
+    for cod, g in activos.groupby("cod"):
+        if len(g) < UMBRAL_PRIVACIDAD:
+            continue
+        noches_mes = g.noches.median() / 12
+        bruto = g.ingreso_mes.median()
+        estancias_mes = noches_mes / ESTANCIA_MEDIA
+        fila = {"distrito": distritos[cod][0], "ingreso_bruto_mes": round(bruto), "noches_mes": round(noches_mes, 1)}
+        for nombre, e in ESCENARIOS.items():
+            variable = bruto * (e["comision_plataforma"] + e["comision_gestora"] + e["mantenimiento_pct"]) \
+                + estancias_mes * e["limpieza_estancia"]
+            fijo = e["suministros"] + e["comunidad"] + e["seguro"] + e["ibi_basura"] + e["software"]
+            fila[f"neto_{nombre}"] = round(bruto - variable - fijo)
+        filas.append(fila)
+    fijo_largo = ESCENARIOS["propietario_solo"]
+    neto_largo = ALQUILER_LARGO_MES - (fijo_largo["comunidad"] + fijo_largo["seguro"] + fijo_largo["ibi_basura"])
+    T = pd.DataFrame(filas).sort_values("ingreso_bruto_mes", ascending=False)
+    T["neto_alquiler_largo"] = round(neto_largo)
+    return T
+
+
 def main():
     SALIDA.mkdir(parents=True, exist_ok=True)
     print("1. Descarga"); descargar()
@@ -154,6 +203,14 @@ def main():
     precio = activos.precio.median()
     print(f"7. P3 impuesto (precio por noche mediano de Bilbao: {precio:.0f} EUR)"); t3 = p3_impuesto(precio)
     print(t3[t3.personas == 2].to_string(index=False))
+    print("8. P4 costes: neto mensual del piso mediano (antes de hipoteca e impuestos)")
+    t4 = p4_costes(activos, distritos); print(t4.to_string(index=False))
+    e = ESCENARIOS["propietario_solo"]
+    fijo = e["suministros"] + e["comunidad"] + e["seguro"] + e["ibi_basura"]
+    margen_noche = precio * (1 - e["comision_plataforma"] - e["mantenimiento_pct"]) - e["limpieza_estancia"] / ESTANCIA_MEDIA
+    print(f"  propietario solo: cubre los gastos fijos ({fijo:.0f} EUR/mes) con {fijo / margen_noche:.1f} noches al mes "
+          f"a {precio:.0f} EUR; igualar el alquiler largo neto exige {(t4.neto_alquiler_largo.iloc[0] + fijo) / margen_noche:.1f} noches")
+    t4.to_csv(SALIDA / "p4_costes_distrito.csv", index=False)
     t1.to_csv(SALIDA / "p1_oferta_distrito.csv", index=False)
     t2.to_csv(SALIDA / "p2_ingreso_distrito.csv", index=False)
     t3.to_csv(SALIDA / "p3_impuesto_escenarios.csv", index=False)

@@ -59,3 +59,33 @@ Estos supuestos son los mismos que usa Inside Airbnb en su estimación (`estimat
 3. Notebook gold: `dim_distrito` (código, nombre, habitantes, geometría), la asignación de cada anuncio a su distrito y las tablas `fact_oferta_distrito`, `fact_ingreso_distrito` y `param_impuesto`.
 4. Modelo semántico: medidas de pisos por 1.000 habitantes, ingreso mediano y simulador del impuesto con parámetros (personas y noches).
 5. Página de informe: Bilbao por distrito y simulador del impuesto.
+
+## 7. Modelo de costes (P4)
+
+Neto mensual del piso mediano de cada distrito, **antes de hipoteca e impuestos**, con tres escenarios. Todos los costes son parámetros editables en el script (`ESCENARIOS`), con su fuente o la marca SUPUESTO.
+
+| Concepto | Propietario solo | Con gestora | Gestora con escala | Fuente |
+|---|---|---|---|---|
+| Comisión de plataforma | 18,76 % | 18,76 % | 10,9 % | Airbnb solo anfitrión 15,5 % + IVA no recuperable; con escala, 30 % de reservas directas (SUPUESTO) |
+| Comisión de gestora | — | 20 % | — | Rango habitual 15-30 % |
+| Limpieza por estancia | 55 € | 55 € | 35 € | SUPUESTO (no hay cifra pública en Bilbao) |
+| Suministros | 180 €/mes | 180 €/mes | 180 €/mes | Medias de hogar 2026 + internet + rotación |
+| Comunidad, seguro, IBI y basura | 150 €/mes | 150 €/mes | 150 €/mes | Medias de propietario |
+| Software | — | — | 25 €/mes | SUPUESTO |
+| Mantenimiento | 3 % | 3 % | 2 % | SUPUESTO |
+
+Alquiler largo de referencia: 1.011,1 €/mes (EMAL, contratos nuevos de Bilbao, 4.º trimestre de 2025), menos comunidad, seguro e IBI = **861 €/mes netos**.
+
+| Distrito | Bruto | Propietario solo | Con gestora | Gestora con escala |
+|---|---|---|---|---|
+| Abando | 1.640 € | 825 € | 497 € | 993 € |
+| Ibaiondo | 1.599 € | 765 € | 445 € | 939 € |
+| Uribarri | 1.407 € | 633 € | 352 € | 784 € |
+| Errekalde | 1.264 € | 549 € | 296 € | 677 € |
+| Basurtu-Zorrotza | 968 € | 336 € | 142 € | 431 € |
+| Deustu | 904 € | 276 € | 95 € | 368 € |
+| Begoña | 600 € | 75 € | −45 € | 127 € |
+
+Un propietario que gestiona solo su piso cubre los gastos fijos con unas 2,5 noches al mes a 190 €, pero necesita unas **9 noches al mes** para igualar el alquiler largo neto; el piso mediano de Bilbao hace entre 3,5 y 8,5 según el distrito.
+
+**Límites.** El precio de Inside Airbnb no incluye la tarifa de limpieza que paga el huésped: si se cobra aparte, el neto sube unos 100-130 €/mes y el piso mediano del centro empata con el alquiler largo. Se combina el ingreso mediano con las noches medianas del distrito, que no son del mismo piso. No incluye mobiliario, vacíos ni impagos del alquiler largo.
