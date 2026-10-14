@@ -2,9 +2,18 @@
 
 Proyecto de portfolio de **analítica de revenue para alquiler turístico**, construido de extremo a extremo en **Microsoft Fabric**: ingesta reproducible, arquitectura medallion (bronze, silver, gold), modelo semántico **Direct Lake** y un informe de Power BI pensado para propietarios de pocos pisos.
 
-> **Estado:** en construcción. Funcionan la ingesta, silver (`listings` y `calendar`), el gold, el modelo y un informe de 3 páginas. Pendientes: reseñas como proxy de demanda, seguridad por filas (RLS) y alertas de calidad.
+> **Estado:** funcionan la ingesta, silver (`listings` y `calendar`), el gold, el modelo Direct Lake y un informe de Power BI de 9 páginas. La ampliación de Bilbao y Donostia por distrito está hecha en Python ([metodología](docs/bilbao_ampliacion.md)) y pendiente de llevar a Fabric. Pendientes también: reseñas como proxy de demanda y seguridad por filas (RLS).
 
 **[Mapa interactivo](https://mikelcerio.github.io/revenue-intelligence-airbnb/mapa/)**: ocupación, ADR y RevPAR aproximados por municipio y barrio, por temporada y con niveles de fiabilidad.
+
+## Hallazgos principales
+
+1. **¿Turístico o alquiler largo? Depende de la ciudad.** El piso turístico mediano ingresa al año 2,1 veces lo que un alquiler largo en Donostia, 1,17 veces en Bilbao (antes de gastos) y 0,8 veces en Vitoria-Gasteiz. Tras comisiones, limpieza y gastos fijos, un piso tipo de Abando (Bilbao) deja unos 700 € netos al mes frente a 861 € del alquiler largo.
+2. **Mucho dinero sin capturar.** Comparando cada piso con otros de su mismo distrito y tamaño, 119 pisos de Bilbao con historial ingresan menos del 75 % de sus iguales: les faltan unos 113.000 € al mes. En Donostia son 177 pisos y unos 308.000 € al mes.
+3. **Las carteras grandes tienen margen.** En Airbnb, uno de cada tres pisos de anfitriones con 10 o más anuncios queda por debajo de sus iguales; entre particulares, uno de cada seis.
+4. **Estacionalidad muy marcada.** La ocupación a 30 días de Euskadi pasa del 76 % en julio al 36 % en diciembre.
+
+Todas las cifras son estimaciones con datos públicos (ver [Limitaciones](#limitaciones)).
 
 ## Qué responde
 
@@ -13,6 +22,7 @@ Con datos abiertos de **Barcelona** y **Euskadi** (23 snapshots mensuales, de ju
 - ¿Qué **ocupación aproximada** y qué **RevPAR** tiene cada ciudad y cada zona?
 - ¿Cómo es la **estacionalidad**? (la ocupación a 30 días de Euskadi pasa del 76 % en julio al 36 % en diciembre)
 - ¿Qué zonas tienen **muestra suficiente** (30 o más anuncios) para fiarse de su ranking?
+- En **Bilbao y Donostia**, por distrito: ¿cuánto ingresa un piso, compensa frente al alquiler largo y quién rinde por debajo de pisos parecidos? Cruza Inside Airbnb con distritos censales del INE y la estadística de alquiler del Gobierno Vasco (EMAL).
 
 ## Arquitectura
 
@@ -48,7 +58,7 @@ Cosas que no se ven en un tutorial y que condicionan cualquier conclusión:
 
 1. **Snapshots parciales.** Barcelona 2026-04-20 trae 7.277 anuncios frente a ~15.000 en los vecinos. `dim_snapshot.es_completo` los marca y las medidas avisan; sin ello habría bajas falsas.
 2. **Tres meses sin precio.** De diciembre de 2025 a febrero de 2026, el 100 % de los anuncios no trae precio en origen. El ADR sale **vacío, no cero**: un precio de 0 € diría "gratis".
-3. **El significado del precio cambia.** Desde marzo de 2026 aparecen columnas `price_quote_*`: el precio parece ser la cotización de una estancia concreta (hipótesis, no hecho). Por eso no se compara el ADR entre antes y después.
+3. **El significado del precio cambia.** Desde marzo de 2026 el precio coincide con `price_quote_price_per_night`: es la cotización para fechas cercanas a la captura, así que el de junio es precio de verano e inflaba los ingresos entre un 15 y un 35 %. En la ampliación de Bilbao se usa la mediana de marzo a junio de cada anuncio, y no se compara el ADR entre antes y después.
 4. **El calendario no trae precio por noche** en ningún snapshot, y "no disponible" mezcla reservas, bloqueos y anuncios cerrados: la ocupación es un **límite superior**.
 5. **La fecha de un snapshot es nominal.** La captura dura varios días (hasta ~12); la antelación se calcula con la fecha real de captura de cada anuncio.
 6. **Codificación rota en Euskadi** (`SebastiÃ¡n`), corregida solo en las filas afectadas.
@@ -63,6 +73,10 @@ Cosas que no se ven en un tutorial y que condicionan cualquier conclusión:
 | `fabric/` | Copia exportada de los notebooks de Fabric |
 | `workspace/` | Elementos de Fabric sincronizados con Git: lakehouses, notebooks, pipelines, modelo semántico e informe |
 | `docs/manual.md` | Manual del proyecto: cada paso con el porqué, los errores y las lecciones |
+| `docs/bilbao_ampliacion.md` | Metodología y resultados de Bilbao y Donostia por distrito |
+| `docs/mapa/` | Mapa interactivo publicado en GitHub Pages |
+| `scripts/bilbao_open_data.py` | Ampliación de Bilbao y Donostia, reproducible de principio a fin |
+| `outputs/bilbao/` | Resultados agregados por distrito (sin anuncios individuales) |
 
 ## Reproducir
 
@@ -75,7 +89,8 @@ Cosas que no se ven en un tutorial y que condicionan cualquier conclusión:
 
 - La ocupación y el RevPAR son **aproximaciones comparativas**, no ingresos reales.
 - El precio es el **publicado**, no el cobrado.
-- Las zonas de Euskadi son municipios, no barrios, y no son comparables en tamaño con las de Barcelona.
+- Las zonas de Euskadi son municipios, no barrios, y no son comparables en tamaño con las de Barcelona. En Bilbao y Donostia se usan distritos censales del INE; los nombres de los distritos de Donostia son aproximados.
+- Solo se publican datos agregados por zona, con un mínimo de 10 pisos por celda.
 - Los datos de Inside Airbnb son una muestra pública con sus propias limitaciones de captura.
 
 ## Datos y licencia
