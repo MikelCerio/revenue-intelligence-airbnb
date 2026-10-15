@@ -35,6 +35,11 @@ ciudades:
       - "2026-04-30"
       - "2026-05-31"
       - "2026-06-30"
+      # Anadidos 2026-10-15 (HEAD 200). Solo se bajaron listings y calendar (--fichero), a mano.
+      # OJO: su neighbourhoods.geojson da 403; no regenerar snapshots_flat.json con estas fechas sin revisarlo.
+      - "2026-07-26"
+      - "2026-08-31"
+      - "2026-09-25"
 
 # Ficheros por snapshot. Ojo: el geojson cuelga de visualisations/, no de data/.
 ficheros:
