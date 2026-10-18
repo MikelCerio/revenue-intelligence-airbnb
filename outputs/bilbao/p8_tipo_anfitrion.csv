@@ -1,7 +1,7 @@
 ciudad,segmento,pisos,ingreso_mes_mediana,precio_noche_mediano,noches_mes,pct_por_debajo_de_iguales
-Bilbao,particular (1),327,1553,174,8.0,18
-Bilbao,pequeño (2-9),260,1384,170,7.5,25
-Bilbao,profesional (10+),233,823,149,5.5,35
-Donostia,particular (1),315,3069,273,11.5,17
-Donostia,pequeño (2-9),234,2515,293,9.0,24
-Donostia,profesional (10+),400,1937,360,5.0,34
+Bilbao,particular (1),311,3183,172,18.3,15
+Bilbao,pequeño (2-9),236,2891,170,17.7,27
+Bilbao,profesional (10+),212,2413,150,15.8,37
+Donostia,particular (1),293,5251,270,18.4,25
+Donostia,pequeño (2-9),223,5033,295,17.9,30
+Donostia,profesional (10+),385,5937,363,16.6,22

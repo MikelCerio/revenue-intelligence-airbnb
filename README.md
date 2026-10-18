@@ -8,9 +8,9 @@ Proyecto de portfolio de **analítica de revenue para alquiler turístico**, con
 
 ## Hallazgos principales
 
-1. **¿Turístico o alquiler largo? Depende de la ciudad.** El piso turístico mediano ingresa al año 2,1 veces lo que un alquiler largo en Donostia, 1,17 veces en Bilbao (antes de gastos) y 0,8 veces en Vitoria-Gasteiz. Tras comisiones, limpieza y gastos fijos, un piso tipo de Abando (Bilbao) deja unos 700 € netos al mes frente a 861 € del alquiler largo.
-2. **Mucho dinero sin capturar.** Comparando cada piso con otros de su mismo distrito y tamaño, 119 pisos de Bilbao con historial ingresan menos del 75 % de sus iguales: les faltan unos 113.000 € al mes. En Donostia son 177 pisos y unos 308.000 € al mes.
-3. **Las carteras grandes tienen margen.** En Airbnb, uno de cada tres pisos de anfitriones con 10 o más anuncios queda por debajo de sus iguales; entre particulares, uno de cada seis.
+1. **¿Turístico o alquiler largo? Gana el turístico, con distancia según la ciudad.** El piso turístico mediano ingresa al año 4,9 veces lo que un alquiler largo en Donostia, 2,7 veces en Bilbao y 3,0 veces en Vitoria-Gasteiz (antes de gastos). Tras comisiones, limpieza y gastos fijos, un piso tipo de Abando (Bilbao) deja unos 2.000 € netos al mes frente a 861 € del alquiler largo. *(Corregido el 19/10/2026: la ocupación se mide ahora con el calendario público y no con las reseñas, que daban entre 2 y 4 veces menos ingreso. Ver [metodología](docs/bilbao_ampliacion.md).)*
+2. **Mucho dinero sin capturar.** Comparando cada piso con otros de su mismo distrito y tamaño, 163 pisos de Bilbao con historial ingresan menos del 75 % de sus iguales: les faltan unos 189.000 € al mes. En Donostia son 210 pisos y unos 467.000 € al mes.
+3. **El tipo de anfitrión pesa distinto en cada ciudad.** En Bilbao, el 37 % de los pisos de anfitriones con 10 o más anuncios queda por debajo de sus iguales, frente al 15 % de los particulares. En Donostia es al revés: los profesionales cobran más por noche y son los que más ingresan.
 4. **Estacionalidad muy marcada.** La ocupación a 30 días de Euskadi pasa del 76 % en julio al 36 % en diciembre.
 
 Todas las cifras son estimaciones con datos públicos (ver [Limitaciones](#limitaciones)).

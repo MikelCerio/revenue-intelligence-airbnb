@@ -39,10 +39,16 @@ FUENTES = {
     "ine_seccionado_2024.zip": "https://www.ine.es/prodyser/cartografia/seccionado_2024.zip",
 }
 
-# Supuestos del ingreso estimado (se pueden cambiar; el resultado depende mucho de ESTANCIA_MEDIA)
-TASA_RESENA = 0.5      # proporción de estancias que dejan reseña
-ESTANCIA_MEDIA = 3     # noches por estancia (o la estancia mínima del piso si es mayor)
-TOPE_OCUPACION = 0.70  # máximo de noches del año que se considera ocupado
+# Ingreso estimado = noches ocupadas × precio de referencia.
+# Desde octubre de 2026 las noches salen del CALENDARIO público, no de las reseñas. El método anterior
+# (la mitad de las estancias deja reseña, 3 noches por estancia, tope del 70 %) daba entre 2 y 4 veces menos
+# ingreso que las fuentes comerciales de referencia, consultadas solo para comprobar; el calendario se queda
+# a unos ±10 puntos de ocupación de ellas. Noche ocupada = no disponible, leída en la captura más cercana por
+# delante (0 a 29 días), como scripts/ocupacion_mes.py. Incluye las noches que bloquea el dueño.
+VENTANA_OCUPACION = ("2025-10-01", "2026-09-30")   # último año completo con calendario medido
+MIN_NOCHES_MEDIDAS = 180   # con menos noches observadas (alta o baja a mitad de año) el piso no entra en el ingreso
+ESTANCIA_MEDIA = 3         # noches por estancia, para estimar limpiezas
+OCUPACION = None           # se rellena en main() con ocupacion_calendario()
 
 # Impuesto turístico (vigor 1-ene-2027). Verificado en prensa; confirmar en las ordenanzas publicadas.
 TARIFA_PISO = 6.50     # € por persona y noche, vivienda de uso turístico (Bilbao, Donostia y Vitoria-Gasteiz)
@@ -108,6 +114,35 @@ def precio_referencia():
     return ref
 
 
+def ocupacion_calendario():
+    """Ocupación anual de cada anuncio (0 a 1) con el calendario público de todas las capturas.
+
+    Cada noche de VENTANA_OCUPACION se lee en la captura más cercana por delante (antelación de 0 a 29 días).
+    Se descartan, en cada captura, los anuncios bloqueados los 365 días (no están en el mercado).
+    Se guarda en data/opendata/ocupacion_anuncio.csv (ignorado por git) para no recalcular cada vez.
+    """
+    cache = DATOS / f"ocupacion_anuncio_{VENTANA_OCUPACION[0]}_{VENTANA_OCUPACION[1]}.csv"
+    if cache.exists():
+        s = pd.read_csv(cache, index_col=0).occ
+        print(f"  ocupación por calendario (caché): {len(s)} anuncios")
+        return s
+    ini, fin = (pd.Timestamp(x) for x in VENTANA_OCUPACION)
+    trozos = []
+    for d in sorted(p for p in LISTINGS.parents[1].iterdir() if (p / "calendar.csv.gz").exists()):
+        C = pd.read_csv(d / "calendar.csv.gz", usecols=["listing_id", "date", "available"])
+        C["ocupada"] = C.available.astype(str).str.lower().isin(["f", "false"]).astype(int)
+        C = C[C.groupby("listing_id").ocupada.transform("min") == 0]
+        C["date"] = pd.to_datetime(C.date)
+        C["ant"] = (C.date - C.date.min()).dt.days
+        trozos.append(C[(C.ant <= 29) & C.date.between(ini, fin)][["listing_id", "date", "ocupada", "ant"]])
+    N = pd.concat(trozos).sort_values("ant").drop_duplicates(["listing_id", "date"])
+    g = N.groupby("listing_id").ocupada.agg(["mean", "size"])
+    s = g[g["size"] >= MIN_NOCHES_MEDIDAS]["mean"].rename("occ")
+    s.to_frame().to_csv(cache)
+    print(f"  ocupación por calendario: {len(s)} anuncios con al menos {MIN_NOCHES_MEDIDAS} noches medidas; mediana {s.median():.0%}")
+    return s
+
+
 def anuncios_con_distrito(distritos):
     cols = ["id", "latitude", "longitude", "room_type", "neighbourhood_cleansed", "minimum_nights",
             "number_of_reviews_ltm", "number_of_reviews", "availability_365", "accommodates", "calculated_host_listings_count"]
@@ -134,9 +169,9 @@ def p2_ingreso(L, distritos, precio_ref):
     P = L[(L.room_type == "Entire home/apt") & (L.minimum_nights <= 30)].copy()
     P["precio"] = P.id.map(precio_ref)
     activos = P[(P.number_of_reviews_ltm > 0) & P.precio.notna()].copy()
-    print(f"  pisos de corta estancia: {len(P)}; activos con precio (al menos 1 reseña en 12 meses): {len(activos)}")
-    noches = activos.number_of_reviews_ltm / TASA_RESENA * np.maximum(ESTANCIA_MEDIA, activos.minimum_nights)
-    activos["noches"] = np.minimum(noches, TOPE_OCUPACION * 365)
+    activos["noches"] = activos.id.map(OCUPACION) * 365
+    activos = activos.dropna(subset=["noches"])
+    print(f"  pisos de corta estancia: {len(P)}; activos con precio y calendario medido (al menos 1 reseña en 12 meses): {len(activos)}")
     activos["ingreso_mes"] = activos.noches * activos.precio / 12
     filas = []
     for cod, g in activos.groupby("cod"):
@@ -146,8 +181,7 @@ def p2_ingreso(L, distritos, precio_ref):
                         ingreso_mes_p25=round(g.ingreso_mes.quantile(.25)), ingreso_mes_mediana=round(g.ingreso_mes.median()),
                         ingreso_mes_p75=round(g.ingreso_mes.quantile(.75)))
         filas.append(fila)
-    tope = (activos.noches >= TOPE_OCUPACION * 365 - 0.01).mean()
-    print(f"  pisos que tocan el tope del {TOPE_OCUPACION:.0%} de ocupación: {tope:.1%}")
+    print(f"  ocupación mediana de los pisos activos: {activos.noches.median() / 365:.0%}")
     return pd.DataFrame(filas).sort_values("ingreso_mes_mediana", ascending=False), activos
 
 
@@ -226,7 +260,8 @@ def p5_municipios(precio_ref):
     L["municipio"] = L.neighbourhood_cleansed.astype(str).map(arreglar)
     L["precio"] = L.id.map(precio_ref)
     A = L[(L.room_type == "Entire home/apt") & (L.minimum_nights <= 30) & (L.number_of_reviews_ltm > 0) & L.precio.notna()].copy()
-    A["noches"] = np.minimum(A.number_of_reviews_ltm / TASA_RESENA * np.maximum(ESTANCIA_MEDIA, A.minimum_nights), TOPE_OCUPACION * 365)
+    A["noches"] = A.id.map(OCUPACION) * 365
+    A = A.dropna(subset=["noches"])
     A["ingreso_mes"] = A.noches * A.precio / 12
     e = ESCENARIOS["propietario_solo"]
     fijo = e["suministros"] + e["comunidad"] + e["seguro"] + e["ibi_basura"]
@@ -310,7 +345,8 @@ def p7_donostia(precio_ref):
     print(f"  anuncios de Donostia: {len(L)}; fuera de los distritos: {L.cod.isna().sum()}")
     L["precio"] = L.id.map(precio_ref)
     A = L[(L.room_type == "Entire home/apt") & (L.minimum_nights <= 30) & (L.number_of_reviews_ltm > 0) & L.precio.notna() & L.cod.notna()].copy()
-    A["noches"] = np.minimum(A.number_of_reviews_ltm / TASA_RESENA * np.maximum(ESTANCIA_MEDIA, A.minimum_nights), TOPE_OCUPACION * 365)
+    A["noches"] = A.id.map(OCUPACION) * 365
+    A = A.dropna(subset=["noches"])
     A["ingreso_mes"] = A.noches * A.precio / 12
     oferta = L[L.room_type == "Entire home/apt"].groupby("cod").size()
     filas = []
@@ -353,6 +389,8 @@ def main():
     print("4. Anuncios"); L = anuncios_con_distrito(distritos)
     print("5. P1 oferta"); t1 = p1_oferta(L, distritos, pob); print(t1.to_string(index=False))
     print("6. P2 ingreso"); precio_ref = precio_referencia()
+    global OCUPACION
+    OCUPACION = ocupacion_calendario()
     t2, activos = p2_ingreso(L, distritos, precio_ref); print(t2.to_string(index=False))
     precio = activos.precio.median()
     print(f"7. P3 impuesto (precio por noche mediano de Bilbao: {precio:.0f} EUR)"); t3 = p3_impuesto(precio)

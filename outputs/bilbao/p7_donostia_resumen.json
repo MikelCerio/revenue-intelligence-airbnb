@@ -1,15 +1,15 @@
 {
- "pisos_comparados": 949,
+ "pisos_comparados": 901,
  "grupos": 23,
- "rinden_poco": 242,
- "pct_rinden_poco_pocas_resenas": 27,
- "pct_rinden_poco_270_dias_libres": 26,
- "establecidos_rinden_poco": 177,
- "falta_mes_establecidos": 308400.0,
- "falta_mes_establecido_mediana": 1659,
- "falta_mes_total": 423100.0,
- "baratos_llenos": 97,
- "precio_baratos_llenos": 204,
- "precio_iguales": 289,
- "subida_baratos_llenos_mes": 210200.0
+ "rinden_poco": 228,
+ "pct_rinden_poco_pocas_resenas": 8,
+ "pct_rinden_poco_270_dias_libres": 31,
+ "establecidos_rinden_poco": 210,
+ "falta_mes_establecidos": 467400.0,
+ "falta_mes_establecido_mediana": 2137,
+ "falta_mes_total": 505600.0,
+ "baratos_llenos": 73,
+ "precio_baratos_llenos": 226,
+ "precio_iguales": 357,
+ "subida_baratos_llenos_mes": 176500.0
 }
