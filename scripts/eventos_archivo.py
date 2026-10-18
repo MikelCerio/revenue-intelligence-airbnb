@@ -87,7 +87,7 @@ def normalizar(E, hoy):
     nums = E.priceEs.fillna("").astype(str).apply(lambda s: [float(x.replace(",", ".")) for x in re.findall(r"\d+(?:[.,]\d+)?", s)])
     E["precio_min"] = [min(n) if n else (0.0 if "gratis" in str(s).lower() else None) for n, s in zip(nums, E.priceEs)]
     E["precio_max"] = [max(n) if n else (0.0 if "gratis" in str(s).lower() else None) for n, s in zip(nums, E.priceEs)]
-    # El origen entrega acentos rotos: la ciudad se reconoce por el principio del nombre.
+    # Los nombres de municipio vienen con variantes ("Donostia / San Sebastián"): la ciudad se reconoce por el principio.
     E["ciudad_clave"] = E.municipalityEs.fillna("").apply(
         lambda s: next((v for k, v in CIUDADES.items() if s.startswith(k)), "Otro"))
     return E.drop(columns=["startDate", "endDate", "publicationDate"])
