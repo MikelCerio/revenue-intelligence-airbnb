@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Vendo bien mi noche?</title>
+<meta name="description" content="Compara el precio de una noche de tu piso turístico con pisos parecidos de tu zona en Bilbao, Donostia y la costa vasca. Datos públicos de Inside Airbnb.">
+<meta property="og:title" content="¿Vendo bien mi noche?">
+<meta property="og:description" content="Compara el precio de tu piso turístico con pisos parecidos de tu zona y mira qué eventos hay esa fecha. Datos públicos.">
+<meta property="og:type" content="website">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: panel de datos a la izquierda, lectura a la derecha; en móvil se apilan. Una sola regla visual: el precio del usuario sobre la franja de pisos parecidos. */
+:root{
+  --paper:#F2F5F4; --card:#FFFFFF; --ink:#13262C; --muted:#586A70; --line:#D3DDDC;
+  --sea:#1B5E73; --sea-soft:#DCEBEF;
+  --low:#9A4A06; --low-soft:#FBEBD3; --ok:#25704F; --ok-soft:#DDF0E6; --high:#2B5BA8; --high-soft:#DEE8F7;
+  --event:#A8322A; --event-soft:#F8E1DE;
+  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:'Instrument Sans','Segoe UI',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1B1F; --card:#172A30; --ink:#E6EEF0; --muted:#9BB0B6; --line:#2A4048;
+    --sea:#6CC1D8; --sea-soft:#1E3B45;
+    --low:#F0B35A; --low-soft:#3A2C14; --ok:#6FCB9F; --ok-soft:#17382B; --high:#8DB4F0; --high-soft:#1B2D4D;
+    --event:#F08B82; --event-soft:#3E1F1C; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1B1F; --card:#172A30; --ink:#E6EEF0; --muted:#9BB0B6; --line:#2A4048;
+  --sea:#6CC1D8; --sea-soft:#1E3B45;
+  --low:#F0B35A; --low-soft:#3A2C14; --ok:#6FCB9F; --ok-soft:#17382B; --high:#8DB4F0; --high-soft:#1B2D4D;
+  --event:#F08B82; --event-soft:#3E1F1C; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-direction:column;gap:8px;max-width:62ch}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--sea)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,5vw,46px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+header p{margin:0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:820px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px}
+.stack{display:flex;flex-direction:column;gap:16px}
+h2{font-family:var(--f-display);font-size:19px;margin:0;font-weight:600;text-wrap:balance}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--muted)}
+select,input{font:inherit;font-size:15px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:9px 10px;width:100%;min-height:42px}
+select:focus-visible,input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.price-wrap{position:relative}
+.price-wrap input{padding-right:34px;font-family:var(--f-mono);font-size:18px}
+.price-wrap span{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-family:var(--f-mono)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+.chip:hover{border-color:var(--sea);color:var(--sea)}
+.hint{font-size:12.5px;color:var(--muted);margin:0}
+.verdict{display:flex;flex-direction:column;gap:12px}
+.pill{align-self:flex-start;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;font-weight:500}
+.pill.bajo{background:var(--low-soft);color:var(--low)} .pill.tipico{background:var(--ok-soft);color:var(--ok)} .pill.alto{background:var(--high-soft);color:var(--high)}
+.big{font-family:var(--f-display);font-size:clamp(21px,3vw,28px);line-height:1.2;margin:0;text-wrap:balance;font-weight:600}
+.sub{margin:0;color:var(--muted)}
+.nums{display:flex;flex-wrap:wrap;gap:6px 22px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.nums b{color:var(--ink);font-weight:500}
+/* gráfico de la franja */
+.rng{position:relative;height:96px;margin:6px 6px 0}
+.rng .axis{position:absolute;left:0;right:0;top:38px;height:2px;background:var(--line)}
+.rng .band{position:absolute;top:28px;height:22px;border-radius:5px;background:var(--sea-soft);border:1px solid var(--sea)}
+.rng .med{position:absolute;top:24px;height:30px;width:2px;background:var(--sea)}
+.rng .tick{position:absolute;top:2px;transform:translateX(-50%);font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.rng .tick b{color:var(--ink);font-weight:500}
+.rng .you{position:absolute;top:58px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--f-mono);font-size:12.5px;font-weight:500}
+.rng .you i{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:10px solid var(--ink);display:block;margin-top:-20px}
+.rng .you.edge-l{transform:translateX(-12%)} .rng .you.edge-r{transform:translateX(-88%)}
+.legend{font-size:12.5px;color:var(--muted);margin:4px 0 0}
+.ev{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.ev li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline;padding:10px 12px;border-radius:8px;background:var(--paper);border:1px solid var(--line)}
+.ev li.hit{background:var(--event-soft);border-color:var(--event)}
+.ev .d{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.ev li.hit .d{color:var(--event)}
+.ev .n{min-width:0;overflow-wrap:anywhere}
+.ev .n small{display:block;color:var(--muted);font-size:12.5px}
+.ev a{color:var(--sea)}
+.empty{color:var(--muted);margin:0}
+.limits ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13.5px;display:flex;flex-direction:column;gap:6px}
+.foot{font-size:12.5px;color:var(--muted)}
+.btn-main{font:inherit;font-size:16px;font-weight:600;min-height:48px;border:0;border-radius:8px;background:var(--sea);color:var(--card);cursor:pointer;padding:0 18px}
+.btn-main:hover{filter:brightness(1.08)}
+#aviso{color:var(--low);font-weight:600;font-size:14px}
+.elegido{background:var(--sea-soft);border-radius:7px;padding:9px 12px;margin:0;font-size:14px}
+.elegido:empty{display:none}
+.pide{border:2px solid var(--sea)}
+.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.pasos div{background:var(--paper);border-radius:9px;padding:14px;min-width:0}
+.pasos p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.contacto{display:flex;flex-direction:column;gap:10px}
+.correo{font-family:var(--f-mono);font-size:18px;margin:2px 0 0;user-select:all;overflow-wrap:anywhere}
+.contacto textarea{width:100%;font:inherit;font-size:14px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:10px}
+.cta{color:var(--sea);font-weight:600}
+input.falta{outline:2px solid var(--low);outline-offset:1px}
+.teaser{border-style:dashed}
+.teaser ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.apuesta{border-left:3px solid var(--sea);padding:8px 12px;background:var(--sea-soft);border-radius:0 7px 7px 0;margin:0}
+.tagv{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--muted);vertical-align:middle;font-weight:400}
+.row-a{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+.file{flex:1 1 260px;min-width:0}
+.file input{padding:7px 8px;cursor:pointer}
+.btn{font:inherit;font-size:14px;font-weight:500;min-height:42px;border:1px solid var(--sea);background:transparent;color:var(--sea);border-radius:7px;padding:0 16px;cursor:pointer}
+.btn:hover{background:var(--sea-soft)}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.tabla{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+.tabla table{border-collapse:collapse;width:100%;font-size:13.5px;font-family:var(--f-mono)}
+.tabla th,.tabla td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.tabla th{font-weight:500;color:var(--muted);font-size:12px;background:var(--paper)}
+.tabla th:first-child,.tabla td:first-child{text-align:left;white-space:normal;min-width:170px;font-family:var(--f-body)}
+.tabla tr:last-child td{border-bottom:0}
+.tabla tr.total td{font-weight:600;background:var(--paper)}
+.pos{color:var(--ok)} .neg{color:var(--low)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Pisos turísticos · Bilbao, Donostia y la costa</div>
+    <h1>¿Vendo bien mi noche?</h1>
+    <p>Compara tu precio con el de pisos parecidos de tu zona y mira qué pasa en la ciudad esa fecha. Todo se calcula en tu navegador: lo que escribes no se envía a ningún sitio.</p>
+  </header>
+
+  <div class="grid">
+    <section class="card stack" aria-label="Datos de tu piso">
+      <h2>1. Elige la noche</h2>
+      <label>Evento
+        <select id="evento"><option value="">Elige un evento de la lista…</option></select>
+      </label>
+      <div>
+        <p class="hint" style="margin-bottom:8px">Ejemplos rápidos</p>
+        <div class="chips" id="chips"></div>
+      </div>
+      <p class="elegido" id="elegido"></p>
+      <h2>2. Tu piso</h2>
+      <label>Ciudad o costa
+        <select id="ciudad"><option>Bilbao</option><option>Donostia</option><option>Costa Gipuzkoa</option><option>Costa Bizkaia</option></select>
+      </label>
+      <label><span id="etqZona">Distrito</span>
+        <select id="distrito"></select>
+      </label>
+      <div class="row2">
+        <label>Personas
+          <select id="cap"><option value="1-2">1 a 2</option><option value="3-4" selected>3 a 4</option><option value="5-6">5 a 6</option><option value="7+">7 o más</option></select>
+        </label>
+        <label>Fecha de la noche
+          <input id="fecha" type="date">
+        </label>
+      </div>
+      <h2>3. Tu precio</h2>
+      <label>¿Por cuánto vendiste esa noche?
+        <span class="price-wrap"><input id="precio" type="number" inputmode="decimal" min="10" max="2000" step="1" placeholder="Escribe tu precio"><span>€</span></span>
+      </label>
+      <label>¿Y cuánto crees que cobraban los pisos parecidos? <span class="hint">Opcional</span>
+        <span class="price-wrap"><input id="apuesta" type="number" inputmode="decimal" min="10" max="2000" step="1" placeholder="Tu apuesta"><span>€</span></span>
+      </label>
+      <button type="button" class="btn-main" id="revelar">Descubrir cómo vendí</button>
+      <p class="hint" id="aviso" aria-live="polite"></p>
+    </section>
+
+    <section class="card stack teaser" id="espera">
+      <span class="kicker">Antes de mirar</span>
+      <p class="big">¿Vendiste bien esa noche? Escribe tu precio y descúbrelo.</p>
+      <ul class="sub">
+        <li>Cuánto cobraban los pisos parecidos de tu zona en esa época del año.</li>
+        <li>Si esa noche había un evento que llenaba la ciudad.</li>
+        <li>Cuántas noches así necesitas para igualar un alquiler de toda la vida.</li>
+      </ul>
+      <p class="hint">No guardo nada: todo se calcula en tu navegador.</p>
+    </section>
+
+    <div class="stack" id="resultado" aria-live="polite" hidden>
+      <section class="card verdict" id="veredicto"></section>
+      <section class="card stack"><h2>Qué pasa esa fecha</h2><div id="eventos"></div></section>
+      <section class="card stack"><h2>Frente al alquiler de toda la vida</h2><p id="largo" class="sub"></p></section>
+    </div>
+  </div>
+
+  <section class="card stack" id="v2">
+    <h2>Diagnóstico con tus reservas <span class="tagv">Versión 2</span></h2>
+    <p class="sub">Sube un CSV con tus reservas y mira cómo vendiste las noches de grandes eventos frente a noches parecidas de tu ciudad. El archivo se lee en tu navegador y no se envía a ningún sitio.</p>
+    <div class="row-a">
+      <label class="file">Archivo CSV de reservas
+        <input id="archivo" type="file" accept=".csv,.txt,text/csv">
+      </label>
+      <button type="button" class="btn" id="ejemplo">Probar con un ejemplo inventado</button>
+    </div>
+    <p class="hint">Hace falta una fila por reserva, con fecha de llegada, de salida y un importe. Usa el importe del alojamiento, sin limpieza, tasas ni comisiones: si no, el precio por noche sale más alto. Si el archivo trae una columna de estado, las reservas canceladas se descartan solas. Los datos de ejemplo son inventados.</p>
+    <div id="mapeo" class="map" hidden>
+      <label>Columna de llegada <select id="colIn"></select></label>
+      <label>Columna de salida <select id="colOut"></select></label>
+      <label>Columna de importe <select id="colPrice"></select></label>
+      <label>El importe es
+        <select id="modoImporte"><option value="total">El total de la reserva</option><option value="noche">El precio por noche</option></select>
+      </label>
+      <label>Pisos que gestionas <input id="unidades" type="number" min="1" max="500" step="1" value="1"></label>
+      <label>Columna de estado <select id="colEstado"></select></label>
+      <label>Formato de fecha
+        <select id="fmtFecha"><option value="auto">Detectar solo</option><option value="dmy">Día/mes/año</option><option value="mdy">Mes/día/año</option></select>
+      </label>
+    </div>
+    <p class="hint" id="notaFecha" aria-live="polite"></p>
+    <div id="diag" aria-live="polite"></div>
+  </section>
+
+  <section class="card stack" id="contacto">
+    <h2>¿Te ha sido útil?</h2>
+    <p class="sub">He construido esta calculadora con datos públicos, como parte de un proyecto propio de análisis de revenue para pisos turísticos. Si ves un error, tienes una duda o quieres comentar lo que te ha salido, escríbeme.</p>
+    <div class="contacto">
+      <div>
+        <span class="hint">Mi correo</span>
+        <p class="correo" id="correo">mikelcerio@gmail.com</p>
+      </div>
+      <div class="row-a">
+        <button type="button" class="btn" id="copiarCorreo">Copiar correo</button>
+      </div>
+      <p class="hint" id="copiado" aria-live="polite"></p>
+      <textarea id="mensaje" rows="2" readonly hidden></textarea>
+      <p class="hint">El código y la metodología están en <a class="cta" href="https://github.com/MikelCerio/revenue-intelligence-airbnb" target="_blank" rel="noopener">GitHub</a>.</p>
+    </div>
+  </section>
+
+  <section class="card limits">
+    <h2>Cómo leer esto</h2>
+    <ul>
+      <li>El precio de referencia es la <b>mediana de marzo a junio de 2026</b> de cada anuncio público, ajustada por un índice de temporada aproximado. No es un precio por fecha.</li>
+      <li>El efecto de los eventos es sobre la <b>ocupación aproximada</b> del calendario (noches no disponibles). El calendario público no trae precio por noche, así que esta herramienta no dice cuánto subir.</li>
+      <li>Una noche normal ya se desvía unos 10 puntos de ocupación: un evento suelto casi nunca se nota; la media de varios sí.</li>
+      <li>Solo se muestran grupos de 10 o más pisos. Si el tuyo tiene menos, se compara con toda la ciudad (o toda la costa de esa provincia). Los nombres de distrito de Donostia son aproximados.</li>
+      <li>En la costa cada municipio es una zona. Aún no hay calendario de eventos propio de la costa: se muestran los de Donostia (costa de Gipuzkoa) o Bilbao (costa de Bizkaia), que también atraen visitantes a la costa.</li>
+      <li>Orientación general con datos abiertos, no asesoramiento. Revisa siempre tu propia ocupación.</li>
+    </ul>
+  </section>
+  <p class="foot" id="fuentes"></p>
+</div>
+
+<script>
+if (window.addEventListener) window.addEventListener('error', e => {
+  const d = document.getElementById('diag');
+  if (d) d.innerHTML = '<p class="empty">Error de la página: ' + String(e.message).replace(/</g, '&lt;') + '</p>';
+});
+const DATA = {"ciudades":{"Bilbao":{"distritos":{"DEUSTU":{"3-4":{"n":39,"p25":112,"med":133,"p75":180},"5-6":{"n":14,"p25":163,"med":211,"p75":264},"todas":{"n":58,"p25":113,"med":140,"p75":211}},"URIBARRI":{"3-4":{"n":104,"p25":118,"med":141,"p75":166},"5-6":{"n":16,"p25":172,"med":196,"p75":240},"todas":{"n":131,"p25":120,"med":145,"p75":182}},"OTXARKOAGA-TXURDINAGA":{"todas":{"n":10,"p25":85,"med":94,"p75":134}},"BEGOÑA":{"3-4":{"n":45,"p25":122,"med":133,"p75":154},"todas":{"n":64,"p25":123,"med":139,"p75":164}},"IBAIONDO":{"1-2":{"n":46,"p25":115,"med":128,"p75":153},"3-4":{"n":187,"p25":133,"med":156,"p75":183},"5-6":{"n":80,"p25":171,"med":197,"p75":241},"7+":{"n":28,"p25":205,"med":220,"p75":305},"todas":{"n":341,"p25":133,"med":163,"p75":207}},"ABANDO":{"1-2":{"n":15,"p25":130,"med":154,"p75":164},"3-4":{"n":94,"p25":153,"med":175,"p75":216},"5-6":{"n":65,"p25":196,"med":244,"p75":274},"7+":{"n":20,"p25":218,"med":240,"p75":296},"todas":{"n":194,"p25":160,"med":202,"p75":252}},"ERREKALDE":{"3-4":{"n":27,"p25":138,"med":154,"p75":181},"5-6":{"n":13,"p25":174,"med":220,"p75":260},"todas":{"n":52,"p25":139,"med":164,"p75":208}},"BASURTU-ZORROTZA":{"3-4":{"n":27,"p25":118,"med":154,"p75":188},"todas":{"n":41,"p25":122,"med":154,"p75":186}}},"ciudad":{"1-2":{"n":93,"p25":108,"med":125,"p75":149},"3-4":{"n":531,"p25":126,"med":153,"p75":183},"5-6":{"n":206,"p25":173,"med":211,"p75":262},"7+":{"n":61,"p25":207,"med":225,"p75":310},"todas":{"n":891,"p25":132,"med":163,"p75":214}},"alquiler_largo":1011.1,"pisos":891},"Donostia":{"distritos":{"01 · Parte Vieja":{"1-2":{"n":17,"p25":220,"med":238,"p75":298},"3-4":{"n":43,"p25":271,"med":357,"p75":408},"5-6":{"n":26,"p25":338,"med":416,"p75":457},"todas":{"n":90,"p25":269,"med":349,"p75":422}},"02 · Centro":{"1-2":{"n":22,"p25":233,"med":265,"p75":337},"3-4":{"n":124,"p25":294,"med":357,"p75":419},"5-6":{"n":58,"p25":391,"med":462,"p75":520},"7+":{"n":18,"p25":606,"med":661,"p75":756},"todas":{"n":222,"p25":309,"med":381,"p75":491}},"03 · Amara, Loiola":{"1-2":{"n":20,"p25":202,"med":234,"p75":285},"3-4":{"n":117,"p25":222,"med":275,"p75":330},"5-6":{"n":52,"p25":278,"med":379,"p75":445},"todas":{"n":196,"p25":223,"med":294,"p75":374}},"04 · Egia":{"1-2":{"n":20,"p25":202,"med":248,"p75":299},"3-4":{"n":70,"p25":208,"med":276,"p75":337},"5-6":{"n":35,"p25":327,"med":396,"p75":462},"7+":{"n":11,"p25":476,"med":529,"p75":809},"todas":{"n":136,"p25":234,"med":310,"p75":413}},"05 · Gros, Ulia":{"1-2":{"n":18,"p25":187,"med":263,"p75":303},"3-4":{"n":68,"p25":240,"med":289,"p75":325},"5-6":{"n":46,"p25":305,"med":354,"p75":395},"7+":{"n":13,"p25":395,"med":440,"p75":470},"todas":{"n":145,"p25":258,"med":311,"p75":370}},"06 · Antiguo, Aiete, Ibaeta":{"1-2":{"n":15,"p25":126,"med":157,"p75":182},"3-4":{"n":67,"p25":192,"med":240,"p75":298},"5-6":{"n":47,"p25":288,"med":401,"p75":546},"7+":{"n":20,"p25":498,"med":609,"p75":808},"todas":{"n":149,"p25":202,"med":297,"p75":470}},"07 · Altza, Intxaurrondo":{"3-4":{"n":22,"p25":157,"med":195,"p75":229},"todas":{"n":30,"p25":152,"med":195,"p75":236}}},"ciudad":{"1-2":{"n":115,"p25":187,"med":234,"p75":302},"3-4":{"n":511,"p25":228,"med":294,"p75":366},"5-6":{"n":268,"p25":314,"med":392,"p75":475},"7+":{"n":74,"p25":457,"med":608,"p75":772},"todas":{"n":968,"p25":237,"med":321,"p75":422}},"alquiler_largo":1131.9,"pisos":968},"Costa Gipuzkoa":{"distritos":{"Aia":{"7+":{"n":11,"p25":237,"med":398,"p75":466},"todas":{"n":21,"p25":225,"med":262,"p75":398}},"Getaria":{"1-2":{"n":10,"p25":122,"med":135,"p75":144},"3-4":{"n":16,"p25":149,"med":159,"p75":194},"todas":{"n":30,"p25":134,"med":154,"p75":205}},"Hondarribia":{"1-2":{"n":16,"p25":125,"med":149,"p75":190},"3-4":{"n":57,"p25":172,"med":183,"p75":215},"5-6":{"n":22,"p25":188,"med":230,"p75":290},"7+":{"n":12,"p25":282,"med":424,"p75":435},"todas":{"n":107,"p25":172,"med":188,"p75":240}},"Mutriku":{"3-4":{"n":11,"p25":120,"med":132,"p75":139},"todas":{"n":22,"p25":132,"med":144,"p75":280}},"Orio":{"3-4":{"n":12,"p25":167,"med":184,"p75":210},"todas":{"n":26,"p25":172,"med":204,"p75":294}},"Zarautz":{"1-2":{"n":13,"p25":126,"med":140,"p75":152},"3-4":{"n":75,"p25":164,"med":190,"p75":233},"5-6":{"n":46,"p25":214,"med":252,"p75":334},"todas":{"n":142,"p25":166,"med":211,"p75":280}},"Zumaia":{"3-4":{"n":12,"p25":129,"med":150,"p75":178},"5-6":{"n":10,"p25":166,"med":191,"p75":276},"todas":{"n":23,"p25":133,"med":174,"p75":205}}},"ciudad":{"1-2":{"n":45,"p25":121,"med":136,"p75":168},"3-4":{"n":190,"p25":152,"med":179,"p75":219},"5-6":{"n":102,"p25":185,"med":251,"p75":320},"7+":{"n":48,"p25":313,"med":430,"p75":630},"todas":{"n":385,"p25":159,"med":201,"p75":270}},"alquiler_largo":null,"capital":"Donostia","pisos":385,"alquiler_distrito":{"Zarautz":778.1,"Hondarribia":930.9}},"Costa Bizkaia":{"distritos":{"Bakio":{"3-4":{"n":35,"p25":127,"med":156,"p75":194},"todas":{"n":48,"p25":134,"med":174,"p75":206}},"Bermeo":{"1-2":{"n":29,"p25":103,"med":112,"p75":126},"3-4":{"n":84,"p25":103,"med":121,"p75":155},"5-6":{"n":21,"p25":127,"med":154,"p75":172},"todas":{"n":137,"p25":104,"med":125,"p75":156}},"Busturia":{"5-6":{"n":11,"p25":159,"med":217,"p75":285},"todas":{"n":22,"p25":146,"med":251,"p75":333}},"Ea":{"todas":{"n":16,"p25":189,"med":235,"p75":273}},"Elantxobe":{"todas":{"n":11,"p25":129,"med":148,"p75":171}},"Getxo":{"1-2":{"n":11,"p25":130,"med":146,"p75":164},"3-4":{"n":61,"p25":136,"med":152,"p75":187},"5-6":{"n":19,"p25":166,"med":199,"p75":310},"todas":{"n":100,"p25":141,"med":164,"p75":229}},"Gorliz":{"todas":{"n":20,"p25":144,"med":171,"p75":203}},"Ibarrangelu":{"todas":{"n":10,"p25":167,"med":270,"p75":364}},"Lekeitio":{"3-4":{"n":34,"p25":113,"med":123,"p75":150},"5-6":{"n":16,"p25":125,"med":159,"p75":194},"todas":{"n":54,"p25":116,"med":126,"p75":163}},"Lemoiz":{"todas":{"n":11,"p25":121,"med":146,"p75":175}},"Mundaka":{"3-4":{"n":30,"p25":126,"med":148,"p75":179},"5-6":{"n":18,"p25":168,"med":200,"p75":244},"todas":{"n":57,"p25":126,"med":158,"p75":200}},"Ondarroa":{"3-4":{"n":10,"p25":136,"med":142,"p75":156},"todas":{"n":13,"p25":136,"med":144,"p75":157}},"Plentzia":{"todas":{"n":19,"p25":161,"med":190,"p75":272}},"Santurtzi":{"todas":{"n":12,"p25":113,"med":143,"p75":182}},"Sopelana":{"3-4":{"n":27,"p25":131,"med":171,"p75":251},"5-6":{"n":15,"p25":208,"med":256,"p75":318},"todas":{"n":44,"p25":144,"med":204,"p75":282}},"Sukarrieta":{"todas":{"n":13,"p25":123,"med":171,"p75":208}}},"ciudad":{"1-2":{"n":69,"p25":104,"med":120,"p75":142},"3-4":{"n":349,"p25":118,"med":145,"p75":182},"5-6":{"n":144,"p25":154,"med":189,"p75":263},"7+":{"n":42,"p25":305,"med":394,"p75":571},"todas":{"n":604,"p25":123,"med":153,"p75":206}},"alquiler_largo":null,"capital":"Bilbao","pisos":604,"alquiler_distrito":{"Getxo":833.9,"Sopelana":833.9,"Bakio":766.7,"Bermeo":594.6,"Lekeitio":594.6,"Mundaka":594.6}}},"estacional":{"Bilbao":[[90,0.93,800],[120,1.0,796],[151,1.0,854],[181,1.105,875],[207,1.345,858],[243,1.087,816],[268,0.991,832]],"Donostia":[[90,0.875,863],[120,0.943,857],[151,1.03,876],[181,1.25,881],[207,1.296,818],[243,1.062,810],[268,0.928,848]],"Costa Gipuzkoa":[[90,0.984,350],[120,0.995,326],[151,1.0,341],[181,1.167,348],[207,1.175,330],[243,1.054,318],[268,1.0,333]],"Costa Bizkaia":[[90,0.98,549],[120,1.0,541],[151,1.0,578],[181,1.167,587],[207,1.246,572],[243,1.039,525],[268,0.98,533]]},"eventos":[{"nombre":"Bilbao BBK Live 2025","ciudad":"Bilbao","tipo":"festival","ini":"2025-07-10","fin":"2025-07-12","estado":"confirmado","fuente":"https://www.laganzua.net/festivales/bilbao-bbk-live-festival-2025-bilbao-1006967"},{"nombre":"Heineken Jazzaldia 2025","ciudad":"Donostia","tipo":"festival","ini":"2025-07-22","fin":"2025-07-27","estado":"confirmado","fuente":"https://www.jazzaldia.eus/es/noticias-avisos/9-60-jazzaldia-programacion-es?idn=27869"},{"nombre":"Semana Grande Donostia 2025","ciudad":"Donostia","tipo":"fiestas","ini":"2025-08-09","fin":"2025-08-16","estado":"confirmado","fuente":"https://www.euskadi.eus/en/agenda/semana-grande-in-san-sebastian/web01-ejeduki/en/"},{"nombre":"Aste Nagusia 2025","ciudad":"Bilbao","tipo":"fiestas","ini":"2025-08-16","fin":"2025-08-24","estado":"confirmado","fuente":"https://www.articulo14.es/espana-por-la-igualdad/bilbao-se-prepara-para-vivir-la-aste-nagusia-2025-nueve-dias-de-musica-cultura-y-tradicion-20250815.html"},{"nombre":"Athletic Club - Sevilla","ciudad":"Bilbao","tipo":"futbol","ini":"2025-08-17","fin":"2025-08-17","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Espanol","ciudad":"Donostia","tipo":"futbol","ini":"2025-08-24","fin":"2025-08-24","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Vallecano","ciudad":"Bilbao","tipo":"futbol","ini":"2025-08-25","fin":"2025-08-25","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Real Madrid","ciudad":"Donostia","tipo":"futbol","ini":"2025-09-13","fin":"2025-09-13","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Alaves","ciudad":"Bilbao","tipo":"futbol","ini":"2025-09-13","fin":"2025-09-13","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Festival de San Sebastian (Zinemaldia) 2025","ciudad":"Donostia","tipo":"festival","ini":"2025-09-19","fin":"2025-09-27","estado":"confirmado","fuente":"https://descubredonostia.com/en/film-festival-2025-san-sebastian"},{"nombre":"Athletic Club - Girona","ciudad":"Bilbao","tipo":"futbol","ini":"2025-09-23","fin":"2025-09-23","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Mallorca","ciudad":"Donostia","tipo":"futbol","ini":"2025-09-24","fin":"2025-09-24","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Mallorca","ciudad":"Bilbao","tipo":"futbol","ini":"2025-10-04","fin":"2025-10-04","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Vallecano","ciudad":"Donostia","tipo":"futbol","ini":"2025-10-05","fin":"2025-10-05","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"TotalEnergies Bilbao Night Running Fest 2025","ciudad":"Bilbao","tipo":"deporte","ini":"2025-10-18","fin":"2025-10-18","estado":"una_fuente","fuente":"https://www.festivalesdeespana.com/festival/totalenergies-bilbao-night-running-fest-bilbao/2025"},{"nombre":"Real Sociedad - Sevilla","ciudad":"Donostia","tipo":"futbol","ini":"2025-10-24","fin":"2025-10-24","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Getafe","ciudad":"Bilbao","tipo":"futbol","ini":"2025-10-25","fin":"2025-10-25","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Ath Bilbao","ciudad":"Donostia","tipo":"futbol","ini":"2025-11-01","fin":"2025-11-01","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Behobia-San Sebastian 2025","ciudad":"Donostia","tipo":"deporte","ini":"2025-11-09","fin":"2025-11-09","estado":"confirmado","fuente":"https://descubredonostia.com/?p=6090"},{"nombre":"Athletic Club - Oviedo","ciudad":"Bilbao","tipo":"futbol","ini":"2025-11-09","fin":"2025-11-09","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Zurich Maraton San Sebastian 2025","ciudad":"Donostia","tipo":"deporte","ini":"2025-11-23","fin":"2025-11-23","estado":"una_fuente","fuente":"https://carrerasdemontana.com/2025/01/18/maraton-san-sebastian-2025-23-nov-abre-inscripciones-22-enero/"},{"nombre":"Real Sociedad - Villarreal","ciudad":"Donostia","tipo":"futbol","ini":"2025-11-30","fin":"2025-11-30","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Real Madrid","ciudad":"Bilbao","tipo":"futbol","ini":"2025-12-03","fin":"2025-12-03","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Ath Madrid","ciudad":"Bilbao","tipo":"futbol","ini":"2025-12-06","fin":"2025-12-06","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Girona","ciudad":"Donostia","tipo":"futbol","ini":"2025-12-12","fin":"2025-12-12","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Espanol","ciudad":"Bilbao","tipo":"futbol","ini":"2025-12-22","fin":"2025-12-22","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Ath Madrid","ciudad":"Donostia","tipo":"futbol","ini":"2026-01-04","fin":"2026-01-04","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Barcelona","ciudad":"Donostia","tipo":"futbol","ini":"2026-01-18","fin":"2026-01-18","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Tamborrada de San Sebastian 2026","ciudad":"Donostia","tipo":"fiestas","ini":"2026-01-19","fin":"2026-01-20","estado":"confirmado","fuente":"https://sansebastianturismoa.eus/agenda/tamborrada-de-san-sebastian-2026/"},{"nombre":"Real Sociedad - Celta","ciudad":"Donostia","tipo":"futbol","ini":"2026-01-25","fin":"2026-01-25","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Sociedad","ciudad":"Bilbao","tipo":"futbol","ini":"2026-02-01","fin":"2026-02-01","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Elche","ciudad":"Donostia","tipo":"futbol","ini":"2026-02-07","fin":"2026-02-07","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Levante","ciudad":"Bilbao","tipo":"futbol","ini":"2026-02-08","fin":"2026-02-08","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Elche","ciudad":"Bilbao","tipo":"futbol","ini":"2026-02-20","fin":"2026-02-20","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Oviedo","ciudad":"Donostia","tipo":"futbol","ini":"2026-02-21","fin":"2026-02-21","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Barcelona","ciudad":"Bilbao","tipo":"futbol","ini":"2026-03-07","fin":"2026-03-07","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Osasuna","ciudad":"Donostia","tipo":"futbol","ini":"2026-03-15","fin":"2026-03-15","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Betis","ciudad":"Bilbao","tipo":"futbol","ini":"2026-03-22","fin":"2026-03-22","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Levante","ciudad":"Donostia","tipo":"futbol","ini":"2026-04-04","fin":"2026-04-04","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Alaves","ciudad":"Donostia","tipo":"futbol","ini":"2026-04-11","fin":"2026-04-11","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Villarreal","ciudad":"Bilbao","tipo":"futbol","ini":"2026-04-12","fin":"2026-04-12","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Osasuna","ciudad":"Bilbao","tipo":"futbol","ini":"2026-04-21","fin":"2026-04-21","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Getafe","ciudad":"Donostia","tipo":"futbol","ini":"2026-04-22","fin":"2026-04-22","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Betis","ciudad":"Donostia","tipo":"futbol","ini":"2026-05-09","fin":"2026-05-09","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Valencia","ciudad":"Bilbao","tipo":"futbol","ini":"2026-05-10","fin":"2026-05-10","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Athletic Club - Celta","ciudad":"Bilbao","tipo":"futbol","ini":"2026-05-17","fin":"2026-05-17","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Real Sociedad - Valencia","ciudad":"Donostia","tipo":"futbol","ini":"2026-05-17","fin":"2026-05-17","estado":"liga","fuente":"https://www.football-data.co.uk/spainm.php"},{"nombre":"Bilbao BBK Live 2026","ciudad":"Bilbao","tipo":"festival","ini":"2026-07-09","fin":"2026-07-11","estado":"confirmado","fuente":"https://orain.eus/en/kultura/music/2026/07/09/the-bbk-live-2026-festival-is-underway/"},{"nombre":"Heineken Jazzaldia 2026","ciudad":"Donostia","tipo":"festival","ini":"2026-07-22","fin":"2026-07-26","estado":"confirmado","fuente":"https://www.jazzaldia.eus/es/noticias-avisos/9-61-jazzaldia-presenta-programacion-es?idn=36654"},{"nombre":"Semana Grande Donostia 2026","ciudad":"Donostia","tipo":"fiestas","ini":"2026-08-08","fin":"2026-08-15","estado":"confirmado","fuente":"https://www.euskadi.eus/evento/2026/08/08/programa-semana-grande-donostia-san-sebastian-2026-donostiako-aste-nagusia-2026-/web01-ejeduki/es/"},{"nombre":"Aste Nagusia 2026","ciudad":"Bilbao","tipo":"fiestas","ini":"2026-08-22","fin":"2026-08-30","estado":"confirmado","fuente":"https://www.planomato.com/es/bilbao/n/programa-aste-nagusia-2026"},{"nombre":"Festival de San Sebastian (Zinemaldia) 2026","ciudad":"Donostia","tipo":"festival","ini":"2026-09-18","fin":"2026-09-26","estado":"confirmado","fuente":"https://tourism.euskadi.eus/en/agenda/san-sebastian-international-film-festival/webtur00-evento/en/"},{"nombre":"The National","ciudad":"Donostia","tipo":"recinto","ini":"2026-10-18","fin":"2026-10-18","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/the-national/"},{"nombre":"Anastacia","ciudad":"Donostia","tipo":"recinto","ini":"2026-10-22","fin":"2026-10-22","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/anastacia/"},{"nombre":"Revólver","ciudad":"Donostia","tipo":"recinto","ini":"2026-10-23","fin":"2026-10-23","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/revolver-la-03010-tour-2/"},{"nombre":"Hijos de la Ruina Natos y Waor + Recycled J","ciudad":"Bilbao","tipo":"recinto","ini":"2026-10-24","fin":"2026-10-24","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":"https://natosywaor.com/pages/shows"},{"nombre":"OBK: Vértigo Tour","ciudad":"Donostia","tipo":"recinto","ini":"2026-10-24","fin":"2026-10-24","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/obk-vertigo-tour/"},{"nombre":"PIOTR ANDERSZEWSKI","ciudad":"Donostia","tipo":"recinto","ini":"2026-10-27","fin":"2026-10-27","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/piotr-anderszewski/"},{"nombre":"Orfeón Donostiarra: CONCIERTO PARA AMIGOS DEL ORFEÓN DONOSTIARRA","ciudad":"Donostia","tipo":"recinto","ini":"2026-10-30","fin":"2026-10-30","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/donostiako-orfeoiaren-adiskidentzako-kontzertua-concierto-para-amigos-del-orfeon-donostiarra/"},{"nombre":"TECHNO POP - UN VIAJE POR LOS CLÁSICOS DEL TECHNO POP DE LOS 80-90","ciudad":"Donostia","tipo":"recinto","ini":"2026-10-31","fin":"2026-10-31","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/techno-pop/"},{"nombre":"JULIO IGLESIAS Experience por JULIO IGLESIAS Jr.","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-01","fin":"2026-11-01","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/julio-iglesias-experience-por-julio-iglesias-jr/"},{"nombre":"Rosana","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-05","fin":"2026-11-05","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/rosana/"},{"nombre":"Euskadiko Orkestra 2026/27: Aita Donostia: La vie profonde de Saint Fr","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-06","fin":"2026-11-09","estado":"agenda","recinto":"Kursaal","fuente":"https://es.euskadikoorkestra.eus/concierto/aita-donostia-vie-profonde-saint-francois-dassise?_gl=1*1w89sy1*_up*MQ..*_ga*NzEwMjU1OTE4LjE3ODQ3MTQyMTI.*_ga_KZCK8MH9LC*czE3ODQ3MTQyMTEkbzEkZzEkdDE3ODQ3MTQ0"},{"nombre":"Galvan Real","ciudad":"Bilbao","tipo":"recinto","ini":"2026-11-07","fin":"2026-11-07","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":"https://www.instagram.com/galvanreal/p/DLr6TtnItxO/?hl=es"},{"nombre":"dIRE sTRAITS – BROTHERS IN ARMS  40th Anniversary Tribute Tour by bROT","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-07","fin":"2026-11-07","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/brothers-in-band-dire-straits-brothers-in-arms-tour-40th-anniversary-tribute-tour-by-brothers-in-band/"},{"nombre":"Clarent","ciudad":"Bilbao","tipo":"recinto","ini":"2026-11-14","fin":"2026-11-14","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":"https://x.com/BilbaoArena/status/2110283700516573411"},{"nombre":"Irati Castro Henrich: Eko eta itsasoa","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-14","fin":"2026-11-14","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/eu/agenda/eko-eta-itsasoa/"},{"nombre":"Iván Ferreiro","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-14","fin":"2026-11-14","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/ivan-ferreiro/"},{"nombre":"Royal Film Concert Orchestra: Morricone y 100 años de cine","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-15","fin":"2026-11-15","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/morricone-y-100-anos-de-cine-3/"},{"nombre":"SABINA – El mejor homenaje","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-21","fin":"2026-11-21","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/sabina-el-mejor-homenaje/"},{"nombre":"Catherine Russell","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-21","fin":"2026-11-21","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/catherine-russell-clasicos-del-jazz/"},{"nombre":"Euskadiko Orkestra 2026/27: FALLA / DEBUSSY / STRAVINSKY","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-26","fin":"2026-11-27","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/euskadiko-orkestra/"},{"nombre":"ENSEMBLE LES SURPRISES + VERONIQUE GENS","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-28","fin":"2026-11-28","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/ensemble-les-surprises-veronique-gens/"},{"nombre":"Un sorbito de champan - Homenaje a Los Brincos","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-29","fin":"2026-11-29","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/los-brincos-homenaje-a-los-brincos/"},{"nombre":"UN SORBITO DE CHAMPAN (HOMENAJE A LOS BRINCOS)","ciudad":"Donostia","tipo":"recinto","ini":"2026-11-29","fin":"2026-11-29","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/los-brincos-homenaje-a-los-brincos/"},{"nombre":"Euskadiko Orkestra 2026/27: ENIGMA","ciudad":"Donostia","tipo":"recinto","ini":"2026-12-03","fin":"2026-12-10","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/euskadiko-orkestra-enigma/"},{"nombre":"Ara Malikian","ciudad":"Donostia","tipo":"recinto","ini":"2026-12-05","fin":"2026-12-05","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/intruso-2/"},{"nombre":"Jay Wheeler","ciudad":"Bilbao","tipo":"recinto","ini":"2026-12-10","fin":"2026-12-10","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":""},{"nombre":"Concierto Camela","ciudad":"Bilbao","tipo":"recinto","ini":"2026-12-11","fin":"2026-12-11","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":"https://www.taquilla.com/bilbao/bilbao-arena-miribilla-santa-isabel-basque-country"},{"nombre":"Sergio Dalma","ciudad":"Bilbao","tipo":"recinto","ini":"2026-12-12","fin":"2026-12-12","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":"https://sergiodalma.es/tour-sergio-dalma/"},{"nombre":"Ismael Serrano","ciudad":"Donostia","tipo":"recinto","ini":"2026-12-13","fin":"2026-12-13","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/ismael-serrano-guitarra-y-voz/"},{"nombre":"Collegium Vocale Gent: ORATORIO DE NAVIDAD, BACH","ciudad":"Donostia","tipo":"recinto","ini":"2026-12-16","fin":"2026-12-16","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/oratorio-de-navidad-bach-2/"},{"nombre":"Alex Ubago","ciudad":"Donostia","tipo":"recinto","ini":"2026-12-18","fin":"2026-12-18","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/alex-ubago/"},{"nombre":"Jeanette","ciudad":"Donostia","tipo":"recinto","ini":"2026-12-19","fin":"2026-12-19","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/jeanette-50-aniversario/"},{"nombre":"JANUS LESTER","ciudad":"Donostia","tipo":"recinto","ini":"2026-12-26","fin":"2026-12-26","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/janus-lester/"},{"nombre":"Orquesta Clásica Santa Cecilia: GRAN CONCIERTO DE AÑO NUEVO","ciudad":"Donostia","tipo":"recinto","ini":"2026-12-27","fin":"2026-12-27","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/gran-concierto-de-ano-nuevo-2/"},{"nombre":"Alabama Gospel Choir: Oh happy day!","ciudad":"Donostia","tipo":"recinto","ini":"2026-12-29","fin":"2026-12-29","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/alabama-gospel-choir-4/"},{"nombre":"ABBA Tribute - Masters Of Scene","ciudad":"Donostia","tipo":"recinto","ini":"2027-01-03","fin":"2027-01-03","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/abba-tribute-5/"},{"nombre":"DJ SYMPHONIC & ROYAL FILM CONCERT ORCHESTRA","ciudad":"Donostia","tipo":"recinto","ini":"2027-01-08","fin":"2027-01-08","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/dj-symphonic/"},{"nombre":"Malú","ciudad":"Donostia","tipo":"recinto","ini":"2027-01-09","fin":"2027-01-09","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/malu-quince-tour/"},{"nombre":"Euskadiko Orkestra 2026/27: BACH INSPIRAZIO","ciudad":"Donostia","tipo":"recinto","ini":"2027-01-11","fin":"2027-01-14","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/euskadiko-orkestra-bach-inspirazio/"},{"nombre":"HOMENAJE A MECANO : ME CUESTA TANTO OLVIDARTE","ciudad":"Donostia","tipo":"recinto","ini":"2027-01-15","fin":"2027-01-15","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/homenaje-a-mecano-me-cuesta-tanto-olvidarte/"},{"nombre":"Kase. O","ciudad":"Bilbao","tipo":"recinto","ini":"2027-01-22","fin":"2027-01-22","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":"https://www.kaseoreal.com/tour-completo"},{"nombre":"Concierto La La Love You","ciudad":"Donostia","tipo":"recinto","ini":"2027-01-28","fin":"2027-01-28","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/la-la-love-you/"},{"nombre":"LAURA GALLEGO: LA ÚLTIMA FOLCLÓRICA","ciudad":"Donostia","tipo":"recinto","ini":"2027-01-29","fin":"2027-01-29","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/laura-gallego-la-ultima-folcloric/"},{"nombre":"Euskadiko Orkestra 2026/27: PROKOFIEV / SCHUMANN","ciudad":"Donostia","tipo":"recinto","ini":"2027-02-01","fin":"2027-02-04","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/105817-2/"},{"nombre":"CARMINA BURANA, Orff y 5ª SINFONÍA, Mozart","ciudad":"Donostia","tipo":"recinto","ini":"2027-02-05","fin":"2027-02-05","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/carmina-burana-orff-y-5a-sinfonia-mozart-2/"},{"nombre":"Motown","ciudad":"Donostia","tipo":"recinto","ini":"2027-02-06","fin":"2027-02-06","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/106466/"},{"nombre":"IZARO","ciudad":"Donostia","tipo":"recinto","ini":"2027-02-13","fin":"2027-02-13","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/izaro-6/"},{"nombre":"XOEL LOPEZ","ciudad":"Donostia","tipo":"recinto","ini":"2027-02-19","fin":"2027-02-19","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/oniria-popular-2027/"},{"nombre":"Bulego","ciudad":"Bilbao","tipo":"recinto","ini":"2027-03-06","fin":"2027-03-06","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":"https://orain.eus/es/cultura/musica/2025/11/09/vuelve-los-escenarios-oficina-el-6-marzo-2027-en-el-bilbao-arena/"},{"nombre":"Bulego","ciudad":"Bilbao","tipo":"recinto","ini":"2027-03-06","fin":"2027-03-06","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":"https://orain.eus/es/cultura/musica/2025/11/09/vuelve-los-escenarios-oficina-el-6-marzo-2027-en-el-bilbao-arena/"},{"nombre":"ELLIOTT MURPHY & BAND","ciudad":"Donostia","tipo":"recinto","ini":"2027-03-13","fin":"2027-03-13","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/elliott-murphy-band/"},{"nombre":"Euskadiko Orkestra 2026/27: AMERIKA","ciudad":"Donostia","tipo":"recinto","ini":"2027-03-15","fin":"2027-03-17","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/euskadiko-orkestra-amerika/"},{"nombre":"concierto CANO","ciudad":"Bilbao","tipo":"recinto","ini":"2027-04-10","fin":"2027-04-10","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":""},{"nombre":"Euskadiko Orkestra 2026/27: SCHUMANN / BRAHMS","ciudad":"Donostia","tipo":"recinto","ini":"2027-04-12","fin":"2027-04-15","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/euskadiko-orkestra-schumann-brahms/"},{"nombre":"The Watch Plays Genesis","ciudad":"Donostia","tipo":"recinto","ini":"2027-04-17","fin":"2027-04-17","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/the-watch-plays-genesis/"},{"nombre":"Euskadiko Orkestra 2026/27: MAHLER 6: TRAGIKOA","ciudad":"Donostia","tipo":"recinto","ini":"2027-04-22","fin":"2027-04-26","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/euskadiko-orkestra-mahler-6-tragikoa/"},{"nombre":"DOCTOR DESEO","ciudad":"Bilbao","tipo":"recinto","ini":"2027-04-23","fin":"2027-04-24","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":""},{"nombre":"Fito y Fitipaldis","ciudad":"Donostia","tipo":"recinto","ini":"2027-04-30","fin":"2027-05-01","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/fito-fitipaldis-aullidos-tour-teatros-y-auditorios-2026-2027/"},{"nombre":"Euskadiko Orkestra 2026/27: BARTOK / SHOSTAKOVICH","ciudad":"Donostia","tipo":"recinto","ini":"2027-05-27","fin":"2027-05-28","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/euskadiko-orkestra-bartok-shostakovich/"},{"nombre":"concierto David Bisbal","ciudad":"Bilbao","tipo":"recinto","ini":"2027-05-29","fin":"2027-05-29","estado":"agenda","recinto":"Bilbao Arena - Miribilla","fuente":""},{"nombre":"FSO – Film Symphony Orchestra","ciudad":"Donostia","tipo":"recinto","ini":"2027-06-06","fin":"2027-06-06","estado":"agenda","recinto":"Kursaal","fuente":"https://www.kursaal.eus/es/agenda/fso-film-symphony-orchestra/"}],"efectos":{"por_evento":{"Aste Nagusia 2025":{"dif_pp":4.9,"noches":2,"cobertura":0.22},"Behobia-San Sebastian 2025":{"dif_pp":22.9,"noches":1,"cobertura":1.0},"Bilbao BBK Live 2026":{"dif_pp":-1.6,"noches":3,"cobertura":1.0},"Festival de San Sebastian (Zinemaldia) 2025":{"dif_pp":19.3,"noches":2,"cobertura":0.22},"Festival de San Sebastian (Zinemaldia) 2026":{"dif_pp":8.9,"noches":6,"cobertura":0.67},"Heineken Jazzaldia 2026":{"dif_pp":-3.8,"noches":1,"cobertura":0.2},"Semana Grande Donostia 2025":{"dif_pp":4.7,"noches":6,"cobertura":0.75},"Semana Grande Donostia 2026":{"dif_pp":4.6,"noches":7,"cobertura":0.88},"Tamborrada de San Sebastian 2026":{"dif_pp":7.2,"noches":2,"cobertura":1.0}},"por_tipo":{"Bilbao|festival":{"dif_pp":-1.6,"eventos":1},"Bilbao|fiestas":{"dif_pp":4.9,"eventos":1},"Donostia|deporte":{"dif_pp":22.9,"eventos":1},"Donostia|festival":{"dif_pp":8.1,"eventos":3},"Donostia|fiestas":{"dif_pp":5.5,"eventos":3}},"global_pp":7.5,"global_ee":2.9,"n_eventos":9,"ruido_pp":{"Bilbao":10.8,"Donostia":9.5,"Vitoria-Gasteiz":12.7}},"meta":{"generado":"2026-10-17","snapshot_precios":"2026-03-31 a 2026-06-30 (mediana de cada piso)","fuentes":["Inside Airbnb (CC BY 4.0)","INE, secciones censales 2024","Kulturklik (Open Data Euskadi)","EMAL, Gobierno Vasco"]}};
+const $ = id => document.getElementById(id);
+/* Limpieza de la lista de eventos: sin duplicados (mismo evento, ciudad y fecha) y sin redes sociales como fuente */
+(function () {
+  const vistos = new Set(), clave = e => e.ciudad + '|' + e.ini + '|' + String(e.nombre).toLowerCase().replace(/[^a-z0-9áéíóúñ]+/g, '');
+  DATA.eventos = DATA.eventos.filter(e => { const k = clave(e); if (vistos.has(k)) return false; vistos.add(k); return true; });
+  DATA.eventos.forEach(e => { if (/instagram\.com|(^|\/\/)(www\.)?x\.com|twitter\.com|facebook\.com/.test(e.fuente || '')) e.fuente = ''; });
+})();
+const eur = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' €';
+const fmtFecha = s => new Date(s + 'T12:00:00').toLocaleDateString('es-ES', {day:'numeric', month:'short', year:'numeric'});
+const titulo = s => s.toLowerCase().replace(/(^|[ -])(\S)/g, (m, a, b) => a + b.toUpperCase());
+const nombreDistrito = n => /^\d\d · /.test(n) ? n.replace(/^\d\d · /, '') : titulo(n);
+const hoyISO = () => new Date().toISOString().slice(0, 10);
+/* La costa no tiene eventos propios: usa los de la capital de su provincia */
+const capitalDe = c => (DATA.ciudades[c] && DATA.ciudades[c].capital) || c;
+const esCosta = c => capitalDe(c) !== c;
+
+function indiceTemporada(ciudad, iso) {
+  const pts = DATA.estacional[ciudad]; if (!pts || pts.length < 2) return null;
+  const d = new Date(iso + 'T12:00:00'); const doy = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5);
+  if (doy < pts[0][0] || doy > pts[pts.length - 1][0]) return null;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [a, ia] = pts[i], [b, ib] = pts[i + 1];
+    if (doy >= a && doy <= b) return ia + (ib - ia) * (doy - a) / (b - a);
+  }
+  return null;
+}
+function grupo(ciudad, distrito, cap) {
+  const C = DATA.ciudades[ciudad], D = C.distritos[distrito];
+  if (D && D[cap]) return {g: D[cap], etiqueta: nombreDistrito(distrito) + ', ' + cap.replace('-', ' a ') + ' personas', fallback: false};
+  return {g: C.ciudad[cap] || C.ciudad.todas, etiqueta: ciudad + ' entera, ' + (C.ciudad[cap] ? cap.replace('-', ' a ') + ' personas' : 'todos los tamaños'), fallback: true};
+}
+function percentil(p, g) {
+  if (p <= g.p25) return Math.max(1, Math.round(25 * p / g.p25));
+  if (p <= g.med) return Math.round(25 + 25 * (p - g.p25) / (g.med - g.p25));
+  if (p <= g.p75) return Math.round(50 + 25 * (p - g.med) / (g.p75 - g.med));
+  return Math.min(99, Math.round(100 - 25 * g.p75 / p));
+}
+function eventosCerca(ciudad, iso) {
+  const t = new Date(iso + 'T12:00:00').getTime(), res = [];
+  for (const e of DATA.eventos) {
+    if (e.ciudad !== capitalDe(ciudad)) continue;
+    if (esCosta(ciudad) && ['recinto', 'futbol'].includes(e.tipo)) continue;  // un concierto o un partido en la capital no llena la costa
+    const a = new Date(e.ini + 'T12:00:00').getTime(), b = new Date(e.fin + 'T12:00:00').getTime();
+    const dentro = t >= a && t <= b, dist = dentro ? 0 : Math.min(Math.abs(t - a), Math.abs(t - b)) / 864e5;
+    if (dentro || dist <= 3) res.push({...e, dentro, dist: Math.round(dist)});
+  }
+  return res.sort((x, y) => (y.dentro - x.dentro) || (x.dist - y.dist));
+}
+function efectoTexto(e, ciudad) {
+  const F = DATA.efectos, ruido = Math.round(F.ruido_pp[ciudad] || 10);
+  const m = F.por_evento[e.nombre];
+  if (m && m.noches >= 1) return `Medido en las noches de este evento: ${m.dif_pp > 0 ? '+' : ''}${m.dif_pp.toFixed(1).replace('.', ',')} puntos de ocupación frente a noches parecidas (${m.noches} noche${m.noches > 1 ? 's' : ''} con datos). Una noche normal ya se desvía unos ±${ruido}.`;
+  const t = F.por_tipo[ciudad + '|' + e.tipo];
+  if (t) return `En ${t.eventos} evento${t.eventos > 1 ? 's' : ''} de este tipo en ${ciudad}, la ocupación fue de media ${t.dif_pp > 0 ? '+' : ''}${t.dif_pp.toFixed(1).replace('.', ',')} puntos mayor. Pocos eventos: tómalo como orientación.`;
+  return `Sin medida propia. En los ${F.n_eventos} grandes eventos medidos, la ocupación subió de media ${F.global_pp.toFixed(1).replace('.', ',')} puntos (±${F.global_ee.toFixed(1).replace('.', ',')}).`;
+}
+const etiquetaTipo = {festival: 'Festival', fiestas: 'Fiestas', deporte: 'Deporte', futbol: 'Partido de liga en casa', recinto: 'Gran recinto'};
+
+function pintaRango(g, idx, precio) {
+  const q = v => v * idx;
+  const lo = Math.min(precio, q(g.p25)) * 0.82, hi = Math.max(precio, q(g.p75)) * 1.14;
+  const pos = v => ((v - lo) / (hi - lo)) * 100;
+  const youEdge = pos(precio) < 9 ? ' edge-l' : pos(precio) > 91 ? ' edge-r' : '';
+  return `<div class="rng" role="img" aria-label="Tu precio ${eur(precio)} frente a la franja de ${eur(q(g.p25))} a ${eur(q(g.p75))}">
+    <div class="axis"></div>
+    <div class="band" style="left:${pos(q(g.p25))}%;width:${pos(q(g.p75)) - pos(q(g.p25))}%"></div>
+    <div class="med" style="left:${pos(q(g.med))}%"></div>
+    <div class="tick" style="left:${pos(q(g.p25))}%"><b>${eur(q(g.p25))}</b></div>
+    <div class="tick" style="left:${pos(q(g.med))}%;top:-14px"><b>${eur(q(g.med))}</b> mediana</div>
+    <div class="tick" style="left:${pos(q(g.p75))}%"><b>${eur(q(g.p75))}</b></div>
+    <div class="you${youEdge}" style="left:${pos(precio)}%"><i></i><span>Tú ${eur(precio)}</span></div>
+  </div>
+  <p class="legend">La franja azul va del 25 % al 75 % de los pisos parecidos.</p>`;
+}
+
+let REVELADO = false;
+function calcula() {
+  if (!REVELADO) return;
+  const ciudad = $('ciudad').value, distrito = $('distrito').value, cap = $('cap').value, fecha = $('fecha').value;
+  const precio = parseFloat($('precio').value);
+  const V = $('veredicto'), E = $('eventos'), L = $('largo');
+  if (!(precio > 0) || !fecha) { V.innerHTML = '<p class="empty">Escribe tu precio por noche y elige una fecha para ver la comparación.</p>'; E.innerHTML = ''; L.textContent = ''; return; }
+  const {g, etiqueta, fallback} = grupo(ciudad, distrito, cap);
+  const idxRaw = indiceTemporada(ciudad, fecha), idx = idxRaw ?? 1;
+  const q25 = g.p25 * idx, med = g.med * idx, q75 = g.p75 * idx;
+  const pos = precio < q25 ? 'bajo' : precio > q75 ? 'alto' : 'tipico';
+  const dif = Math.round((precio / med - 1) * 100);
+  const cerca = eventosCerca(ciudad, fecha), hit = cerca.find(e => e.dentro);
+  const pill = {bajo: 'Por debajo', tipico: 'En la franja', alto: 'Por encima'}[pos];
+  const frase = {bajo: 'Tu precio está en el cuarto más barato de los pisos parecidos.', tipico: 'Tu precio está dentro de la franja habitual de pisos parecidos.', alto: 'Tu precio está en el cuarto más caro de los pisos parecidos.'}[pos];
+  const lectura = hit
+    ? {bajo: `Esa noche coincide con ${hit.nombre}. Un precio bajo en una fecha de más demanda es la combinación que más merece una segunda mirada.`,
+       tipico: `Esa noche coincide con ${hit.nombre}. En fechas así la ocupación suele subir: mira si tu calendario ya se está llenando.`,
+       alto: `Esa noche coincide con ${hit.nombre}. Con más demanda, un precio alto puede estar justificado: comprueba que tus noches se venden.`}[pos]
+    : {bajo: 'Si te llenas con antelación, puede haber margen; si no, el precio es coherente con tu zona.',
+       tipico: 'Sin eventos cerca, no hay motivo externo para salirte de la franja. Decide con tu propia ocupación.',
+       alto: 'Sin eventos cerca, comprueba que tu ocupación acompaña a un precio así.'}[pos];
+  const notaIdx = idxRaw == null ? 'Para esta época del año no hay índice de temporada: se usa el precio de referencia de primavera sin ajustar.'
+    : `Para esa fecha los pisos suelen cotizar ${idxRaw >= 1 ? '+' : ''}${Math.round((idxRaw - 1) * 100)} % sobre su referencia de primavera (aprox.).`;
+  const apuesta = parseFloat($('apuesta').value);
+  const errA = apuesta > 0 ? Math.round((apuesta / med - 1) * 100) : null;
+  const apuestaHTML = errA == null ? '' : `<p class="apuesta">Tu apuesta era ${eur(apuesta)}. ${Math.abs(errA) <= 5 ? 'Casi exacto: conoces bien tu mercado.' : `Te quedaste un ${Math.abs(errA)} % ${errA < 0 ? 'corto' : 'largo'}.`}</p>`;
+  V.innerHTML = `
+    <span class="pill ${pos}">${pill}</span>
+    <p class="big">Vendiste a ${eur(precio)}. ${fallback ? (esCosta(ciudad) ? 'En la costa' : 'En tu ciudad') : 'En tu zona'}, los pisos parecidos cobraban unos ${eur(med)} en esa época del año.</p>
+    <p class="sub">${frase} Estás un ${Math.abs(dif)} % ${dif < 0 ? 'por debajo' : 'por encima'} de la mediana, hacia el percentil ${percentil(precio / idx, g)} de su grupo.</p>
+    ${apuestaHTML}
+    ${pintaRango(g, idx, precio)}
+    <p class="sub">${lectura}</p>
+    <div class="nums"><span>Comparado con <b>${g.n}</b> pisos de ${etiqueta}</span><span>${fmtFecha(fecha)}</span></div>
+    ${fallback ? `<p class="hint">Hay menos de 10 pisos con tu ${esCosta(ciudad) ? 'municipio' : 'distrito'} y tamaño, así que comparo con toda ${esCosta(ciudad) ? 'la costa de ' + ciudad.replace('Costa ', '') : 'la ciudad'}.</p>` : ''}
+    <p class="hint">${notaIdx}</p>
+    <p><a class="cta" href="#v2">¿Tienes tus reservas en un CSV? Mira cómo vendiste los grandes eventos</a></p>`;
+  const notaCosta = esCosta(ciudad) ? `<p class="hint">Grandes eventos de ${capitalDe(ciudad)} (festivales, fiestas y carreras): la costa todavía no tiene calendario propio.</p>` : '';
+  if (!cerca.length) {
+    E.innerHTML = notaCosta + `<p class="empty">No hay grandes eventos registrados en ${esCosta(ciudad) ? capitalDe(ciudad) : 'esta ciudad'} en los 3 días de alrededor. El archivo solo recoge festivales, fiestas, deporte, partidos de liga y conciertos en grandes recintos.</p>`;
+  } else {
+    E.innerHTML = notaCosta + '<ul class="ev">' + cerca.slice(0, 5).map(e => `<li class="${e.dentro ? 'hit' : ''}">
+      <span class="d">${e.dentro ? 'Esa fecha' : e.dist + ' día' + (e.dist > 1 ? 's' : '') + ' de diferencia'}</span>
+      <span class="n"><b>${e.nombre}</b>${e.recinto ? ' · ' + e.recinto : ''}<small>${etiquetaTipo[e.tipo] || e.tipo} · ${e.ini === e.fin ? fmtFecha(e.ini) : fmtFecha(e.ini) + ' a ' + fmtFecha(e.fin)}${e.fuente ? ' · <a href="' + e.fuente + '" target="_blank" rel="noopener">fuente</a>' : ''}</small>
+      ${e.dentro ? '<small>' + efectoTexto(e, e.ciudad) + '</small>' : ''}</span></li>`).join('') + '</ul>';
+  }
+  const C = DATA.ciudades[ciudad], rentaZona = (C.alquiler_distrito || {})[distrito], renta = rentaZona || C.alquiler_largo;
+  if (!renta) { L.textContent = 'No hay una renta de alquiler largo publicada para este municipio, así que no hago la comparación.'; return; }
+  const noches = renta / precio;
+  L.innerHTML = `A <b>${eur(precio)}</b> la noche necesitas unas <b>${noches.toFixed(1).replace('.', ',')} noches al mes</b> (${Math.round(100 * noches / 30)} % del mes) para igualar el alquiler largo medio de ${rentaZona ? distrito : ciudad} (${eur(renta)} al mes, ${rentaZona ? 'renta media de su zona' : 'contratos nuevos'}), antes de gastos de uno y otro.`;
+}
+
+function llenaDistritos(conservar) {
+  const ciudad = $('ciudad').value, nombres = Object.keys(DATA.ciudades[ciudad].distritos);
+  $('distrito').innerHTML = nombres.map(n => `<option value="${n}">${nombreDistrito(n)}</option>`).join('');
+  const pref = {Bilbao: 'ABANDO', Donostia: '02 · Centro', 'Costa Gipuzkoa': 'Zarautz', 'Costa Bizkaia': 'Getxo'}[ciudad];
+  $('distrito').value = (conservar && nombres.includes(conservar)) ? conservar : (nombres.includes(pref) ? pref : nombres[0]);
+  $('etqZona').textContent = esCosta(ciudad) ? 'Municipio' : 'Distrito';
+}
+function fechaInicial(ciudad) {
+  const c = capitalDe(ciudad), h = hoyISO(), prox = DATA.eventos.find(e => e.ciudad === c && e.tipo !== 'futbol' && !(c !== ciudad && e.tipo === 'recinto') && e.ini >= h);
+  return prox ? prox.ini : (c === 'Bilbao' ? '2026-08-29' : '2026-08-12');
+}
+const EJEMPLOS = [
+  {t: 'Aste Nagusia 2026', c: 'Bilbao', f: '2026-08-26'}, {t: 'BBK Live 2026', c: 'Bilbao', f: '2026-07-10'},
+  {t: 'Semana Grande Donostia 2026', c: 'Donostia', f: '2026-08-12'}, {t: 'Zinemaldia 2026', c: 'Donostia', f: '2026-09-19'},
+  {t: 'Un martes sin eventos', c: 'Bilbao', f: '2026-05-12'}
+];
+$('chips').innerHTML = EJEMPLOS.map((x, i) => `<button type="button" class="chip" data-i="${i}">${x.t}</button>`).join('');
+$('chips').addEventListener('click', ev => {
+  const b = ev.target.closest('button'); if (!b) return; const x = EJEMPLOS[+b.dataset.i];
+  $('evento').value = ''; eligeNoche(x.c, x.f, x.t);
+});
+$('ciudad').addEventListener('change', () => { llenaDistritos(); $('fecha').value = fechaInicial($('ciudad').value); calcula(); });
+['distrito', 'cap', 'fecha', 'precio', 'apuesta'].forEach(id => $(id).addEventListener('input', calcula));
+function revelar() {
+  const p = parseFloat($('precio').value);
+  if (!(p > 0) || !$('fecha').value) {
+    $('aviso').textContent = 'Falta tu precio: escribe por cuánto vendiste esa noche y vuelve a pulsar.';
+    if ($('precio').classList) $('precio').classList.add('falta');
+    if ($('precio').focus) $('precio').focus();
+    return;
+  }
+  if ($('precio').classList) $('precio').classList.remove('falta');
+  $('aviso').textContent = ''; REVELADO = true; $('espera').hidden = true; $('resultado').hidden = false; calcula();
+  if ($('resultado').scrollIntoView) $('resultado').scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+$('revelar').addEventListener('click', revelar);
+['precio', 'apuesta'].forEach(id => $(id).addEventListener('keydown', ev => { if (ev.key === 'Enter') revelar(); }));
+/* ---------- Versión 2: diagnóstico con las reservas del usuario (todo ocurre en el navegador) ---------- */
+let CAB = [], FILAS = [], ES_EJEMPLO = false;
+const FESTIVOS = new Set(['2025-10-12','2025-11-01','2025-12-06','2025-12-08','2025-12-25','2026-01-01','2026-01-06','2026-03-19','2026-04-02','2026-04-03','2026-04-06','2026-05-01','2026-07-25','2026-08-15','2026-10-12']);
+const esFestivo = d => FESTIVOS.has(d) || FESTIVOS.has(sumaDias(d, 1));
+const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+const utc = iso => Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10));
+function sumaDias(iso, k) { return new Date(utc(iso) + k * 864e5).toISOString().slice(0, 10); }
+const diasEntre = (a, b) => Math.round((utc(b) - utc(a)) / 864e5);
+const diaSemana = iso => new Date(utc(iso)).getUTCDay();
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+function dividirLinea(linea, sep) {
+  const out = []; let cur = '', q = false;
+  for (let i = 0; i < linea.length; i++) {
+    const c = linea[i];
+    if (c === '"') { if (q && linea[i + 1] === '"') { cur += '"'; i++; } else q = !q; }
+    else if (c === sep && !q) { out.push(cur); cur = ''; } else cur += c;
+  }
+  out.push(cur); return out.map(x => x.trim());
+}
+function leerCSV(texto) {
+  const lineas = texto.replace(/^﻿/, '').split(/\r?\n/).filter(l => l.trim());
+  if (lineas.length < 2) return null;
+  const sep = [';', ',', '\t'].map(s => [s, lineas[0].split(s).length - 1]).sort((a, b) => b[1] - a[1])[0][0];
+  return {cab: dividirLinea(lineas[0], sep), filas: lineas.slice(1).map(l => dividirLinea(l, sep))};
+}
+function parseFecha(s, mdy) {
+  s = String(s || '').trim(); let m;
+  if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+  if ((m = s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/))) {
+    const dd = mdy ? m[2] : m[1], mm = mdy ? m[1] : m[2];
+    if (+mm < 1 || +mm > 12 || +dd < 1 || +dd > 31) return null;
+    return `${m[3]}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
+  }
+  return null;
+}
+/* ¿Las fechas con barras van día/mes o mes/día? Si algún primer número pasa de 12 es día/mes; si algún segundo número pasa de 12, mes/día. */
+function detectaFormato(cols) {
+  let dmy = 0, mdy = 0;
+  for (const f of FILAS) for (const i of cols) {
+    const m = String(f[i] || '').trim().match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/);
+    if (!m) continue;
+    if (+m[1] > 12) dmy++; else if (+m[2] > 12) mdy++;
+  }
+  return mdy > dmy ? 'mdy' : (dmy || mdy) ? 'dmy' : 'nada';
+}
+const CANCELADA = /cancel|anulad|rechaz|declin|no.?show|expired|caducad/;
+function parseNum(s) {
+  s = String(s || '').replace(/[^\d.,-]/g, ''); if (!s) return NaN;
+  if (s.includes(',') && s.includes('.')) s = s.lastIndexOf(',') > s.lastIndexOf('.') ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, '');
+  else if (s.includes(',')) s = s.replace(',', '.');
+  else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+  return parseFloat(s);
+}
+function cargarTexto(texto) {
+  const r = leerCSV(texto), D = $('diag');
+  if (!r || r.cab.length < 3) { $('mapeo').hidden = true; FILAS = []; D.innerHTML = '<p class="empty">No he podido leer el archivo. Necesito una fila por reserva con al menos tres columnas: llegada, salida e importe.</p>'; return; }
+  CAB = r.cab; FILAS = r.filas;
+  const opts = CAB.map((h, i) => `<option value="${i}">${esc(h) || 'Columna ' + (i + 1)}</option>`).join('');
+  ['colIn', 'colOut', 'colPrice'].forEach(id => $(id).innerHTML = opts);
+  const busca = re => CAB.findIndex(h => re.test(norm(h)));
+  const ci = busca(/llegada|entrada|check.?in|arriv|inicio/), co = busca(/salida|check.?out|depart|\bfin\b/), cp = busca(/importe|precio|total|price|amount|ingreso|revenue/);
+  $('colIn').value = ci >= 0 ? ci : 0; $('colOut').value = co >= 0 ? co : 1; $('colPrice').value = cp >= 0 ? cp : 2;
+  $('colEstado').innerHTML = '<option value="-1">Sin columna de estado</option>' + opts;
+  const ce = busca(/estado|status|cancel/);
+  $('colEstado').value = ce >= 0 ? ce : -1;
+  $('fmtFecha').value = 'auto';
+  $('modoImporte').value = /noche|night|adr/.test(norm(CAB[+$('colPrice').value])) ? 'noche' : 'total';
+  $('mapeo').hidden = false; diagnostico();
+}
+function diagnostico() {
+  const D = $('diag'); if (!FILAS.length) return;
+  const ciudad = $('ciudad').value, uni = Math.max(1, parseInt($('unidades').value) || 1);
+  const iI = +$('colIn').value, iO = +$('colOut').value, iP = +$('colPrice').value, total = $('modoImporte').value === 'total';
+  const iE = +$('colEstado').value, elegido = $('fmtFecha').value;
+  const detectado = detectaFormato([iI, iO]), mdy = elegido === 'auto' ? detectado === 'mdy' : elegido === 'mdy';
+  $('notaFecha').textContent = elegido !== 'auto' || detectado === 'nada' ? ''
+    : `Fechas leídas como ${mdy ? 'mes/día/año' : 'día/mes/año'}. Si no es así, cámbialo arriba.`;
+  const dia = {}; let usadas = 0, descartadas = 0, canceladas = 0, minF = '9999-12-31', maxF = '0000-01-01';
+  for (const f of FILAS) {
+    if (iE >= 0 && CANCELADA.test(norm(f[iE] || ''))) { canceladas++; continue; }
+    const a = parseFecha(f[iI], mdy), b = parseFecha(f[iO], mdy), p = parseNum(f[iP]);
+    if (!a || !b || b <= a || !(p > 0) || diasEntre(a, b) > 90) { descartadas++; continue; }
+    const n = diasEntre(a, b), noche = total ? p / n : p; usadas++;
+    for (let k = 0; k < n; k++) { const d = sumaDias(a, k); const x = dia[d] || (dia[d] = {n: 0, suma: 0}); x.n++; x.suma += noche; }
+    if (a < minF) minF = a; if (b > maxF) maxF = b;
+  }
+  if (!usadas) { D.innerHTML = '<p class="empty">Ninguna fila es válida con estas columnas. Cambia las columnas de arriba o revisa los formatos de fecha (AAAA-MM-DD o DD/MM/AAAA).</p>'; return; }
+  const hoy = hoyISO(), hi = maxF > hoy ? hoy : maxF, lo = minF, dentro = d => d >= lo && d <= hi;
+  const todos = new Set(), grandes = {};
+  for (const e of DATA.eventos) {
+    if (e.ciudad !== capitalDe(ciudad)) continue;
+    for (let d = e.ini; d <= e.fin; d = sumaDias(d, 1)) { todos.add(d); if (['festival', 'fiestas', 'deporte'].includes(e.tipo)) (grandes[e.nombre] = grandes[e.nombre] || []).push(d); }
+  }
+  const occ = d => Math.min(1, (dia[d] ? dia[d].n : 0) / uni), pr = d => dia[d] ? dia[d].suma / dia[d].n : null;
+  const media = a => a.reduce((s, x) => s + x, 0) / a.length;
+  const filas = []; let sOe = 0, sOc = 0, nO = 0, sPe = 0, sPc = 0, nP = 0;
+  for (const [nombre, fechas] of Object.entries(grandes)) {
+    const oe = [], oc = [], pe = [], pc = [];
+    for (const d of fechas) {
+      if (!dentro(d)) continue;
+      const ctrl = [];
+      for (let k = -21; k <= 21; k += 7) { if (!k) continue; const c = sumaDias(d, k); if (dentro(c) && !todos.has(c) && !esFestivo(c)) ctrl.push(c); }
+      if (ctrl.length < 2) continue;
+      oe.push(occ(d)); oc.push(media(ctrl.map(occ)));
+      const pcs = ctrl.map(pr).filter(x => x != null);
+      if (pr(d) != null && pcs.length) { pe.push(pr(d)); pc.push(media(pcs)); }
+    }
+    if (!oe.length) continue;
+    filas.push({nombre, n: oe.length, oe: media(oe), oc: media(oc), pe: pe.length ? media(pe) : null, pc: pc.length ? media(pc) : null});
+    sOe += oe.reduce((s, x) => s + x, 0); sOc += oc.reduce((s, x) => s + x, 0); nO += oe.length;
+    if (pe.length) { sPe += pe.reduce((s, x) => s + x, 0); sPc += pc.reduce((s, x) => s + x, 0); nP += pe.length; }
+  }
+  const cab = `<p class="hint">${ES_EJEMPLO ? '<span class="tagv">Ejemplo inventado</span> ' : ''}${usadas} reservas leídas${canceladas ? ', ' + canceladas + ' canceladas fuera' : ''}${descartadas ? ', ' + descartadas + ' descartadas por datos incompletos' : ''}.${iE < 0 && !ES_EJEMPLO ? ' Sin columna de estado: si tu archivo incluye reservas canceladas, quítalas antes o la ocupación saldrá más alta.' : ''} Periodo: ${fmtFecha(lo)} a ${fmtFecha(hi)}, solo noches ya pasadas.</p>`;
+  if (!nO) { D.innerHTML = cab + `<p class="empty">En ese periodo no hay noches de grandes eventos de ${capitalDe(ciudad)} con suficientes noches parecidas para comparar. Los eventos que recojo van de 2025 a 2026 y la ciudad es la del selector de arriba.</p>`; return; }
+  const oE = 100 * sOe / nO, oC = 100 * sOc / nO, dOcc = oE - oC;
+  const pE = nP ? sPe / nP : null, pC = nP ? sPc / nP : null, dPr = nP ? 100 * (pE / pC - 1) : null;
+  const sg = x => (x >= 0 ? '+' : '') + Math.round(x);
+  let lectura;
+  if (nO < 3 || dPr == null) lectura = 'Hay pocas noches de evento con reservas para sacar una conclusión. Usa un periodo más largo.';
+  else if (dPr < 3 && dOcc > 5) lectura = 'En los eventos se te llenaron más noches sin subir el precio. Es el caso en el que más margen puede haber.';
+  else if (dPr > 8 && dOcc > -5) lectura = 'En los eventos subiste el precio y la ocupación aguantó. Parece que los aprovechas.';
+  else if (dPr > 8) lectura = 'En los eventos subiste el precio pero la ocupación bajó. Puede que te pasaras en alguna fecha.';
+  else if (dPr < 3) lectura = 'Tu precio y tu ocupación se mueven poco en los eventos. En el mercado la ocupación sube de media ' + DATA.efectos.global_pp.toFixed(1).replace('.', ',') + ' puntos, así que puede haber demanda sin aprovechar.';
+  else lectura = 'Las diferencias son pequeñas y están dentro del ruido normal.';
+  const celda = (a, b, f) => a == null ? 'sin reservas' : f(a) + ' / ' + f(b);
+  const filasHTML = filas.map(f => {
+    const dp = f.pe != null ? 100 * (f.pe / f.pc - 1) : null;
+    return `<tr><td>${esc(f.nombre)}</td><td>${f.n}</td><td>${Math.round(100 * f.oe)} % / ${Math.round(100 * f.oc)} %</td><td>${celda(f.pe, f.pc, eur)}</td><td class="${dp == null ? '' : dp >= 0 ? 'pos' : 'neg'}">${dp == null ? '–' : sg(dp) + ' %'}</td></tr>`;
+  }).join('');
+  D.innerHTML = cab + `
+    <p class="big">${dPr == null ? 'No hay reservas suficientes en eventos para comparar el precio.' : `En eventos cobraste de media ${eur(pE)} la noche, frente a ${eur(pC)} en noches parecidas (${sg(dPr)} %).`}</p>
+    <p class="sub">Tu ocupación fue del ${Math.round(oE)} % en las noches de evento y del ${Math.round(oC)} % en noches parecidas (${sg(dOcc)} puntos). ${esc(lectura)}</p>
+    <div class="tabla"><table><thead><tr><th>Evento</th><th>Noches</th><th>Ocupación evento / normal</th><th>Precio medio evento / normal</th><th>Diferencia</th></tr></thead><tbody>${filasHTML}</tbody></table></div>
+    <p class="hint">Noches parecidas: mismo día de la semana, entre 1 y 3 semanas antes o después, sin evento ni festivo. Con pocas noches, una diferencia de ±10 puntos de ocupación es ruido normal. La ocupación usa los pisos que indicas arriba.</p>`;
+}
+function ejemploCSV() {
+  const ciudad = $('ciudad').value; let seed = 20260101;
+  const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const ev = new Set();
+  for (const e of DATA.eventos) if (e.ciudad === capitalDe(ciudad) && ['festival', 'fiestas', 'deporte'].includes(e.tipo)) for (let d = e.ini; d <= e.fin; d = sumaDias(d, 1)) ev.add(d);
+  const base = {Donostia: 230, 'Costa Gipuzkoa': 190, 'Costa Bizkaia': 150}[ciudad] || 140, filas = ['Llegada;Salida;Importe']; let libre = '2026-01-01';
+  for (let d = '2026-01-01'; d < '2026-10-05'; d = sumaDias(d, 1)) {
+    if (d < libre) continue;
+    const wd = diaSemana(d), p = ev.has(d) ? 0.85 : (wd === 5 || wd === 6) ? 0.7 : 0.42;
+    if (rnd() > p) continue;
+    const n = 2 + Math.floor(rnd() * 3), noche = Math.round(base * (0.9 + rnd() * 0.2));
+    filas.push(`${d};${sumaDias(d, n)};${n * noche}`); libre = sumaDias(d, n);
+  }
+  return filas.join('\n');
+}
+$('archivo').addEventListener('change', ev => {
+  const f = ev.target.files[0]; if (!f) return; ES_EJEMPLO = false;
+  $('diag').innerHTML = '<p class="hint">Leyendo el archivo…</p>';
+  const r = new FileReader();
+  r.onload = () => { try { cargarTexto(String(r.result)); $('diag').scrollIntoView({behavior: 'smooth', block: 'nearest'}); } catch (e) { $('diag').innerHTML = '<p class="empty">No he podido leer el archivo: ' + esc(e.message) + '</p>'; } };
+  r.onerror = () => { $('diag').innerHTML = '<p class="empty">No he podido abrir el archivo.</p>'; };
+  r.readAsText(f);
+});
+$('ejemplo').addEventListener('click', () => {
+  $('diag').innerHTML = '<p class="hint">Calculando con el ejemplo inventado…</p>';
+  try { ES_EJEMPLO = true; $('unidades').value = 1; cargarTexto(ejemploCSV()); $('diag').scrollIntoView({behavior: 'smooth', block: 'nearest'}); }
+  catch (e) { $('diag').innerHTML = '<p class="empty">No he podido calcular el ejemplo: ' + esc(e.message) + '</p>'; }
+});
+['colIn', 'colOut', 'colPrice', 'modoImporte', 'unidades', 'colEstado', 'fmtFecha'].forEach(id => $(id).addEventListener('input', diagnostico));
+$('ciudad').addEventListener('change', diagnostico);
+
+$('fuentes').textContent = 'Datos: ' + DATA.meta.fuentes.join(', ') + '. Precios de referencia: ' + DATA.meta.snapshot_precios + '. Generado el ' + DATA.meta.generado + '.';
+/* Selector de eventos: grandes eventos (pasados y futuros) y conciertos o partidos próximos */
+const EVS = DATA.eventos.filter(e => ['festival', 'fiestas', 'deporte'].includes(e.tipo) || (['recinto', 'futbol'].includes(e.tipo) && e.ini >= hoyISO()));
+const TIPO_GRUPO = {festival: 'Festivales', fiestas: 'Fiestas', deporte: 'Carreras', recinto: 'Conciertos próximos', futbol: 'Fútbol en casa, próximos'};
+function nocheDe(e) {
+  for (let d = e.ini; d <= e.fin; d = sumaDias(d, 1)) if (diaSemana(d) === 6) return d;
+  return e.ini;
+}
+function eligeNoche(ciudad, fecha, nombre) {
+  const actual = $('ciudad').value;
+  if (capitalDe(actual) === ciudad) llenaDistritos($('distrito').value);  // en la costa, el evento de su capital no cambia la zona
+  else { $('ciudad').value = ciudad; llenaDistritos(); }
+  $('fecha').value = fecha;
+  $('elegido').innerHTML = `Noche elegida: <b>${esc(nombre)}</b>, ${fmtFecha(fecha)}, en ${ciudad}${esCosta(actual) && capitalDe(actual) === ciudad ? ' (lo comparo con tu piso de ' + esc(nombreDistrito($('distrito').value)) + ')' : ''}. Ahora escribe por cuánto vendiste esa noche.`;
+  calcula();
+  if (!REVELADO && $('precio').focus) $('precio').focus();
+}
+(function () {
+  const grupos = {};
+  EVS.forEach((e, i) => { const g = e.ciudad + ' · ' + TIPO_GRUPO[e.tipo]; (grupos[g] = grupos[g] || []).push([i, e]); });
+  $('evento').innerHTML = '<option value="">Elige un evento de la lista…</option>' + Object.keys(grupos).sort().map(g =>
+    `<optgroup label="${g}">` + grupos[g].map(([i, e]) => `<option value="${i}">${esc(e.nombre)} · ${fmtFecha(e.ini)}</option>`).join('') + '</optgroup>').join('');
+})();
+$('evento').addEventListener('change', () => { const v = $('evento').value; if (v === '') return; const e = EVS[+v]; eligeNoche(e.ciudad, nocheDe(e), e.nombre); });
+$('fecha').addEventListener('input', () => { $('evento').value = ''; $('elegido').textContent = ''; });
+
+/* Pedir el diagnóstico: copia el correo o un mensaje ya redactado con lo que el propietario ha metido */
+function copiar(texto, ok) {
+  const listo = () => { $('copiado').textContent = ok; };
+  const manual = () => { const t = $('mensaje'); t.value = texto; t.hidden = false; if (t.select) t.select(); $('copiado').textContent = 'No he podido copiar solo: selecciona el texto de abajo y cópialo.'; };
+  try { navigator.clipboard.writeText(texto).then(listo, manual); } catch (e) { manual(); }
+}
+$('copiarCorreo').addEventListener('click', () => copiar($('correo').textContent.trim(), 'Correo copiado.'));
+
+llenaDistritos(); $('fecha').value = fechaInicial('Bilbao'); calcula();
+</script>
+</body>
+</html>

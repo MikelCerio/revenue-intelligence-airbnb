@@ -6,6 +6,8 @@ Proyecto de portfolio de **analítica de revenue para alquiler turístico**, con
 
 **[Mapa interactivo](https://mikelcerio.github.io/revenue-intelligence-airbnb/mapa/)**: ocupación, ADR y RevPAR aproximados por municipio y barrio, por temporada y con niveles de fiabilidad.
 
+**[Calculadora «¿Vendo bien mi noche?»](https://mikelcerio.github.io/revenue-intelligence-airbnb/calculadora/)**: compara el precio de una noche con pisos parecidos de la misma zona y tamaño, con el calendario de eventos de Bilbao y Donostia.
+
 ## Hallazgos principales
 
 1. **¿Turístico o alquiler largo? Gana el turístico, con distancia según la ciudad.** El piso turístico mediano ingresa al año 4,9 veces lo que un alquiler largo en Donostia, 2,7 veces en Bilbao y 3,0 veces en Vitoria-Gasteiz (antes de gastos). Tras comisiones, limpieza y gastos fijos, un piso tipo de Abando (Bilbao) deja unos 2.000 € netos al mes frente a 861 € del alquiler largo. *(Corregido el 19/10/2026: la ocupación se mide ahora con el calendario público y no con las reseñas, que daban entre 2 y 4 veces menos ingreso. Ver [metodología](docs/bilbao_ampliacion.md).)*
@@ -75,6 +77,7 @@ Cosas que no se ven en un tutorial y que condicionan cualquier conclusión:
 | `docs/manual.md` | Manual del proyecto: cada paso con el porqué, los errores y las lecciones |
 | `docs/bilbao_ampliacion.md` | Metodología y resultados de Bilbao y Donostia por distrito |
 | `docs/mapa/` | Mapa interactivo publicado en GitHub Pages |
+| `docs/calculadora/` | Calculadora de precio por noche publicada en GitHub Pages (interfaz hecha con ayuda de IA; datos y metodología del proyecto) |
 | `scripts/bilbao_open_data.py` | Ampliación de Bilbao y Donostia, reproducible de principio a fin |
 | `outputs/bilbao/` | Resultados agregados por distrito (sin anuncios individuales) |
 
