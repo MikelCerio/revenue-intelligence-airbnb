@@ -99,3 +99,5 @@ Cosas que no se ven en un tutorial y que condicionan cualquier conclusión:
 ## Datos y licencia
 
 Datos de [Inside Airbnb](https://insideairbnb.com/get-the-data/), publicados bajo licencia **Creative Commons Attribution 4.0 (CC BY 4.0)**. Este repositorio no incluye los ficheros de datos.
+
+El código, la calculadora, la documentación y la metodología son © 2026 Mikel Cerio Chinchurreta, **todos los derechos reservados**: se pueden consultar, pero no copiar ni reutilizar sin permiso. Ver [LICENSE](LICENSE).
