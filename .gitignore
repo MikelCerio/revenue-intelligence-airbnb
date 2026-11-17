@@ -3,3 +3,7 @@ data/
 __pycache__/
 .ipynb_checkpoints/
 *.csv.gz
+
+# Fotos open data con titulares/direcciones: nunca a Git
+datos/raw/*
+!datos/raw/MANIFIESTO.md
