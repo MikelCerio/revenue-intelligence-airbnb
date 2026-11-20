@@ -1,0 +1,7 @@
+ciudad,metodo,pct_adr_por_10pp,ee_pct,r,meses
+Bilbao,"interanual (mismo mes, año anterior)",5.1,1.2,0.41,88
+Bilbao,temporada (entre meses del mismo año),11.7,0.5,0.89,114
+Donostia,"interanual (mismo mes, año anterior)",6.9,1.8,0.36,93
+Donostia,temporada (entre meses del mismo año),20.7,0.7,0.93,117
+Vitoria-Gasteiz,"interanual (mismo mes, año anterior)",0.6,1.5,0.05,93
+Vitoria-Gasteiz,temporada (entre meses del mismo año),8.3,0.6,0.8,117

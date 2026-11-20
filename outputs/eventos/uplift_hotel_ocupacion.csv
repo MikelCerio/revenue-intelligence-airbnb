@@ -1,0 +1,42 @@
+evento,ciudad,tipo,noches,ocupacion_evento,ocupacion_control,dif_pp
+Aste Nagusia 2022,Bilbao,fiestas,9,85.8,82.2,3.6
+Aste Nagusia 2023,Bilbao,fiestas,9,91.6,89.8,1.8
+Aste Nagusia 2024,Bilbao,fiestas,9,88.6,84.7,3.8
+Aste Nagusia 2025,Bilbao,fiestas,9,88.5,84.4,4.1
+Aste Nagusia 2026,Bilbao,fiestas,9,83.5,90.1,-6.6
+Bilbao BBK Live 2022,Bilbao,festival,3,89.5,80.2,9.3
+Bilbao BBK Live 2023,Bilbao,festival,3,89.6,85.7,3.9
+Bilbao BBK Live 2024,Bilbao,festival,3,91.6,82.5,9.1
+Bilbao BBK Live 2025,Bilbao,festival,3,88.4,83.7,4.7
+Bilbao BBK Live 2026,Bilbao,festival,3,88.6,86.0,2.6
+TotalEnergies Bilbao Night Running Fest 2025,Bilbao,deporte,2,88.2,88.3,-0.1
+Behobia-San Sebastian 2022,Donostia,deporte,2,75.2,68.4,6.8
+Behobia-San Sebastian 2023,Donostia,deporte,2,77.0,67.2,9.9
+Behobia-San Sebastian 2024,Donostia,deporte,2,84.6,68.8,15.7
+Behobia-San Sebastian 2025,Donostia,deporte,2,80.4,70.5,9.9
+Festival de San Sebastian (Zinemaldia) 2022,Donostia,festival,9,90.6,86.0,4.6
+Festival de San Sebastian (Zinemaldia) 2023,Donostia,festival,9,91.9,88.6,3.3
+Festival de San Sebastian (Zinemaldia) 2024,Donostia,festival,9,90.9,88.2,2.7
+Festival de San Sebastian (Zinemaldia) 2025,Donostia,festival,9,84.9,86.5,-1.6
+Festival de San Sebastian (Zinemaldia) 2026,Donostia,festival,9,86.8,86.5,0.3
+Heineken Jazzaldia 2025,Donostia,festival,6,92.1,89.8,2.3
+Heineken Jazzaldia 2026,Donostia,festival,5,92.3,89.2,3.1
+Semana Grande Donostia 2022,Donostia,fiestas,8,90.7,89.5,1.2
+Semana Grande Donostia 2023,Donostia,fiestas,8,94.3,90.1,4.2
+Semana Grande Donostia 2024,Donostia,fiestas,8,94.3,91.0,3.3
+Semana Grande Donostia 2025,Donostia,fiestas,8,93.1,87.9,5.2
+Semana Grande Donostia 2026,Donostia,fiestas,8,93.7,88.5,5.1
+Tamborrada de San Sebastian 2022,Donostia,fiestas,1,31.7,35.5,-3.8
+Tamborrada de San Sebastian 2023,Donostia,fiestas,1,62.4,39.9,22.5
+Tamborrada de San Sebastian 2024,Donostia,fiestas,1,79.1,56.2,22.8
+Tamborrada de San Sebastian 2025,Donostia,fiestas,1,60.6,33.0,27.6
+Tamborrada de San Sebastian 2026,Donostia,fiestas,2,52.5,39.6,12.9
+Zurich Maraton San Sebastian 2025,Donostia,deporte,2,73.0,59.6,13.4
+Fiestas de La Blanca 2022,Vitoria-Gasteiz,fiestas,6,89.0,79.6,9.4
+Fiestas de La Blanca 2023,Vitoria-Gasteiz,fiestas,6,92.9,86.1,6.8
+Fiestas de La Blanca 2024,Vitoria-Gasteiz,fiestas,6,90.8,85.8,4.9
+Fiestas de La Blanca 2025,Vitoria-Gasteiz,fiestas,6,93.4,87.6,5.7
+Fiestas de La Blanca 2026,Vitoria-Gasteiz,fiestas,6,93.4,83.7,9.7
+Final Champions League femenina (San Mamés),Bilbao,puntual,2,86.4,88.0,-1.7
+Final Europa League (San Mamés),Bilbao,puntual,2,93.6,89.0,4.6
+Salida del Tour de Francia,Bilbao,puntual,3,86.0,85.2,0.8
