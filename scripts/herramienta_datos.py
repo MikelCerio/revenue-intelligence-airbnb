@@ -141,6 +141,23 @@ def indice_invierno_eustat(anios=(2023, 2024, 2025)):
     return res
 
 
+def uplift_hotel():
+    """Resumen por evento (sin el año) del uplift hotelero de Eustat (scripts/eventos_uplift_precio.py):
+    subida media de ocupación, ocupación sin evento y rango de precio que le corresponde según cuánto sube el ADR
+    por cada 10 puntos de ocupación en esa ciudad (mínimo: interanual; máximo: curva de temporada)."""
+    O = pd.read_csv(RAIZ / "outputs" / "eventos" / "uplift_hotel_ocupacion.csv")
+    El = pd.read_csv(RAIZ / "outputs" / "eventos" / "uplift_adr_elasticidad.csv")
+    el = {(r.ciudad, r.metodo.split(" ")[0]): r.pct_adr_por_10pp for r in El.itertuples()}
+    O = O[O.tipo != "puntual"].assign(familia=O.evento.str.replace(r"\s*\d{4}$", "", regex=True))
+    res = {}
+    for (c, f), g in O.groupby(["ciudad", "familia"]):
+        dif = float(g.dif_pp.mean())
+        lo, hi = sorted(100 * ((1 + el[(c, m)] / 100) ** (max(dif, 0) / 10) - 1) for m in ("interanual", "temporada"))
+        res[f"{c}|{f}"] = dict(ediciones=int(len(g)), dif_pp=round(dif, 1), occ_ctrl=round(float(g.ocupacion_control.mean())),
+                               precio_min=round(lo), precio_max=round(hi))
+    return res
+
+
 def limpia_nombre(s):
     """Quita el prefijo 'Entradas' y la fecha entre paréntesis que Kulturklik añade al final del nombre."""
     s = re.sub(r"^\s*Entradas\s+", "", str(s).strip('"'), flags=re.I)
@@ -236,6 +253,7 @@ def main():
     hoy = date.today()
     datos["eventos"] = eventos(hoy)
     datos["efectos"] = efectos()
+    datos["uplift_hotel"] = uplift_hotel()
     datos["meta"] = dict(generado=hoy.isoformat(), snapshot_precios="2026-03-31 a 2026-06-30 (mediana de cada piso)",
                          fuentes=["Inside Airbnb (CC BY 4.0)", "INE, secciones censales 2024", "Kulturklik (Open Data Euskadi)", "EMAL, Gobierno Vasco",
                                   "Eustat, Encuesta de establecimientos turísticos receptores (ADR hotelero)"])
