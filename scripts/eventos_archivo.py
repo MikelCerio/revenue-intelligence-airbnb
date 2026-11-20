@@ -38,6 +38,7 @@ CAMPOS = ["id", "typeEs", "nameEs", "startDate", "endDate", "publicationDate", "
           "sourceUrlEs", "municipalityEs", "municipalityNoraCode", "provinceNoraCode", "establishmentEs", "priceEs"]
 VIGILADOS = ["nameEs", "fecha_ini", "fecha_fin", "openingHoursEs", "establishmentEs", "priceEs"]
 CIUDADES = {"Bilbao": "Bilbao", "Donostia": "Donostia", "Vitoria": "Vitoria-Gasteiz"}
+CORREO = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 
 
 def pedir(url, intentos=3):
@@ -90,6 +91,9 @@ def normalizar(E, hoy):
     # Los nombres de municipio vienen con variantes ("Donostia / San Sebastián"): la ciudad se reconoce por el principio.
     E["ciudad_clave"] = E.municipalityEs.fillna("").apply(
         lambda s: next((v for k, v in CIUDADES.items() if s.startswith(k)), "Otro"))
+    # Algún organizador pone su correo personal en el horario ("Escribir a ...@gmail.com"): no hace falta guardarlo.
+    for c in ["openingHoursEs", "priceEs", "nameEs", "establishmentEs"]:
+        E[c] = E[c].map(lambda s: CORREO.sub("[correo]", s) if isinstance(s, str) else s)
     return E.drop(columns=["startDate", "endDate", "publicationDate"])
 
 

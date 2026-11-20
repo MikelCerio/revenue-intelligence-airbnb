@@ -16,6 +16,7 @@ Requisitos: pandas, numpy, shapely, pyshp, pyproj (los mismos que bilbao_open_da
 import json
 import re
 import sys
+import unicodedata
 from datetime import date
 from pathlib import Path
 
@@ -112,6 +113,34 @@ def indice_temporada(ids_ref, ciudad_ids):
     return filas
 
 
+EUSTAT_ADR = RAIZ / "datos" / "raw" / "eustat_132680"  # tabla etrm_14h: ADR hotelero mensual por zona
+CAPITAL_HOTEL = {"Bilbao": "-Bilbao", "Donostia": "-Donostia / San Sebastián", "Costa Gipuzkoa": "-Donostia / San Sebastián", "Costa Bizkaia": "-Bilbao"}
+# Cuánto de la temporada hotelera se traslada a los pisos turísticos: pendiente de (índice Airbnb - 1) sobre (índice hotel - 1)
+# en abril-septiembre de 2026. Donostia (r=0.87) se usa también para Bilbao, cuyo ajuste propio es ruidoso (r=0.43);
+# la costa usa el de la costa de Gipuzkoa (r=0.79).
+ATENUACION = {"Bilbao": 0.56, "Donostia": 0.56, "Costa Gipuzkoa": 0.33, "Costa Bizkaia": 0.33}
+MESES_ESTIMADOS = {1: 15, 2: 46, 3: 74, 10: 288, 11: 319, 12: 349}  # mes -> día del año central
+
+
+def indice_invierno_eustat(anios=(2023, 2024, 2025)):
+    """Octubre a marzo no tienen precio comparable en Inside Airbnb (dic-feb vacíos; antes de marzo de 2026 el precio
+    no era una cotización a fecha cercana). Se estiman con el ADR hotelero de Eustat respecto a su media abril-junio,
+    atenuado con ATENUACION. Los puntos estimados llevan n=0 para que la página lo avise."""
+    import csv
+    f = sorted(EUSTAT_ADR.glob("*/PX_132680_cetr_etrm_14h.csv"))[-1]
+    filas = list(csv.reader(f.open(encoding="latin-1")))
+    cab, serie = filas[0], {}
+    for r in filas[1:]:
+        if r[0].startswith("Tarifa"):
+            serie[r[1]] = {cab[i]: float(v) for i, v in enumerate(r) if i > 1 and re.fullmatch(r"[\d.]+", v)}
+    res = {}
+    for zona, fila in CAPITAL_HOTEL.items():
+        s = serie[fila]
+        rel = lambda m: np.mean([s[f"{y}-{m:02d}"] / np.mean([s[f"{y}-{k:02d}"] for k in (4, 5, 6)]) for y in anios])
+        res[zona] = [[doy, round(1 + ATENUACION[zona] * (rel(m) - 1), 3), 0] for m, doy in MESES_ESTIMADOS.items()]
+    return res
+
+
 def limpia_nombre(s):
     """Quita el prefijo 'Entradas' y la fecha entre paréntesis que Kulturklik añade al final del nombre."""
     s = re.sub(r"^\s*Entradas\s+", "", str(s).strip('"'), flags=re.I)
@@ -136,7 +165,28 @@ def eventos(hoy):
     lista += [dict(nombre=limpia_nombre(r.nameEs), ciudad=r.ciudad_clave, tipo="recinto", ini=r.fecha_ini, fin=r.fecha_fin,
                    estado="agenda", recinto=r.establishmentEs, fuente=r.sourceUrlEs if isinstance(r.sourceUrlEs, str) else "")
               for r in K.itertuples()]
-    return sorted(lista, key=lambda e: e["ini"])
+    return sorted(sin_duplicados(lista), key=lambda e: e["ini"])
+
+
+def clave_evento(e):
+    """Kulturklik publica a veces el mismo acto con otro id y el nombre escrito distinto
+    ("Un sorbito de champan - Homenaje..." / "UN SORBITO DE CHAMPAN (HOMENAJE...)"): se compara sin
+    mayúsculas, tildes ni puntuación. No se usa la URL: los programas de fiestas comparten una para cientos de actos."""
+    nombre = unicodedata.normalize("NFKD", str(e["nombre"]).lower()).encode("ascii", "ignore").decode()
+    return e["ciudad"], e["ini"], re.sub(r"[^a-z0-9]", "", nombre)
+
+
+def sin_duplicados(lista):
+    """Se queda con la primera aparición: el calendario curado y la liga van antes que la agenda de Kulturklik."""
+    vistos, res = set(), []
+    for e in lista:
+        k = clave_evento(e)
+        if k not in vistos:
+            vistos.add(k)
+            res.append(e)
+    if len(res) < len(lista):
+        print(f"  eventos: {len(lista) - len(res)} duplicados descartados")
+    return res
 
 
 def efectos():
@@ -181,11 +231,14 @@ def main():
         ids_ciudad[costa] = set(A.id)
         print(f"{costa}: {len(A)} pisos activos con precio; municipios con datos: {len(G['distritos'])}")
     datos["estacional"] = indice_temporada(precio_ref, ids_ciudad)
+    for zona, pts in indice_invierno_eustat().items():
+        datos["estacional"][zona] = sorted(datos["estacional"].get(zona, []) + pts)
     hoy = date.today()
     datos["eventos"] = eventos(hoy)
     datos["efectos"] = efectos()
     datos["meta"] = dict(generado=hoy.isoformat(), snapshot_precios="2026-03-31 a 2026-06-30 (mediana de cada piso)",
-                         fuentes=["Inside Airbnb (CC BY 4.0)", "INE, secciones censales 2024", "Kulturklik (Open Data Euskadi)", "EMAL, Gobierno Vasco"])
+                         fuentes=["Inside Airbnb (CC BY 4.0)", "INE, secciones censales 2024", "Kulturklik (Open Data Euskadi)", "EMAL, Gobierno Vasco",
+                                  "Eustat, Encuesta de establecimientos turísticos receptores (ADR hotelero)"])
     (SALIDA / "datos.json").write_text(json.dumps(datos, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"Listo: {SALIDA / 'datos.json'} ({(SALIDA / 'datos.json').stat().st_size / 1024:.0f} KB; {len(datos['eventos'])} eventos)")
 
