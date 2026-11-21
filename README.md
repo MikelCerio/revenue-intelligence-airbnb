@@ -6,6 +6,8 @@ Proyecto de portfolio de **analítica de revenue para alquiler turístico**, con
 
 **[Mapa interactivo](https://mikelcerio.github.io/revenue-intelligence-airbnb/mapa/)**: ocupación, ADR y RevPAR aproximados por municipio y barrio, por temporada y con niveles de fiabilidad.
 
+**[Mapa local de Bilbao y Donostia](https://mikelcerio.github.io/revenue-intelligence-airbnb/mapa-local/)**: pisos turísticos por distrito y por zonas de 400 m (precio, ocupación, ingreso frente al alquiler largo, peso de los profesionales). Solo zonas con 10 pisos o más.
+
 **[Calculadora «¿Vendo bien mi noche?»](https://mikelcerio.github.io/revenue-intelligence-airbnb/calculadora/)**: compara el precio de una noche con pisos parecidos de la misma zona y tamaño, con el calendario de eventos de Bilbao y Donostia.
 
 ## Hallazgos principales

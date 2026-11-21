@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pisos turísticos de Bilbao y Donostia</title>
+<meta name="description" content="Mapa por distritos y zonas de 400 m de los pisos turísticos de Bilbao y Donostia: cuántos hay, a qué precio, qué ocupación y cuánto ingresan frente al alquiler largo. Datos públicos y agregados.">
+<meta property="og:title" content="Pisos turísticos de Bilbao y Donostia, zona a zona">
+<meta property="og:description" content="Precio, ocupación e ingreso por distrito y por zonas de 400 m. Datos públicos y agregados.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+/* Mismo sistema visual que la calculadora. Mapa a la izquierda, lectura a la derecha; en móvil se apilan. */
+:root{
+  --paper:#F2F5F4; --card:#FFFFFF; --ink:#13262C; --muted:#586A70; --line:#D3DDDC; --sea:#1B5E73; --sea-soft:#DCEBEF;
+  --nodata:#C9D2D1; --edge:#FFFFFF;
+  /* rampa secuencial validada (dataviz, ordinal, claro): pasos 250-700 */
+  --q1:#86b6ef; --q2:#5598e7; --q3:#2a78d6; --q4:#1c5cab; --q5:#0d366b;
+  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:'Instrument Sans','Segoe UI',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1B1F; --card:#172A30; --ink:#E6EEF0; --muted:#9BB0B6; --line:#2A4048; --sea:#6CC1D8; --sea-soft:#1E3B45;
+    --nodata:#3A4A50; --edge:#172A30;
+    --q1:#184f95; --q2:#256abf; --q3:#3987e5; --q4:#6da7ec; --q5:#b7d3f6; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1B1F; --card:#172A30; --ink:#E6EEF0; --muted:#9BB0B6; --line:#2A4048; --sea:#6CC1D8; --sea-soft:#1E3B45;
+  --nodata:#3A4A50; --edge:#172A30;
+  --q1:#184f95; --q2:#256abf; --q3:#3987e5; --q4:#6da7ec; --q5:#b7d3f6; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding:28px max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-direction:column;gap:8px;max-width:70ch}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--sea)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4.6vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:var(--f-display);font-size:18px;margin:0;font-weight:600}
+header p{margin:0;color:var(--muted)}
+a{color:var(--sea)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+/* filtros: una fila encima del mapa */
+.filtros{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end}
+.grupo{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper)}
+.seg button{font:inherit;font-size:14px;border:0;background:transparent;color:var(--ink);padding:8px 14px;cursor:pointer;min-height:40px}
+.seg button[aria-pressed="true"]{background:var(--sea);color:var(--card);font-weight:600}
+select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:40px;max-width:100%}
+.check{flex-direction:row;align-items:center;gap:8px;min-height:40px;color:var(--ink);font-weight:400}
+button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,360px);gap:18px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+#mapa{height:min(620px,72vh);min-height:380px;border-radius:10px;border:1px solid var(--line);background:var(--paper)}
+.leaflet-container{font-family:var(--f-body)}
+.leyenda{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.5px;line-height:1.35;max-width:230px}
+.leyenda b{display:block;font-weight:600;margin-bottom:6px}
+.leyenda .fila{display:flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:12px}
+.leyenda i{width:16px;height:12px;border-radius:3px;display:inline-block;flex:none}
+@media (max-width:600px){.leyenda{padding:6px 8px;max-width:170px}.leyenda b{font-size:11.5px;margin-bottom:3px}.leyenda .fila{font-size:10.5px;gap:6px}.leyenda i{width:12px;height:9px}}
+.leyenda .sd{background:repeating-linear-gradient(45deg,var(--nodata) 0 3px,transparent 3px 6px);border:1px solid var(--nodata)}
+.leaflet-tooltip{font-family:var(--f-body);font-size:13px;background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.leaflet-tooltip b{font-weight:600}
+.leaflet-tooltip-top:before{border-top-color:var(--line)}
+.etq span{display:inline-block;transform:translate(-50%,-50%);white-space:nowrap;font-size:12px;font-weight:600;color:var(--ink);
+  background:var(--card);border-radius:4px;padding:1px 6px;opacity:.9;pointer-events:none}
+.recinto{width:12px;height:12px;border-radius:50%;background:var(--card);border:3px solid var(--ink);box-shadow:0 0 0 2px var(--card)}
+.panel{display:flex;flex-direction:column;gap:14px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--paper);border-radius:8px;padding:10px 12px;min-width:0}
+.tile span{display:block;font-size:12px;color:var(--muted)}
+.tile b{font-family:var(--f-display);font-size:22px;font-weight:600;line-height:1.15}
+.tile small{display:block;font-size:12px;color:var(--muted)}
+.detalle h2{font-size:17px}
+.detalle dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:10px 0 0;font-size:14px}
+.detalle dt{color:var(--muted)} .detalle dd{margin:0;font-family:var(--f-mono);text-align:right}
+.hint{font-size:12.5px;color:var(--muted);margin:0}
+.ranking{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.ranking button{width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 8px;align-items:center;font:inherit;font-size:14px;text-align:left;
+  background:transparent;color:var(--ink);border:1px solid transparent;border-radius:7px;padding:7px 8px;cursor:pointer}
+.ranking button:hover,.ranking button[aria-current="true"]{border-color:var(--line);background:var(--paper)}
+.ranking .barra{grid-column:1 / -1;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.ranking .barra i{display:block;height:100%;background:var(--q3);border-radius:3px}
+.ranking .v{font-family:var(--f-mono);font-size:13px}
+.notas ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13.5px;display:flex;flex-direction:column;gap:6px}
+.links{display:flex;flex-wrap:wrap;gap:10px 18px}
+.links a{font-weight:600}
+.foot{font-size:12.5px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Pisos turísticos · datos públicos y agregados</div>
+    <h1>Bilbao y Donostia, zona a zona</h1>
+    <p>Cuántos pisos turísticos hay en cada distrito y en zonas de 400 m, a qué precio se anuncian, cuántas noches se ocupan y cuánto ingresan frente a un alquiler de toda la vida. Ningún dato es de un piso concreto: solo se muestran zonas con 10 pisos o más.</p>
+  </header>
+
+  <section class="card filtros" aria-label="Qué ver">
+    <div class="grupo">Ciudad
+      <div class="seg" id="segCiudad" role="group" aria-label="Ciudad">
+        <button type="button" data-v="Bilbao" aria-pressed="true">Bilbao</button>
+        <button type="button" data-v="Donostia" aria-pressed="false">Donostia</button>
+      </div>
+    </div>
+    <div class="grupo">Detalle
+      <div class="seg" id="segCapa" role="group" aria-label="Detalle">
+        <button type="button" data-v="distritos" aria-pressed="true">Distritos</button>
+        <button type="button" data-v="hexagonos" aria-pressed="false">Zonas de 400 m</button>
+      </div>
+    </div>
+    <label class="grupo">Qué pintar
+      <select id="metrica"></select>
+    </label>
+    <label class="grupo check"><input type="checkbox" id="verRecintos" checked> Recintos y referencias</label>
+  </section>
+
+  <div class="grid">
+    <div id="mapa" role="region" aria-label="Mapa de pisos turísticos"></div>
+    <aside class="panel">
+      <section class="card">
+        <h2 id="tituloCiudad">Bilbao entera</h2>
+        <div class="tiles" id="tiles" style="margin-top:10px"></div>
+      </section>
+      <section class="card detalle" id="detalle" aria-live="polite">
+        <p class="hint">Pasa el ratón o toca una zona del mapa para ver su ficha.</p>
+      </section>
+      <section class="card">
+        <h2 id="tituloRanking">Distritos</h2>
+        <p class="hint" id="subRanking"></p>
+        <ol class="ranking" id="ranking"></ol>
+      </section>
+    </aside>
+  </div>
+
+  <section class="card notas">
+    <h2>Cómo leer esto</h2>
+    <ul>
+      <li><b>Precio</b>: mediana del precio anunciado por noche de cada piso entre marzo y junio de 2026. Es precio anunciado, no cobrado.</li>
+      <li><b>Ocupación</b>: noches que el calendario público da como no disponibles entre octubre de 2025 y septiembre de 2026, leídas como mucho 29 días antes. Incluye las noches que bloquea el dueño, así que es una aproximación.</li>
+      <li><b>Ingreso</b>: noches ocupadas × precio, al mes y en bruto (antes de comisiones, limpieza, impuestos y gastos). La franja va del 25 % al 75 % de los pisos de la zona.</li>
+      <li><b>Veces el alquiler largo</b>: ingreso bruto mediano entre la renta media de los contratos nuevos de alquiler largo de la ciudad (EMAL 2025). No descuenta gastos: para eso está la <a href="../calculadora/">calculadora</a>.</li>
+      <li><b>Pisos activos</b>: pisos completos de corta estancia con al menos una reseña en 12 meses y precio y calendario medidos. <b>Profesionales</b>: anfitriones con 10 anuncios o más.</li>
+      <li>Las zonas de 400 m son hexágonos. Solo aparecen si tienen 10 pisos o más, y sus precios e ingresos solo si 10 o más están activos (en gris rayado si no). Inside Airbnb desplaza la ubicación de cada anuncio hasta unos 150 m, así que no tiene sentido bajar más.</li>
+      <li>En Donostia no se muestran pisos por cada 1.000 habitantes: el padrón por distrito solo está publicado para Bilbao. Los nombres de los distritos de Donostia son aproximados.</li>
+    </ul>
+    <div class="links" style="margin-top:12px">
+      <a href="../calculadora/">¿Vendo bien mi noche? (calculadora)</a>
+      <a href="../mapa/">Mapa de Euskadi y Barcelona</a>
+      <a href="https://github.com/MikelCerio/revenue-intelligence-airbnb" target="_blank" rel="noopener">Código y método en GitHub</a>
+    </div>
+  </section>
+  <p class="foot" id="fuentes"></p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="datos.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const D = window.DATOS;
+const fmt = (v, suf = '') => v == null ? '—' : String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + suf;
+const dec = v => v == null ? '—' : String(v).replace('.', ',');
+const nombreZona = n => String(n).replace(/^\d\d · /, '');
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/* Métricas: etiqueta y formato. soloBilbaoDistritos: el padrón por distrito solo existe para Bilbao */
+const METRICAS = {
+  ingreso:         {t: 'Ingreso bruto mensual mediano', f: v => fmt(v, ' €'), corto: 'ingreso al mes'},
+  veces_largo:     {t: 'Veces el alquiler largo (bruto)', f: v => v == null ? '—' : dec(v) + '×', corto: 'veces el alquiler largo'},
+  precio:          {t: 'Precio por noche mediano', f: v => fmt(v, ' €'), corto: 'precio por noche'},
+  ocupacion:       {t: 'Ocupación mediana', f: v => fmt(v, ' %'), corto: 'ocupación'},
+  pisos:           {t: 'Pisos turísticos completos', f: v => fmt(v), corto: 'número de pisos'},
+  por_1000_hab:    {t: 'Pisos por cada 1.000 habitantes', f: v => v == null ? '—' : dec(v), corto: 'pisos por habitante', soloBilbaoDistritos: true},
+  profesional_pct: {t: 'Pisos de gestores profesionales', f: v => fmt(v, ' %'), corto: 'peso de los profesionales'},
+};
+let estado = {ciudad: 'Bilbao', capa: 'distritos', metrica: 'ingreso', sel: null};
+try { const g = JSON.parse(localStorage.getItem('mapaLocal') || 'null'); if (g && D[g.ciudad] && METRICAS[g.metrica] && ['distritos', 'hexagonos'].includes(g.capa)) estado = {...estado, ...g, sel: null}; } catch (e) {}
+const guarda = () => { try { localStorage.setItem('mapaLocal', JSON.stringify({ciudad: estado.ciudad, capa: estado.capa, metrica: estado.metrica})); } catch (e) {} };
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const oscuro = () => document.documentElement.dataset.theme === 'dark' || (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+
+/* ---------- mapa ---------- */
+const mapa = L.map('mapa', {scrollWheelZoom: false, zoomSnap: 0.25});
+let base = null;
+/* Mapa base gris de Esri (sin clave; pide atribución). Los rótulos van en una capa aparte, por encima de los colores. */
+const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/';
+function ponBase() {
+  if (base) mapa.removeLayer(base);
+  const tono = oscuro() ? 'World_Dark_Gray' : 'World_Light_Gray';
+  const atrib = 'Mapa base &copy; Esri, HERE, Garmin, &copy; colaboradores de <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+  base = L.layerGroup([
+    L.tileLayer(ESRI + tono + '_Base/MapServer/tile/{z}/{y}/{x}', {maxZoom: 16, attribution: atrib}),
+    L.tileLayer(ESRI + tono + '_Reference/MapServer/tile/{z}/{y}/{x}', {maxZoom: 16, pane: 'rotulos'}),
+  ]).addTo(mapa);
+}
+mapa.createPane('rotulos');
+mapa.getPane('rotulos').style.zIndex = 450;            // encima de los polígonos (400), debajo de los tooltips
+mapa.getPane('rotulos').style.pointerEvents = 'none';
+ponBase();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { ponBase(); pinta(); });
+mapa.on('focus', () => mapa.scrollWheelZoom.enable());
+mapa.on('blur', () => mapa.scrollWheelZoom.disable());
+let capa = null, capaRecintos = null, capaNombres = null, cortes = [];
+const leyenda = L.control({position: 'bottomleft'});
+leyenda.onAdd = () => { const d = L.DomUtil.create('div', 'leyenda'); d.id = 'leyenda'; return d; };
+leyenda.addTo(mapa);
+
+/* Cortes por cuantiles (hasta 5 clases) sobre las zonas visibles con dato, sin repetir cortes */
+function calculaCortes(vals) {
+  const v = vals.filter(x => x != null).sort((a, b) => a - b);
+  if (!v.length) return [];
+  const q = p => v[Math.min(v.length - 1, Math.floor(p * v.length))];
+  return [...new Set([q(.2), q(.4), q(.6), q(.8)])].filter(c => c > v[0]);
+}
+const clase = v => cortes.filter(c => v >= c).length;          // 0 .. cortes.length
+const colorDe = v => css('--q' + (clase(v) + 1));
+
+/* Patrón rayado para "sin datos suficientes": no depende solo del color */
+function rellenoSinDatos() {
+  const svg = mapa.getPanes().overlayPane.querySelector('svg'); if (!svg || svg.querySelector('#rayas')) return;
+  const ns = 'http://www.w3.org/2000/svg', defs = document.createElementNS(ns, 'defs'), p = document.createElementNS(ns, 'pattern');
+  p.setAttribute('id', 'rayas'); p.setAttribute('patternUnits', 'userSpaceOnUse'); p.setAttribute('width', 6); p.setAttribute('height', 6); p.setAttribute('patternTransform', 'rotate(45)');
+  const r = document.createElementNS(ns, 'rect'); r.setAttribute('width', 3); r.setAttribute('height', 6); r.setAttribute('fill', css('--nodata'));
+  p.appendChild(r); defs.appendChild(p); svg.insertBefore(defs, svg.firstChild);
+}
+const valor = p => p[estado.metrica] ?? null;
+const estilo = f => {
+  const v = valor(f.properties);
+  return {color: css('--edge'), weight: 2, opacity: 1, fillOpacity: v == null ? 1 : .78, fillColor: v == null ? 'url(#rayas)' : colorDe(v)};
+};
+const etiquetaZona = p => estado.capa === 'distritos' ? nombreZona(p.nombre) : 'Zona de ' + nombreZona(p.distrito);
+
+function fichaHTML(p) {
+  const fila = (t, v) => `<dt>${t}</dt><dd>${v}</dd>`;
+  return `<h2>${esc(etiquetaZona(p))}</h2>
+    <dl>
+      ${fila('Pisos completos', fmt(p.pisos))}
+      ${p.por_1000_hab != null ? fila('Por 1.000 habitantes', dec(p.por_1000_hab)) : ''}
+      ${fila('Pisos activos', fmt(p.activos))}
+      ${p.precio != null ? fila('Precio por noche', fmt(p.precio, ' €')) : ''}
+      ${p.ocupacion != null ? fila('Ocupación', fmt(p.ocupacion, ' %')) : ''}
+      ${p.ingreso != null ? fila('Ingreso bruto al mes', fmt(p.ingreso, ' €')) : ''}
+      ${p.ingreso != null ? fila('Franja (25–75 %)', fmt(p.ingreso_p25) + '–' + fmt(p.ingreso_p75, ' €')) : ''}
+      ${p.veces_largo != null ? fila('Frente al alquiler largo', dec(p.veces_largo) + '×') : ''}
+      ${p.profesional_pct != null ? fila('Gestores profesionales', fmt(p.profesional_pct, ' %')) : ''}
+      ${p.habitaciones_pct != null ? fila('Anuncios de habitación', fmt(p.habitaciones_pct, ' %')) : ''}
+    </dl>${p.precio == null ? '<p class="hint" style="margin-top:8px">Menos de 10 pisos activos: no se muestran precio ni ingreso.</p>' : ''}`;
+}
+
+function pinta(encuadra) {
+  const C = D[estado.ciudad], M = METRICAS[estado.metrica], fc = C[estado.capa];
+  cortes = calculaCortes(fc.features.map(f => valor(f.properties)));
+  if (capa) mapa.removeLayer(capa);
+  estado.sel = null;
+  capa = L.geoJSON(fc, {
+    style: estilo,
+    onEachFeature: (f, l) => {
+      const p = f.properties;
+      l.bindTooltip(`<b>${esc(etiquetaZona(p))}</b><br>${M.t}: ${M.f(valor(p))}`, {sticky: true, direction: 'top'});
+      l.on({
+        mouseover: () => { l.setStyle({weight: 3, color: css('--ink')}); l.bringToFront(); $('detalle').innerHTML = fichaHTML(p); },
+        mouseout: () => { if (estado.sel !== l) l.setStyle(estilo(f)); },
+        click: () => selecciona(l),
+      });
+    }
+  }).addTo(mapa);
+  rellenoSinDatos();
+  capa.eachLayer(l => l.setStyle(estilo(l.feature)));  // vuelve a aplicar el rayado ya con el patrón creado
+  if (capaRecintos) mapa.removeLayer(capaRecintos);
+  capaRecintos = L.layerGroup(C.recintos.map(r => L.marker([r.lat, r.lon], {
+    icon: L.divIcon({className: '', html: '<div class="recinto"></div>', iconSize: [12, 12]}), keyboard: false
+  }).bindTooltip(`<b>${esc(r.nombre)}</b><br>${esc(r.uso)}`, {direction: 'top'})));
+  if ($('verRecintos').checked) capaRecintos.addTo(mapa);
+  if (capaNombres) mapa.removeLayer(capaNombres);
+  capaNombres = estado.capa === 'distritos' ? L.layerGroup(C.distritos.features.map(f => {
+    const c = f.properties.etiqueta || L.geoJSON(f).getBounds().getCenter();
+    return L.marker(c, {interactive: false, keyboard: false, icon: L.divIcon({className: 'etq', html: `<span>${esc(nombreZona(f.properties.nombre).split(',')[0])}</span>`, iconSize: null})});
+  })).addTo(mapa) : null;
+  // Encuadre en las zonas con pisos (hexágonos), no en todo el término municipal
+  if (encuadra) mapa.fitBounds(L.geoJSON(C.hexagonos).getBounds().pad(0.25));
+  pintaLeyenda(M, fc);
+  pintaPanel();
+}
+
+function pintaLeyenda(M, fc) {
+  const vals = fc.features.map(f => valor(f.properties)).filter(v => v != null);
+  const min = Math.min(...vals), max = Math.max(...vals), bordes = [min, ...cortes, max];
+  let filas = '';
+  for (let i = 0; i < bordes.length - 1; i++) filas += `<div class="fila"><i style="background:${css('--q' + (i + 1))}"></i>${M.f(bordes[i])} – ${M.f(bordes[i + 1])}</div>`;
+  const sinDato = vals.length < fc.features.length;
+  $('leyenda').innerHTML = `<b>${M.t}</b>${filas}${sinDato ? '<div class="fila"><i class="sd"></i>Menos de 10 pisos activos</div>' : ''}`;
+}
+
+function pintaPanel() {
+  const C = D[estado.ciudad], R = C.resumen, M = METRICAS[estado.metrica];
+  $('tituloCiudad').textContent = estado.ciudad + ' entera';
+  const tile = (t, v, s) => `<div class="tile"><span>${t}</span><b>${v}</b>${s ? `<small>${s}</small>` : ''}</div>`;
+  $('tiles').innerHTML = tile('Pisos completos', fmt(R.pisos), R.por_1000_hab != null ? dec(R.por_1000_hab) + ' por 1.000 hab.' : fmt(R.activos) + ' activos')
+    + tile('Precio por noche', fmt(R.precio, ' €'), 'mediana')
+    + tile('Ocupación', fmt(R.ocupacion, ' %'), 'mediana')
+    + tile('Ingreso bruto al mes', fmt(R.ingreso, ' €'), dec(R.veces_largo) + '× el alquiler largo (' + fmt(C.alquiler_largo, ' €') + ')');
+  // Ranking de distritos: también es la vista en tabla del mapa (accesible con teclado)
+  const todos = C.distritos.features.map(f => f.properties), metrica = estado.metrica in todos[0] || todos.some(p => p[estado.metrica] != null) ? estado.metrica : 'pisos';
+  const fs = todos.filter(p => p[metrica] != null).sort((a, b) => b[metrica] - a[metrica]);
+  const max = Math.max(...fs.map(p => p[metrica]));
+  const sin = todos.filter(p => p[metrica] == null).map(p => nombreZona(p.nombre));
+  $('tituloRanking').textContent = 'Distritos por ' + METRICAS[metrica].corto;
+  $('subRanking').textContent = METRICAS[metrica].t + '.' + (sin.length ? ' Sin dato suficiente: ' + sin.join(', ') + '.' : '');
+  $('ranking').innerHTML = fs.map(p => `<li><button type="button" data-n="${esc(p.nombre)}"><span>${esc(nombreZona(p.nombre))}</span><span class="v">${METRICAS[metrica].f(p[metrica])}</span>
+      <span class="barra" aria-hidden="true"><i style="width:${(100 * p[metrica] / max).toFixed(1)}%"></i></span></button></li>`).join('');
+}
+
+function selecciona(l) {
+  if (estado.sel && estado.sel !== l) estado.sel.setStyle(estilo(estado.sel.feature));
+  estado.sel = l; l.setStyle({weight: 3, color: css('--ink')}); l.bringToFront();
+  const p = l.feature.properties;
+  $('detalle').innerHTML = fichaHTML(p);
+  document.querySelectorAll('#ranking button').forEach(b => b.setAttribute('aria-current', String(estado.capa === 'distritos' && b.dataset.n === p.nombre)));
+}
+
+$('ranking').addEventListener('click', ev => {
+  const b = ev.target.closest('button'); if (!b) return;
+  if (estado.capa !== 'distritos') { estado.capa = 'distritos'; marcaSeg('segCapa', 'distritos'); llenaMetricas(); pinta(); guarda(); }
+  capa.eachLayer(l => { if (l.feature.properties.nombre === b.dataset.n) { selecciona(l); mapa.fitBounds(l.getBounds(), {padding: [30, 30], maxZoom: 15}); } });
+});
+
+/* ---------- controles ---------- */
+function marcaSeg(id, v) { document.querySelectorAll('#' + id + ' button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v))); }
+function llenaMetricas() {
+  const ok = ([k, m]) => !m.soloBilbaoDistritos || (estado.ciudad === 'Bilbao' && estado.capa === 'distritos');
+  const disponibles = Object.entries(METRICAS).filter(ok);
+  if (!disponibles.some(([k]) => k === estado.metrica)) estado.metrica = 'ingreso';
+  $('metrica').innerHTML = disponibles.map(([k, m]) => `<option value="${k}"${k === estado.metrica ? ' selected' : ''}>${m.t}</option>`).join('');
+}
+const fichaVacia = () => { $('detalle').innerHTML = '<p class="hint">Pasa el ratón o toca una zona del mapa para ver su ficha.</p>'; };
+$('segCiudad').addEventListener('click', ev => { const b = ev.target.closest('button'); if (!b) return; estado.ciudad = b.dataset.v; marcaSeg('segCiudad', estado.ciudad); llenaMetricas(); pinta(true); fichaVacia(); guarda(); });
+$('segCapa').addEventListener('click', ev => { const b = ev.target.closest('button'); if (!b) return; estado.capa = b.dataset.v; marcaSeg('segCapa', estado.capa); llenaMetricas(); pinta(); fichaVacia(); guarda(); });
+$('metrica').addEventListener('change', () => { estado.metrica = $('metrica').value; pinta(); guarda(); });
+$('verRecintos').addEventListener('change', () => { if ($('verRecintos').checked) capaRecintos.addTo(mapa); else mapa.removeLayer(capaRecintos); });
+
+marcaSeg('segCiudad', estado.ciudad); marcaSeg('segCapa', estado.capa); llenaMetricas(); pinta(true);
+const m = D.meta;
+$('fuentes').textContent = `Datos: ${m.fuentes.join(', ')}. Anuncios: ${m.anuncios}. Precio: ${m.precio}. Ocupación: ${m.ocupacion}. Alquiler largo: ${m.alquiler_largo}. Generado el ${m.generado}.`;
+</script>
+</body>
+</html>
